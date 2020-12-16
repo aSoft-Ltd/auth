@@ -2,4 +2,4 @@
 
 package tz.co.asoft
 
-fun String.asName() = Name(this)
+interface IUsersRepo : IRepo<User>, IUsersFrontendService

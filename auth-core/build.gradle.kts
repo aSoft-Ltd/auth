@@ -2,11 +2,7 @@ plugins {
     id("com.android.library")
     kotlin("multiplatform")
     kotlin("plugin.serialization")
-    asoft("library")
-}
-
-repositories {
-    maven(url = "https://kotlin.bintray.com/kotlinx/")
+    id("tz.co.asoft.library")
 }
 
 kotlin {
@@ -19,13 +15,8 @@ kotlin {
                 api(asoft("phone-core", vers.asoft.contacts))
                 api(asoft("email-core", vers.asoft.contacts))
                 api(asoft("name-core", vers.asoft.contacts))
+                api(asoft("result", vers.asoft.result))
                 api(asoft("logging-console", vers.asoft.logging))
-            }
-        }
-
-        val commonTest by getting {
-            dependencies {
-                api(asoft("test", vers.asoft.test))
             }
         }
     }

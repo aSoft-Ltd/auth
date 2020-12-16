@@ -10,10 +10,15 @@ kotlin {
     sourceSets {
         val commonMain by getting {
             dependencies {
-                api(asoft("files", vers.asoft.files))
-                api(asoft("persist-local", vers.asoft.persist))
                 api(asoft("krypto-core", vers.asoft.krypto))
+                api(asoft("viewmodel-core", vers.asoft.viewmodel))
                 api(project(":auth-core"))
+            }
+        }
+
+        val commonTest by getting {
+            dependencies {
+                api(asoft("test", vers.asoft.test))
             }
         }
     }
