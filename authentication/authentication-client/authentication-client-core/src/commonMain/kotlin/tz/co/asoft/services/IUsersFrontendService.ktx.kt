@@ -8,10 +8,18 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
 
+suspend fun IUsersFrontendService.authenticateLocallyOrLogout() {
+    val token = localDao.load()
+    Authentication.state.value = if (token == null) {
+        AuthenticationState.LoggedOut
+    } else {
+        AuthenticationState.LoggedIn(token)
+    }
+}
+
 suspend fun IUsersFrontendService.authenticateThenStoreToken(accountId: String, userId: String): String {
     val token = authenticate(accountId, userId)
-    Authentication.state.value = AuthenticationState.LoggedIn(token)
-    return localDao.save(token)
+    return useToken(token)
 }
 
 suspend fun IUsersFrontendService.reAuthenticateIfNeedBe(user: User): String? {
@@ -47,12 +55,17 @@ suspend fun IUsersFrontendService.editBasicInfoAndReauthenticateIfNeedBe(u: User
  */
 suspend fun IUsersFrontendService.signInAndStoreToken(loginId: String, password: String): Either<User, String> {
     val res = signIn(loginId, password) ?: throw Exception("User with those credentials not found")
-    val token = res.rightOrNull()
-    if (token != null) {
-        Authentication.state.value = AuthenticationState.LoggedIn(token)
-        localDao.save(token)
+    when (val value = res.value) {
+        is String -> useToken(value)
+        is User -> Unit
+        else -> throw Exception("Failed to sign you in")
     }
     return res
+}
+
+suspend fun IUsersFrontendService.useToken(token: String): String {
+    Authentication.state.value = AuthenticationState.LoggedIn(token)
+    return localDao.save(token)
 }
 
 suspend fun IUsersFrontendService.uploadPhotoThenReauthenticate(u: User, photo: File): FileRef {

@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.targets.js.webpack.KotlinWebpackConfig.DevServer
+
 plugins {
     kotlin("js")
     id("tz.co.asoft.applikation")
@@ -13,8 +15,17 @@ applikation {
 
 kotlin {
     js(IR) {
+        compilations.all {
+            kotlinOptions.metaInfo = false
+        }
         browser {
-            commonWebpackConfig { cssSupport.enabled = true }
+            commonWebpackConfig {
+                cssSupport.enabled = true
+                devServer = DevServer(
+                    open = false,
+                    contentBase = listOf(file("build/processedResources/js/main").absolutePath)
+                )
+            }
         }
         binaries.executable()
     }
@@ -23,8 +34,15 @@ kotlin {
         val main by getting {
             dependencies {
                 implementation(asoft("applikation-runtime", vers.asoft.builders))
+                implementation(project(":authentication-dao-inmemory"))
                 implementation(project(":authentication-client-react"))
                 implementation(devNpm("file-loader", "*"))
+            }
+        }
+
+        val test by getting {
+            dependencies {
+                implementation(asoft("test", vers.asoft.test))
             }
         }
     }
