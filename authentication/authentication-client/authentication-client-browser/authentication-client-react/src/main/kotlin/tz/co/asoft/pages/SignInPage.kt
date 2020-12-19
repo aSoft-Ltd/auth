@@ -3,6 +3,8 @@
 package tz.co.asoft
 
 import kotlinx.css.*
+import kotlinx.css.properties.s
+import kotlinx.css.properties.transition
 import kotlinx.html.DIV
 import kotlinx.html.InputType
 import kotlinx.html.js.onClickFunction
@@ -114,21 +116,45 @@ class SignInPage : VComponent<Props, Intent, State, LoginFormViewModel>() {
     }
 
     private fun RBuilder.ShowAccountSelection(u: User) = RightSideWrapper { theme ->
+        css {
+            gridTemplateRows = GridTemplateRows("auto auto")
+        }
         FlexBox {
-            css { +theme.text.h2.clazz }
+            css {
+                +theme.text.h2.clazz
+                justifyContent = JustifyContent.center
+            }
             +"Select Account"
         }
 
         Grid(u.accounts.joinToString(" ") { "1fr" }) {
-            for (account in u.accounts) styledDiv {
-                css { alignItems = Align.center }
-                attrs.onClickFunction = {
-                    post(Intent.AuthenticateAccount(account,u))
-                }
-                FaUser {}
-                br { }
-                span { +account.name }
+            for (account in u.accounts) UserAccount(
+                account = account,
+                onClicked = { post(Intent.AuthenticateAccount(account, u)) }
+            )
+        }
+    }
+
+    private fun RBuilder.UserAccount(account: UserAccount, onClicked: () -> Unit) = Grid(gap = 0.5.em) { theme ->
+        css {
+            border = "solid 1px transparent"
+            cursor = Cursor.pointer
+            transition(duration = 0.2.s)
+            hover { border = "solid 1px ${theme.onSurfaceColor}" }
+            padding(1.em)
+            children {
+                display = Display.grid
+                alignItems = Align.center
+                justifyContent = JustifyContent.center
             }
+        }
+        attrs.onClickFunction = { onClicked() }
+        styledDiv {
+            css { +theme.text.h1.clazz }
+            FaUser {}
+        }
+        styledDiv {
+            +account.name
         }
     }
 

@@ -18,10 +18,6 @@ class AuthSandboxApp : VComponent<Props, Any, AuthenticationState, AuthSandboxVi
         val signInPageUrl: String
     ) : RProps
 
-    private fun RBuilder.Webapp(ui: LoggedIn) = Grid {
-        span { +"Logged in as : ${ui.user.name} with account ${ui.account.name}" }
-    }
-
     override fun RBuilder.render(ui: AuthenticationState) = ThemeProvider {
         console.log(ui)
         when (ui) {
@@ -29,8 +25,16 @@ class AuthSandboxApp : VComponent<Props, Any, AuthenticationState, AuthSandboxVi
                 css { centerContent(); height = 100.vh }
                 Loader("Setting up workspace")
             }
-            LoggedOut -> AuthSandboxWebsite(signInPageImageUrl = props.signInPageUrl)
-            is LoggedIn -> Webapp(ui)
+            LoggedOut -> AuthSandboxWebsite(
+                signInPageImageUrl = props.signInPageUrl
+            )
+            is LoggedIn -> AuthSandboxWebapp(
+                state = ui,
+                moduleGroups = mapOf(
+                    "Authentication" to AuthReact.menus
+                ),
+                modules = AuthReact.modules
+            )
         }
     }
 }

@@ -17,15 +17,15 @@ class RolesManagerViewModel(
     companion object : IntentBus<Intent>()
 
     sealed class State {
-        class Loading(val msg: String) : State()
-        class RoleForm(val systemPermits: Set<Permit>) : State()
-        class Roles(val roles: List<UserRole>, val systemPermits: Set<Permit>) : State()
-        class Error(val msg: String) : State()
+        data class Loading(val msg: String) : State()
+        data class RoleForm(val systemPermits: Set<Permit>) : State()
+        data class Roles(val roles: List<UserRole>, val systemPermits: Set<Permit>) : State()
+        data class Error(val msg: String) : State()
     }
 
     sealed class Intent {
-        class CreateRole(val role: UserRole) : Intent()
-        class DeleteRole(val role: UserRole) : Intent()
+        data class CreateRole(val role: UserRole) : Intent()
+        data class DeleteRole(val role: UserRole) : Intent()
         object LoadRoles : Intent()
         object NewRoleForm : Intent()
     }

@@ -50,6 +50,11 @@ private class UsersContainer : RComponent<Props, RState>() {
     }
 }
 
+/**
+ * Contains all the UI for Roles
+ * @param drawerController the drawer that this RolesContainer controls
+ *      if null is provided, the [MainDrawerController is used
+ */
 fun RBuilder.UsersContainer(
     drawerController: MutableStateFlow<DrawerState>? = null
 ) = child(UsersContainer::class.js, Props(drawerController)) {}

@@ -12,7 +12,8 @@ import tz.co.asoft.RoleManager.Props
 import tz.co.asoft.UserRoleManagerViewModel.Intent
 import tz.co.asoft.UserRoleManagerViewModel.State
 
-private class RoleManager : VComponent<Props, Intent, State, UserRoleManagerViewModel>() {
+@JsExport
+class RoleManager : VComponent<Props, Intent, State, UserRoleManagerViewModel>() {
     override val viewModel by lazy { userRoleManager() }
 
     class Props(
@@ -26,9 +27,9 @@ private class RoleManager : VComponent<Props, Intent, State, UserRoleManagerView
         post(Intent.ViewRole(props.role))
     }
 
-    override fun componentWillReceiveProps(nextProps: Props) {
-        post(Intent.ViewRole(nextProps.role))
-    }
+//    override fun componentWillReceiveProps(nextProps: Props) {
+//        post(Intent.ViewRole(nextProps.role))
+//    }
 
     private fun RBuilder.RolePermits(
         userPermits: List<Permit>,

@@ -15,7 +15,8 @@ import tz.co.asoft.Authentication.viewModels.rolesManager
 import tz.co.asoft.RolesManagerViewModel.Intent
 import tz.co.asoft.RolesManagerViewModel.State
 
-private class UserRolesManager : VComponent<RProps, Intent, State, RolesManagerViewModel>() {
+@JsExport
+class UserRolesManager : VComponent<RProps, Intent, State, RolesManagerViewModel>() {
     override val viewModel by lazy { rolesManager() }
 
     override fun componentDidMount() {

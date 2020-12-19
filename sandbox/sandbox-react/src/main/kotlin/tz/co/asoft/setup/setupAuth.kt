@@ -5,6 +5,7 @@ import kotlinx.coroutines.launch
 import tz.co.asoft.*
 
 fun setupAuth(`package`: String) {
+    val roles = InMemoryDao<UserRole>("user-role")
     val claimsDao = InMemoryDao<Claim>("claim")
     val accounts = InMemoryDao<UserAccount>("user-accounts")
     val userService = InMemoryUserFrontEndService(claimsDao, accounts, UsersLocalDao(`package`))
@@ -17,6 +18,8 @@ fun setupAuth(`package`: String) {
         ),
         AuthenticationService(users = userService)
     )
+
+    Authorization.configureDao(AuthorizationDao(claimsDao, roles))
 }
 
 private fun populateAuthData(
