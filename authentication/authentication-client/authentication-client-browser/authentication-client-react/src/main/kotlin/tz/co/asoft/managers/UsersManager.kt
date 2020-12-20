@@ -10,7 +10,8 @@ import tz.co.asoft.Authentication.viewModels.usersManager
 import tz.co.asoft.UsersManagerViewModel.Intent
 import tz.co.asoft.UsersManagerViewModel.State
 
-private class UsersManager : VComponent<RProps, Intent, State, UsersManagerViewModel>() {
+@JsExport
+class UsersManager private constructor() : VComponent<RProps, Intent, State, UsersManagerViewModel>() {
     override val viewModel by lazy { usersManager() }
 
     override fun componentDidMount() {
@@ -40,14 +41,24 @@ private class UsersManager : VComponent<RProps, Intent, State, UsersManagerViewM
                 padding(horizontal = 10.pct)
             }
         }
-        PaginatedGrid(loader.pager(pageSize = 8), cols = "1fr 1fr") {
-            css {
-                onDesktop { gridTemplateColumns = GridTemplateColumns("1fr 1fr") }
-                onMobile { gridTemplateColumns = GridTemplateColumns("1fr") }
-            }
-
-            it?.let { UserView(it) }
-        }
+//        PaginatedGrid(loader.pager(pageSize = 10), cols = "1fr 1fr 1fr") {
+//            css {
+//                onDesktop { gridTemplateColumns = GridTemplateColumns("1fr 1fr") }
+//                onMobile { gridTemplateColumns = GridTemplateColumns("1fr") }
+//            }
+//            UserView(it)
+//        }
+        PaginatedTable(
+            pager = loader.pager(20),
+            columns = listOf(
+                Column("Name") { it?.name ?: "firstname lastname" },
+                Column("Email") { it?.emails?.firstOrNull() ?: "user@email.com" },
+                Column("Phone") { it?.phones?.firstOrNull() ?: "+XXX XXX XXX XXX" },
+                RenderColumn("Actions") {
+                    ContainedButton("View", FaEye)
+                }
+            )
+        )
     }
 
     override fun RBuilder.render(ui: State): Any = Surface(margin = 0.5.em) {

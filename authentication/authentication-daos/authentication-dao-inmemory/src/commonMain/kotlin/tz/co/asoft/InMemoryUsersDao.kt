@@ -1,5 +1,7 @@
 package tz.co.asoft
 
+import kotlinx.coroutines.delay
+
 class InMemoryUsersDao : InMemoryDao<User>("user"), IUsersDao {
     override suspend fun load(email: Email, pwd: String): User? = all().find {
         it.emails.contains(email.value) && it.password == pwd
@@ -18,5 +20,10 @@ class InMemoryUsersDao : InMemoryDao<User>("user"), IUsersDao {
         val withEmails = users.filter { emails.any { email -> it.emails.contains(email) } }
         val withPhones = users.filter { phones.any { phone -> it.phones.contains(phone) } }
         return withEmails + withPhones
+    }
+
+    override suspend fun page(no: Int, size: Int): List<User> {
+        delay(5000)
+        return super.page(no, size)
     }
 }

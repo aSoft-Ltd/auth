@@ -14,28 +14,30 @@ class UsersManagerViewModel(
 ) : VModel<Intent, State>(State.Loading("Loading Form")) {
     companion object : IntentBus<Intent>()
 
+    private val pagingSource = GenericPagingSource(usersRepo)
+
     init {
         launch { collect { post(it) } }
     }
 
     sealed class State {
-        class Loading(val msg: String) : State()
-        class Form(val roles: List<UserRole>) : State()
-        class Users(val source: PagingSource<User>) : State()
-        class Error(val msg: String) : State()
+        data class Loading(val msg: String) : State()
+        data class Form(val roles: List<UserRole>) : State()
+        data class Users(val source: PagingSource<User>) : State()
+        data class Error(val msg: String) : State()
         object Success : State()
     }
 
     sealed class Intent {
-        class ViewUsers(val predicate: ((User) -> Boolean)?) : Intent()
+        data class ViewUsers(val predicate: ((User) -> Boolean)?) : Intent()
         object ViewForm : Intent()
-        class CreateUser(val name: String, val email: String, val phone: String, val role: UserRole) : Intent()
+        data class CreateUser(val name: String, val email: String, val phone: String, val role: UserRole) : Intent()
     }
 
     override fun execute(i: Intent): Any = when (i) {
         is Intent.CreateUser -> createUser(i)
         is Intent.ViewForm -> loadForm()
-        is Intent.ViewUsers -> ui.value = State.Users(GenericPagingSource(usersRepo))
+        is Intent.ViewUsers -> ui.value = State.Users(pagingSource)
     }
 
     private fun loadForm() = launch {

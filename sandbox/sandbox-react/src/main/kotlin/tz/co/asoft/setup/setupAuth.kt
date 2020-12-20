@@ -9,7 +9,7 @@ fun setupAuth(`package`: String) {
     val claimsDao = InMemoryDao<Claim>("claim")
     val accounts = InMemoryDao<UserAccount>("user-accounts")
     val userService = InMemoryUserFrontEndService(claimsDao, accounts, UsersLocalDao(`package`))
-    populateAuthData(userService, accounts, claimsDao)
+    populateAuthData(roles, userService, accounts, claimsDao)
     Authentication.configure(
         AuthenticationDao(
             users = userService,
@@ -22,27 +22,38 @@ fun setupAuth(`package`: String) {
     Authorization.configureDao(AuthorizationDao(claimsDao, roles))
 }
 
+private fun Int.show() = if (this < 10) "0$this" else "$this"
+
 private fun populateAuthData(
+    roles: IDao<UserRole>,
     userService: InMemoryUserFrontEndService,
     accounts: InMemoryDao<UserAccount>,
     claimsDao: InMemoryDao<Claim>
 ) = GlobalScope.launch {
     val claim = Claim(permits = listOf(Permit.DEV))
+    suspend fun registerUser(num: Int) = userService.register(
+        claim = claim,
+        accountName = "User Account ${num.show()}",
+        userFullname = "Test User ${num.show()}",
+        email = Email("account${num.show()}@test.com"),
+        phone = Phone("255${(6..7).random()}${num.show().repeat(4)}"),
+        password = SHA256.digest(num.show().toByteArray()).hex
+    )
     userService.register(
         claim = claim,
         accountName = "User Account One",
         userFullname = "Test User One",
-        email = Email("account1@test.com"),
-        phone = Phone("255711111111"),
-        password = SHA256.digest("1".toByteArray()).hex
+        email = Email("account01@test.com"),
+        phone = Phone("255701010101"),
+        password = SHA256.digest("01".toByteArray()).hex
     )
     val (_, user2) = userService.register(
         claim = claim,
         userFullname = "Test User Two",
         accountName = "User Account Two",
-        email = Email("account2@test.com"),
-        phone = Phone("255722222222"),
-        password = SHA256.digest("2".toByteArray()).hex
+        email = Email("account02@test.com"),
+        phone = Phone("255702020202"),
+        password = SHA256.digest("02".toByteArray()).hex
     )
 
     val accountX = accounts.create(
@@ -53,4 +64,8 @@ private fun populateAuthData(
     )
 
     userService.add(accountX, user2.uid!!)
+
+    for (i in 3..99) registerUser(i)
+
+    for (i in 1..10) roles.create(UserRole(name = "Role ${i.show()}", permits = listOf()))
 }

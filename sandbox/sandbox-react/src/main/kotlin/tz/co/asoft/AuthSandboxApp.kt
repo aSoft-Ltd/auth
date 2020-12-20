@@ -19,7 +19,6 @@ class AuthSandboxApp : VComponent<Props, Any, AuthenticationState, AuthSandboxVi
     ) : RProps
 
     override fun RBuilder.render(ui: AuthenticationState) = ThemeProvider {
-        console.log(ui)
         when (ui) {
             Unknown -> Grid {
                 css { centerContent(); height = 100.vh }
