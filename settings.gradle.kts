@@ -30,8 +30,7 @@ include(":authentication-dao-inmemory")
 project(":authentication-dao-inmemory").projectDir = File("authentication/authentication-daos/authentication-dao-inmemory")
 
 include(":authentication-client-react")
-project(":authentication-client-react").projectDir =
-    File("authentication/authentication-client/authentication-client-browser/authentication-client-react")
+project(":authentication-client-react").projectDir = File("authentication/authentication-client/authentication-client-react")
 
 include(":sandbox-react")
 project(":sandbox-react").projectDir = File("sandbox/sandbox-react")

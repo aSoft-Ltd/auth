@@ -19,7 +19,7 @@ object vers {
         val reakt = "0.0.7"
         val files = "0.0.1"
         val krypto = "0.0.4"
-        val paging = "0.0.1"
+        val paging = "0.0.2"
         val persist = "0.1.0"
         val builders = "1.2.0"
         val test = "1.0.1"

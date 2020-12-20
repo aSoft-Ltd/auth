@@ -2,6 +2,9 @@
 
 package tz.co.asoft
 
+import kotlinx.css.borderTop
+import kotlinx.css.em
+import kotlinx.css.paddingTop
 import kotlinx.css.rem
 import react.RBuilder
 import react.dom.span
@@ -12,6 +15,10 @@ import styled.styledP
 import kotlin.Suppress
 
 fun RBuilder.UserView(user: User?) = Grid(cols = "1fr 3fr") { theme ->
+    css {
+        borderTop = "solid 2px ${theme.onSurfaceColor}"
+        paddingTop = 1.em
+    }
     ProfilePic(
         name = user?.name ?: "N/A",
         src = user?.photoUrl,
@@ -31,7 +38,7 @@ fun RBuilder.UserView(user: User?) = Grid(cols = "1fr 3fr") { theme ->
         }
         Grid(cols = "auto 1fr") {
             FaPhone {}
-            styledP { +("+"+(user?.phones?.first() ?: "XXX XXX XXX XXX")) }
+            styledP { +("+" + (user?.phones?.first() ?: "XXX XXX XXX XXX")) }
         }
     }
 }

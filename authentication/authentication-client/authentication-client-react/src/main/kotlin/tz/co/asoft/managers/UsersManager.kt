@@ -41,24 +41,24 @@ class UsersManager private constructor() : VComponent<RProps, Intent, State, Use
                 padding(horizontal = 10.pct)
             }
         }
-//        PaginatedGrid(loader.pager(pageSize = 10), cols = "1fr 1fr 1fr") {
-//            css {
-//                onDesktop { gridTemplateColumns = GridTemplateColumns("1fr 1fr") }
-//                onMobile { gridTemplateColumns = GridTemplateColumns("1fr") }
-//            }
-//            UserView(it)
-//        }
-        PaginatedTable(
-            pager = loader.pager(20),
-            columns = listOf(
-                Column("Name") { it?.name ?: "firstname lastname" },
-                Column("Email") { it?.emails?.firstOrNull() ?: "user@email.com" },
-                Column("Phone") { it?.phones?.firstOrNull() ?: "+XXX XXX XXX XXX" },
-                RenderColumn("Actions") {
-                    ContainedButton("View", FaEye)
-                }
-            )
-        )
+        PaginatedGrid(loader.pager(pageSize = 10), cols = "1fr 1fr 1fr") {
+            css {
+                onDesktop { gridTemplateColumns = GridTemplateColumns("1fr 1fr") }
+                onMobile { gridTemplateColumns = GridTemplateColumns("1fr") }
+            }
+            UserView(it)
+        }
+//        PaginatedTable(
+//            pager = loader.pager(12),
+//            columns = listOf(
+//                Column("Name") { it?.name ?: "firstname lastname" },
+//                Column("Email") { it?.emails?.firstOrNull() ?: "user@email.com" },
+//                Column("Phone") { it?.phones?.firstOrNull() ?: "+XXX XXX XXX XXX" }
+//            ),
+//            actions = listOf(
+//                AButton.Contained("View", FaEye) {}
+//            )
+//        )
     }
 
     override fun RBuilder.render(ui: State): Any = Surface(margin = 0.5.em) {
