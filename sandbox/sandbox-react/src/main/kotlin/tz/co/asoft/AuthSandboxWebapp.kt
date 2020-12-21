@@ -19,7 +19,7 @@ fun RBuilder.AuthSandboxWebapp(
                     drawerController = drawerController,
                     moduleGroups = moduleGroups
                 ) {
-                    CompanyHeader("no", state.user.name)
+                    CompanyHeader("/logo.png", state.user.name)
                 }
             },
             content = {

@@ -30,13 +30,13 @@ fun RBuilder.UserView(user: User?) = Grid(cols = "1fr 3fr") { theme ->
             if (user != null) routeLink(to = "/profile/${user.uid}") { +user.name }
             else span { +"firstname lastname" }
         }
-        Grid(cols = "auto 1fr") {
+        Grid(cols = "auto 1fr", gap = 0.5.em) {
             FaEnvelope {}
             styledP {
                 +(user?.emails?.first() ?: "user@email.com")
             }
         }
-        Grid(cols = "auto 1fr") {
+        Grid(cols = "auto 1fr", gap = 0.5.em) {
             FaPhone {}
             styledP { +("+" + (user?.phones?.first() ?: "XXX XXX XXX XXX")) }
         }

@@ -34,8 +34,8 @@ kotlin {
         val main by getting {
             dependencies {
                 implementation(asoft("applikation-runtime", vers.asoft.builders))
-                implementation(project(":authentication-dao-inmemory"))
-                implementation(project(":authentication-client-react"))
+                implementation(project(":authentication-inmemory"))
+                implementation(project(":auth-react"))
                 implementation(devNpm("file-loader", "*"))
             }
         }

@@ -14,7 +14,8 @@ import styled.styledDiv
 import tz.co.asoft.UsersContainer.Props
 import tz.co.asoft.UsersManagerViewModel.Intent
 
-private class UsersContainer : RComponent<Props, RState>() {
+@JsExport
+class UsersContainer : RComponent<Props, RState>() {
     class Props(
         val drawerController: MutableStateFlow<DrawerState>?
     ) : RProps

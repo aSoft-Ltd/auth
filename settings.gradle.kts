@@ -26,11 +26,11 @@ project(":authentication-core").projectDir = File("authentication/authentication
 include(":authentication-client-core")
 project(":authentication-client-core").projectDir = File("authentication/authentication-client/authentication-client-core")
 
-include(":authentication-dao-inmemory")
-project(":authentication-dao-inmemory").projectDir = File("authentication/authentication-daos/authentication-dao-inmemory")
+include(":authentication-inmemory")
+project(":authentication-inmemory").projectDir = File("authentication/authentication-inmemory")
 
-include(":authentication-client-react")
-project(":authentication-client-react").projectDir = File("authentication/authentication-client/authentication-client-react")
+include(":auth-react")
+//project(":auth-react").projectDir = File("auth-react")
 
 include(":sandbox-react")
 project(":sandbox-react").projectDir = File("sandbox/sandbox-react")

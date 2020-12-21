@@ -59,6 +59,7 @@ private fun populateAuthData(
     val accountX = accounts.create(
         UserAccount(
             name = "User Account X",
+            scope = "developer",
             claimId = claimsDao.create(claim).uid ?: throw Exception("Failed to register user account with claim(uid=null)")
         )
     )

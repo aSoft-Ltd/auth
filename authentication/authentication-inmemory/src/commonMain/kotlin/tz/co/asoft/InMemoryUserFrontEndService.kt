@@ -25,6 +25,7 @@ class InMemoryUserFrontEndService(
     ): Pair<UserAccount, User> {
         val account = UserAccount(
             name = accountName,
+            scope = "client",
             claimId = claimsDao.create(claim).uid ?: throw Exception("Failed to register user account with claim(uid=null)")
         )
 

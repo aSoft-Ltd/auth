@@ -13,7 +13,7 @@ data class Permit(
     val action: String,
     val scope: String
 ) {
-    val qualifier get() = root + (subRoot ?: "")
+    val qualifier get() = if (subRoot == null) root else "$root.$subRoot"
 
     val qualifierAction get() = "$qualifier.$action"
 
