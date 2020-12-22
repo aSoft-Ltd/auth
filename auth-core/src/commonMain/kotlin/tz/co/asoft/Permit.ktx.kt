@@ -5,7 +5,11 @@ package tz.co.asoft
  * If the string can't converts, this extension function @throws an [Exception]
  */
 fun String.toPermit(): Permit {
-    val splits = split(".")
+    val splits = when{
+        contains(".") -> split(".")
+        contains(":") -> split(":")
+        else -> throw Exception("Can't split $this into a slices in order to parse as a Permit")
+    }
     if (splits.size == 4) {
         val scope = splits[3]
         val action = splits[2]

@@ -12,24 +12,34 @@ class UsersManagerViewModel(
     private val usersRepo: IUsersRepo,
     private val rolesRepo: IRepo<UserRole>
 ) : VModel<Intent, State>(State.Loading("Loading Form")) {
-    companion object : IntentBus<Intent>()
+    companion object : IntentBus<Intent>() {
+        var USERS_PER_PAGE = 10
+    }
 
     private val pagingSource = GenericPagingSource(usersRepo)
 
     init {
         launch { collect { post(it) } }
+        launch { post(Intent.ViewUsers(USERS_PER_PAGE, null)) }
     }
 
     sealed class State {
         data class Loading(val msg: String) : State()
-        data class Form(val roles: List<UserRole>) : State()
-        data class Users(val source: PagingSource<User>) : State()
+        data class Form(
+            val roles: List<UserRole>,
+            val onCancel: () -> Unit = { post(Intent.ViewUsers(predicate = null)) },
+            val onSubmit: (String, String, String, UserRole) -> Unit = { name, email, phone, role ->
+                post(Intent.CreateUser(name, email, phone, role))
+            }
+        ) : State()
+
+        data class Users(val pager: Pager<User>) : State()
         data class Error(val msg: String) : State()
         object Success : State()
     }
 
     sealed class Intent {
-        data class ViewUsers(val predicate: ((User) -> Boolean)?) : Intent()
+        data class ViewUsers(val usersPerPage: Int = USERS_PER_PAGE, val predicate: ((User) -> Boolean)?) : Intent()
         object ViewForm : Intent()
         data class CreateUser(val name: String, val email: String, val phone: String, val role: UserRole) : Intent()
     }
@@ -37,7 +47,7 @@ class UsersManagerViewModel(
     override fun execute(i: Intent): Any = when (i) {
         is Intent.CreateUser -> createUser(i)
         is Intent.ViewForm -> loadForm()
-        is Intent.ViewUsers -> ui.value = State.Users(pagingSource)
+        is Intent.ViewUsers -> ui.value = State.Users(pagingSource.pager(i.usersPerPage))
     }
 
     private fun loadForm() = launch {
@@ -73,6 +83,6 @@ class UsersManagerViewModel(
             ui.value = it
         }
         delay(3000)
-        post(Intent.ViewUsers(null))
+        post(Intent.ViewUsers(predicate = null))
     }
 }

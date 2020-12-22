@@ -1,10 +1,19 @@
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+
 plugins {
     kotlin("js")
     id("tz.co.asoft.library")
 }
 
 kotlin {
-    js(IR) { browser() }
+    js(IR) {
+        compilations.all {
+            kotlinOptions {
+                languageVersion = "1.4"
+            }
+        }    
+        browser() 
+    }
     sourceSets {
         val main by getting {
             dependencies {

@@ -23,7 +23,7 @@ class InMemoryUsersDao : InMemoryDao<User>("user"), IUsersDao {
     }
 
     override suspend fun page(no: Int, size: Int): List<User> {
-        delay(5000)
+        delay(500)
         return super.page(no, size)
     }
 }

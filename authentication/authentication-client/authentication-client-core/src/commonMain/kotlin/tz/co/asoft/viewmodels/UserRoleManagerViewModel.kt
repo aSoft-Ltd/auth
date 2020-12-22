@@ -12,17 +12,25 @@ import tz.co.asoft.UserRoleManagerViewModel.State
 class UserRoleManagerViewModel(
     private val repo: IRepo<UserRole>
 ) : VModel<Intent, State>(State.Loading("Loading")) {
+    companion object : IntentBus<Intent>()
     sealed class State {
-        class Loading(val msg: String) : State()
-        class RolePermits(val role: UserRole) : State()
-        class RoleForm(val role: UserRole) : State()
-        class Error(val msg: String) : State()
+        data class Loading(val msg: String) : State()
+        data class RolePermits(val role: UserRole) : State() {
+            val onEdit = { post(Intent.EditRole(role)) }
+            val onDelete = { RolesManagerViewModel.post(RolesManagerViewModel.Intent.DeleteRole(role)) }
+        }
+        data class RoleForm(val role: UserRole) : State()
+        data class Error(val msg: String) : State()
     }
 
     sealed class Intent {
-        class ViewRole(val role: UserRole) : Intent()
-        class RoleForm(val role: UserRole) : Intent()
-        class EditRole(val role: UserRole) : Intent()
+        data class ViewRole(val role: UserRole) : Intent()
+        data class RoleForm(val role: UserRole) : Intent()
+        data class EditRole(val role: UserRole) : Intent()
+    }
+
+    init {
+        launch { collect { post(it) } }
     }
 
     override fun execute(i: Intent): Any = when (i) {

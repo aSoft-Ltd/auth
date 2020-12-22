@@ -16,7 +16,7 @@ object vers {
         val logging = "0.0.1"
         val either = "0.0.1"
         val result = "0.0.1"
-        val reakt = "0.0.7"
+        val reakt = "0.0.8"
         val files = "0.0.1"
         val krypto = "0.0.4"
         val paging = "0.0.2"

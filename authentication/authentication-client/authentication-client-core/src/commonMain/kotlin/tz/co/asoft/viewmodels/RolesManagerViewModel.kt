@@ -31,6 +31,7 @@ class RolesManagerViewModel(
     }
 
     init {
+        post(Intent.LoadRoles)
         launch { collect { post(it) } }
     }
 

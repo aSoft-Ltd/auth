@@ -21,7 +21,6 @@ import styled.styledDiv
 import tz.co.asoft.LoginFormViewModel.Intent
 import tz.co.asoft.LoginFormViewModel.State
 import tz.co.asoft.SignInPage.Props
-import tz.co.asoft.ui.TextBetweenLine
 
 @JsExport
 class SignInPage : VComponent<Props, Intent, State, LoginFormViewModel>() {

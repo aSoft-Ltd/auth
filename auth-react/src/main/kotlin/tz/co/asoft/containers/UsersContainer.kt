@@ -39,7 +39,7 @@ class UsersContainer : RComponent<Props, RState>() {
                         val predicate = { user: User ->
                             Json.encodeToString(User.serializer(), user).contains(key, ignoreCase = true) && !user.deleted
                         }
-                        UsersManagerViewModel.post(Intent.ViewUsers(predicate))
+                        UsersManagerViewModel.post(Intent.ViewUsers(predicate = predicate))
                     }
                 },
                 right = {

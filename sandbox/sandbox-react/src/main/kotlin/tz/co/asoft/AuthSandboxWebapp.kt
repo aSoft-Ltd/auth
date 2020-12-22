@@ -24,7 +24,10 @@ fun RBuilder.AuthSandboxWebapp(
             },
             content = {
                 switch {
-                    for (module in modules) route(path = module.path, exact = true, strict = true, render = module.render)
+                    for (module in modules) {
+                        Authentication.systemPermits.addAll(module.permits.map { it.toPermit() })
+                        route(path = module.path, exact = true, strict = true, render = module.render)
+                    }
                 }
             }
         )

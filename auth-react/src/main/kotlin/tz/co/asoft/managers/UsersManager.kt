@@ -10,16 +10,21 @@ import tz.co.asoft.Authentication.viewModels.usersManager
 import tz.co.asoft.UsersManagerViewModel.Intent
 import tz.co.asoft.UsersManagerViewModel.State
 
+private val vm by lazy {
+    console.log("Instantiated UsersManagerViewModel")
+    usersManager()
+}
+
 @JsExport
 class UsersManager private constructor() : VComponent<RProps, Intent, State, UsersManagerViewModel>() {
-    override val viewModel by lazy { usersManager() }
 
-    override fun componentDidMount() {
-        super.componentDidMount()
-        post(Intent.ViewUsers(null))
-    }
+    override val viewModel = vm
 
-    private fun RBuilder.Form(ui: State.Form) = Grid {
+    private fun RBuilder.Form(
+        roles: List<UserRole>,
+        onCancel: () -> Unit,
+        onSubmit: (name: String, email: String, phone: String, role: UserRole) -> Unit
+    ) = Grid {
         css {
             onDesktop {
                 padding(horizontal = 20.pct)
@@ -27,45 +32,32 @@ class UsersManager private constructor() : VComponent<RProps, Intent, State, Use
         }
         UserForm(
             user = null,
-            roles = ui.roles,
-            onCancel = { post(Intent.ViewUsers(null)) },
-            onSubmit = { name, email, phone, role ->
-                post(Intent.CreateUser(name, email, phone, role))
-            }
+            roles = roles,
+            onCancel = onCancel,//{ post(Intent.ViewUsers(null)) },
+            onSubmit = onSubmit // { name, email, phone, role -> post(Intent.CreateUser(name, email, phone, role)) }
         )
     }
 
-    private fun RBuilder.ShowUsers(loader: PagingSource<User>) = Surface {
+    private fun RBuilder.ShowUsers(pager: Pager<User>) = Surface {
         css {
             onDesktop {
                 padding(horizontal = 10.pct)
             }
         }
-        PaginatedGrid(loader.pager(pageSize = 10), cols = "1fr 1fr 1fr") {
+        PaginatedGrid(pager, cols = "1fr 1fr 1fr") {
             css {
                 onDesktop { gridTemplateColumns = GridTemplateColumns("1fr 1fr") }
                 onMobile { gridTemplateColumns = GridTemplateColumns("1fr") }
             }
             UserView(it)
         }
-//        PaginatedTable(
-//            pager = loader.pager(12),
-//            columns = listOf(
-//                Column("Name") { it?.name ?: "firstname lastname" },
-//                Column("Email") { it?.emails?.firstOrNull() ?: "user@email.com" },
-//                Column("Phone") { it?.phones?.firstOrNull() ?: "+XXX XXX XXX XXX" }
-//            ),
-//            actions = listOf(
-//                AButton.Contained("View", FaEye) {}
-//            )
-//        )
     }
 
     override fun RBuilder.render(ui: State): Any = Surface(margin = 0.5.em) {
         when (ui) {
             is State.Loading -> Loader(ui.msg)
-            is State.Form -> Form(ui)
-            is State.Users -> ShowUsers(ui.source)
+            is State.Form -> Form(ui.roles, ui.onCancel, ui.onSubmit)
+            is State.Users -> ShowUsers(ui.pager)
             is State.Error -> Error(ui.msg)
             State.Success -> Success("Success")
         }

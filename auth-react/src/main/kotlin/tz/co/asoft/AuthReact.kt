@@ -10,13 +10,25 @@ object AuthReact {
         val userRoles = "/user-roles"
     }
 
-    val menus = listOf(
-        NavMenu("Users", routes.users, FaUserFriends) { true },
-        NavMenu("User Roles", routes.userRoles, FaUser) { true }
+    fun menus(scope: String) = listOf(
+        NavMenu("Users", routes.users, FaUserFriends, scope),
+        NavMenu("User Roles", routes.userRoles, FaUser, scope)
     )
 
-    val modules: List<AbstractModuleRoute<out RProps>> = listOf(
-        ModuleRoute(routes.users, permits = listOf()) { UsersContainer() },
-        ModuleRoute(routes.userRoles, permits = listOf()) { RolesContainer() }
+    fun modules(state: AuthenticationState.LoggedIn, scope: String): List<AbstractModuleRoute<out RProps>> = listOf(
+        ModuleRoute(
+            path = routes.users,
+            permits = listOf(),
+            scope = scope,
+            builder = { UsersContainer() },
+        ),
+        ModuleRoute(
+            path = routes.userRoles,
+            permits = listOf(
+                Permit("authorization", "roles", "create", "*").toString()
+            ),
+            scope = scope,
+            builder = { RolesContainer(state) }
+        )
     )
 }

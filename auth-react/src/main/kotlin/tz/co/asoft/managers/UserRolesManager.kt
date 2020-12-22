@@ -8,53 +8,67 @@ import kotlinx.css.pct
 import kotlinx.css.width
 import react.RBuilder
 import react.RProps
+import react.child
+import react.functionalComponent
 import styled.css
 import styled.styledDiv
-import tz.co.asoft.Authentication.systemPermits
 import tz.co.asoft.Authentication.viewModels.rolesManager
 import tz.co.asoft.RolesManagerViewModel.Intent
 import tz.co.asoft.RolesManagerViewModel.State
 
-@JsExport
-class UserRolesManager : VComponent<RProps, Intent, State, RolesManagerViewModel>() {
-    override val viewModel by lazy { rolesManager() }
+private fun UserRole.toTab(
+    systemPermits: Set<Permit>,
+    onDelete: () -> Unit
+) = Tab(name) {
+    RoleManager(this@toTab, systemPermits, onDelete)
+}
 
-    override fun componentDidMount() {
-        super.componentDidMount()
-        post(Intent.LoadRoles)
-    }
+private fun RBuilder.RoleTabs(
+    data: List<UserRole>,
+    systemPermits: Set<Permit>,
+    onDelete: (UserRole) -> Unit
+) = if (data.isEmpty()) {
+    styledDiv { +"No Roles" }
+} else {
+    Tabs(*data.map { it.toTab(systemPermits) { onDelete(it) } }.toTypedArray())
+}
 
-    private fun UserRole.toTab(systemPermits: Set<Permit>) = Tab(name) {
-        RoleManager(this@toTab, systemPermits) { post(Intent.DeleteRole(this@toTab)) }
-    }
+private fun RBuilder.ShowRoleForm(
+    systemPermits: Set<Permit>,
+    onCancel: () -> Unit,
+    onSubmit: (UserRole) -> Unit
+) = Surface(margin = 0.5.em) {
+    UserRoleForm(
+        role = null,
+        systemPermits = systemPermits,
+        onCancel = onCancel,// { post(Intent.LoadRoles) },
+        onSubmit = onSubmit //{ post(Intent.CreateRole(it)) }
+    )
+}
 
-    private fun RBuilder.RoleTabs(data: List<UserRole>, systemPermits: Set<Permit>) = if (data.isEmpty()) {
-        styledDiv { +"No Roles" }
-    } else {
-        Tabs(*data.map { it.toTab(systemPermits) }.toTypedArray())
-    }
-
-    private fun RBuilder.ShowRoleForm(systemPermits: Set<Permit>) = Surface(margin = 0.5.em) {
-        UserRoleForm(
-            role = null,
-            systemPermits = systemPermits,
-            onCancel = { post(Intent.LoadRoles) },
-            onSubmit = { post(Intent.CreateRole(it)) }
-        )
-    }
-
-    override fun RBuilder.render(ui: State) = styledDiv {
+private val UserRolesManagerHook = functionalComponent<RProps> {
+    val vm = useViewModel { rolesManager() }
+    val state by vm
+    styledDiv {
         css {
             width = 100.pct
             padding(0.5.em)
         }
-        when (ui) {
-            is State.Loading -> Loader(ui.msg)
-            is State.RoleForm -> ShowRoleForm(ui.systemPermits)
-            is State.Roles -> RoleTabs(ui.roles, ui.systemPermits)
+        when (val ui = state) {
+            is State.Loading -> Loader(text = ui.msg)
+            is State.RoleForm -> ShowRoleForm(
+                systemPermits = ui.systemPermits,
+                onCancel = { vm.post(Intent.LoadRoles) },
+                onSubmit = { vm.post(Intent.CreateRole(it)) }
+            )
+            is State.Roles -> RoleTabs(
+                data = ui.roles,
+                systemPermits = ui.systemPermits,
+                onDelete = { vm.post(Intent.DeleteRole(it)) }
+            )
             is State.Error -> Error(ui.msg)
         }
     }
 }
 
-fun RBuilder.RolesManager() = child(UserRolesManager::class) {}
+fun RBuilder.RolesManager() = child(UserRolesManagerHook)

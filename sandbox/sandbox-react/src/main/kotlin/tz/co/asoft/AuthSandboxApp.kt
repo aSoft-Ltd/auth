@@ -30,9 +30,9 @@ class AuthSandboxApp : VComponent<Props, Any, AuthenticationState, AuthSandboxVi
             is LoggedIn -> AuthSandboxWebapp(
                 state = ui,
                 moduleGroups = mapOf(
-                    "Authentication" to AuthReact.menus
+                    "Authentication" to AuthReact.menus("admin")
                 ),
-                modules = AuthReact.modules
+                modules = AuthReact.modules(ui,"admin")
             )
         }
     }
