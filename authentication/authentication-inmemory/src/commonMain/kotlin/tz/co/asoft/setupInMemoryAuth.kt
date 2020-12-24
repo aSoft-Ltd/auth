@@ -1,14 +1,13 @@
-package tz.co.asoft.setup
+package tz.co.asoft
 
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import tz.co.asoft.*
 
-fun setupAuth(`package`: String) {
+fun setupInMemoryAuth(localDao: IUsersLocalDao) {
     val roles = InMemoryDao<UserRole>("user-role")
     val claimsDao = InMemoryDao<Claim>("claim")
     val accounts = InMemoryDao<UserAccount>("user-accounts")
-    val userService = InMemoryUserFrontEndService(claimsDao, accounts, UsersLocalDao(`package`))
+    val userService = InMemoryUserFrontEndService(claimsDao, accounts, localDao)
     populateAuthData(roles, userService, accounts, claimsDao)
     Authentication.configure(
         AuthenticationDao(
@@ -59,14 +58,17 @@ private fun populateAuthData(
     val accountX = accounts.create(
         UserAccount(
             name = "User Account X",
-            scope = "developer",
+            type = "developer",
+            scope = null,
             claimId = claimsDao.create(claim).uid ?: throw Exception("Failed to register user account with claim(uid=null)")
         )
     )
 
-    userService.add(accountX, user2.uid!!)
+    userService.addUserToAccount(accountX, user2.uid!!)
 
     for (i in 3..99) registerUser(i)
 
-    for (i in 1..10) roles.create(UserRole(name = "Role ${i.show()}", permits = listOf()))
+    for (i in 1..10) roles.create(
+        UserRole(name = "Role ${i.show()}", permits = (1..10).map { "system.permission.perm_$it.*".toPermit() })
+    )
 }

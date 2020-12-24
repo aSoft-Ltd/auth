@@ -13,13 +13,13 @@ import tz.co.asoft.Authentication.viewModels.userRoleManager
 import tz.co.asoft.UserRoleManagerViewModel.Intent
 import tz.co.asoft.UserRoleManagerViewModel.State
 
-private class Props(
+private class RoleManagerProps(
     val role: UserRole,
     val systemPermits: Set<Permit>,
     val onDelete: () -> Unit
 ) : RProps
 
-private val RoleManagerHook = functionalComponent<Props> { props->
+private val RoleManagerHook = functionalComponent<RoleManagerProps> { props->
     val vm = useViewModel { userRoleManager() }
     useEffect(listOf()) {
         vm.post(Intent.ViewRole(props.role))
@@ -36,8 +36,8 @@ private val RoleManagerHook = functionalComponent<Props> { props->
         is State.RoleForm -> UserRoleForm(
             role = ui.role,
             systemPermits = props.systemPermits,
-            onCancel = { vm.post(Intent.ViewRole(props.role)) },
-            onSubmit = { vm.post(Intent.EditRole(it)) }
+            onCancel = ui.onCancel,
+            onSubmit = ui.onSubmit
         )
         is State.Error -> Error(ui.msg)
     }
@@ -69,4 +69,4 @@ fun RBuilder.RoleManager(
     role: UserRole,
     systemPermits: Set<Permit>,
     onDelete: () -> Unit
-) = child(RoleManagerHook, Props(role, systemPermits, onDelete)) {}
+) = child(RoleManagerHook, RoleManagerProps(role, systemPermits, onDelete)) {}

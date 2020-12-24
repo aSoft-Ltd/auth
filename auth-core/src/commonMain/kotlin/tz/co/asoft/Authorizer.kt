@@ -1,6 +1,6 @@
 package tz.co.asoft
 
-interface Authorizer {
+interface Authorizer{
     val allowedUrls: List<String>
     
     /**

@@ -19,7 +19,12 @@ class UserRoleManagerViewModel(
             val onEdit = { post(Intent.EditRole(role)) }
             val onDelete = { RolesManagerViewModel.post(RolesManagerViewModel.Intent.DeleteRole(role)) }
         }
-        data class RoleForm(val role: UserRole) : State()
+
+        data class RoleForm(val role: UserRole) : State() {
+            val onCancel = { post(Intent.ViewRole(role)) }
+            val onSubmit = { role: UserRole -> post(Intent.EditRole(role)) }
+        }
+
         data class Error(val msg: String) : State()
     }
 

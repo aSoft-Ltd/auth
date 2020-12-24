@@ -2,16 +2,16 @@
 
 package tz.co.asoft
 
-import kotlinx.css.em
-import kotlinx.css.padding
-import kotlinx.css.pct
-import kotlinx.css.width
+import kotlinx.css.*
+import kotlinx.html.InputType
 import react.RBuilder
 import react.RProps
 import react.child
+import react.dom.hr
+import react.dom.li
+import react.dom.ul
 import react.functionalComponent
-import styled.css
-import styled.styledDiv
+import styled.*
 import tz.co.asoft.Authentication.viewModels.rolesManager
 import tz.co.asoft.RolesManagerViewModel.Intent
 import tz.co.asoft.RolesManagerViewModel.State
@@ -19,8 +19,37 @@ import tz.co.asoft.RolesManagerViewModel.State
 private fun UserRole.toTab(
     systemPermits: Set<Permit>,
     onDelete: () -> Unit
-) = Tab(name) {
-    RoleManager(this@toTab, systemPermits, onDelete)
+) = Tab(name) { RoleManager(this@toTab, systemPermits, onDelete) }
+
+private fun RBuilder.RoleCard(role: UserRole) = Accordion(role.name) {
+    ul {
+        role.permits.forEach {
+            li {
+                styledInput(type = InputType.checkBox) {}
+                styledP { +it.toString() }
+            }
+        }
+    }
+}
+
+private fun RBuilder.RolesCard(
+    data: List<UserRole>,
+    systemPermits: Set<Permit>,
+    onDelete: (UserRole) -> Unit
+) = Grid {
+    css {
+        onDesktop { padding(horizontal = 15.pct) }
+        onMobile { padding(0.5.em) }
+    }
+    Surface {
+        if (data.isEmpty()) {
+            +"No roles to display"
+        } else {
+            Grid {
+                for (role in data) RoleCard(role)
+            }
+        }
+    }
 }
 
 private fun RBuilder.RoleTabs(
@@ -61,7 +90,7 @@ private val UserRolesManagerHook = functionalComponent<RProps> {
                 onCancel = { vm.post(Intent.LoadRoles) },
                 onSubmit = { vm.post(Intent.CreateRole(it)) }
             )
-            is State.Roles -> RoleTabs(
+            is State.Roles -> RolesCard(
                 data = ui.roles,
                 systemPermits = ui.systemPermits,
                 onDelete = { vm.post(Intent.DeleteRole(it)) }

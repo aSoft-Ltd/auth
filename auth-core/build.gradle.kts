@@ -19,5 +19,11 @@ kotlin {
                 api(asoft("logging-console", vers.asoft.logging))
             }
         }
+
+        val commonTest by getting {
+            dependencies {
+                implementation(asoft("test", vers.asoft.test))
+            }
+        }
     }
 }

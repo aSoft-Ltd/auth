@@ -13,7 +13,9 @@ import tz.co.asoft.UserProfilePicManager.Props
 import tz.co.asoft.UserProfilePicManagerViewModel.Intent
 import tz.co.asoft.UserProfilePicManagerViewModel.State
 
-private class UserProfilePicManager : VComponent<Props, Intent, State, UserProfilePicManagerViewModel>() {
+@JsExport
+class UserProfilePicManager private constructor() : VComponent<Props, Intent, State, UserProfilePicManagerViewModel>() {
+
     override val viewModel by lazy { AuthReact.viewModel.userProfilePicManager() }
 
     class Props(

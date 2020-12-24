@@ -2,13 +2,13 @@ package tz.co.asoft
 
 /**
  * Converts this [String] into a [Permit]
- * If the string can't converts, this extension function @throws an [Exception]
+ * If the string can't be converted, this extension function @throws an [Exception]
  */
 fun String.toPermit(): Permit {
     val splits = when{
         contains(".") -> split(".")
         contains(":") -> split(":")
-        else -> throw Exception("Can't split $this into a slices in order to parse as a Permit")
+        else -> throw Exception("Can't split $this into slices in order to parse as a Permit")
     }
     if (splits.size == 4) {
         val scope = splits[3]

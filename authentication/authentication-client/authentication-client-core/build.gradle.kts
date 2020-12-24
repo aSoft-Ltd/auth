@@ -12,6 +12,7 @@ kotlin {
             dependencies {
                 api(asoft("viewmodel-core", vers.asoft.viewmodel))
                 api(asoft("jwt-core", vers.asoft.jwt))
+                api(asoft("kotlinx-serialization-mapper",vers.asoft.mapper))
                 api(asoft("either", vers.asoft.either))
                 api(project(":authentication-core"))
                 api(project(":authorization-core"))

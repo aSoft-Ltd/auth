@@ -15,5 +15,11 @@ kotlin {
                 api(asoft("persist-inmemory", vers.asoft.persist))
             }
         }
+
+        val commonTest by getting {
+            dependencies {
+                implementation(asoft("test",vers.asoft.test))
+            }
+        }
     }
 }

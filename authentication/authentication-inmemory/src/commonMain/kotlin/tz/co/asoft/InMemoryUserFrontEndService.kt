@@ -7,7 +7,8 @@ class InMemoryUserFrontEndService(
     val accountsDao: IDao<UserAccount>,
     override val localDao: IUsersLocalDao
 ) : IUsersDao by InMemoryUsersDao(), IUsersFrontendService {
-    val alg = HS256Algorithm("inmemory")
+    val alg = HS256Algorithm("inmemorysecret")
+
     override suspend fun changePassword(userId: String, oldPass: String, newPass: String): User {
         TODO("Not yet implemented")
     }
@@ -25,7 +26,8 @@ class InMemoryUserFrontEndService(
     ): Pair<UserAccount, User> {
         val account = UserAccount(
             name = accountName,
-            scope = "client",
+            type = "client",
+            scope = null,
             claimId = claimsDao.create(claim).uid ?: throw Exception("Failed to register user account with claim(uid=null)")
         )
 
@@ -59,13 +61,22 @@ class InMemoryUserFrontEndService(
         val user = all().find { it.uid == userId } ?: throw Exception("User with $userId not found")
         val account = user.accounts.find { it.uid == accountId } ?: throw Exception("User ${user.name} doesn't have an account with id $accountId")
 
+        console.debug("Before creating jwt")
         val jwt = alg.createJWT {
-            uid = user.uid ?: "0"
+            uid = userId
             userName = user.username ?: user.name
             accountName = account.name
+            aid = accountId
             claimId = user.claimId
-            put("user", Mapper.decodeFromString(Json.encodeToString(User.serializer(), user)))
-            put("account", Mapper.decodeFromString(Json.encodeToString(UserAccount.serializer(), account)))
+            claims = listOf("test")
+            val json = Json { encodeDefaults = true }
+            put("user", Mapper.decodeFromString(json.encodeToString(User.serializer(), user)))
+            val accountJson = json.encodeToString(UserAccount.serializer(), account)
+            console.debug("Account Json", "json" to accountJson)
+            val map = Mapper.decodeFromString(accountJson)
+            put("account", map)
+//            console.log(map.toMap())
+            console.debug("Map", "map" to Mapper.encodeToString(map.toMap()))
         }
         return jwt.token()
     }

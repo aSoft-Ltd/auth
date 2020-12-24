@@ -8,7 +8,8 @@ import kotlinx.serialization.Serializable
 open class UserAccount(
     override var uid: String? = null,
     override val name: String,
+    val scope: String?,
     val claimId: String,
-    val scope: String,
+    val type: String,
     override var deleted: Boolean = false
 ) : NamedEntity

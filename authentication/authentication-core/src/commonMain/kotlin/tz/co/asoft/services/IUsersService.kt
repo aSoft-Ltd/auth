@@ -31,4 +31,9 @@ interface IUsersService : IUsersDao, IUserPhotoUploader {
      * This might cause too much traffic
      */
     suspend fun updateLastSeen(userId: String, status: User.Status): User
+
+    suspend fun addUserToAccount(account: UserAccount, userId: String): User {
+        val user = load(userId) ?: throw Exception("Failed to load User(uid=$userId)")
+        return edit(user.copy(accounts = user.accounts + account))
+    }
 }

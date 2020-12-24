@@ -1,5 +1,3 @@
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-
 plugins {
     kotlin("js")
     id("tz.co.asoft.library")
@@ -17,7 +15,6 @@ kotlin {
     sourceSets {
         val main by getting {
             dependencies {
-                implementation(kotlin("stdlib-js"))
                 api(asoft("reakt-layouts", vers.asoft.reakt))
                 api(asoft("reakt-buttons", vers.asoft.reakt))
                 api(asoft("reakt-inputs", vers.asoft.reakt))
