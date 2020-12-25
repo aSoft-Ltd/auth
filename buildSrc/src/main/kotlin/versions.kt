@@ -9,7 +9,7 @@ object vers {
     object asoft {
         val auth = "0.0.1"
         val contacts = "0.0.1"
-        val viewmodel = "0.0.4"
+        val viewmodel = "0.0.5"
         val rest = "0.0.1"
         val mapper = "0.0.5"
         val jwt = "0.0.1"

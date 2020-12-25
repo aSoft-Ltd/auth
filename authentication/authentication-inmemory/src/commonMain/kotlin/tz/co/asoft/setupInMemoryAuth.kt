@@ -3,22 +3,22 @@ package tz.co.asoft
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
-fun setupInMemoryAuth(localDao: IUsersLocalDao) {
+fun setupInMemoryAuth(localDao: IUsersLocalDao,alg: JWTAlgorithm) {
     val roles = InMemoryDao<UserRole>("user-role")
     val claimsDao = InMemoryDao<Claim>("claim")
     val accounts = InMemoryDao<UserAccount>("user-accounts")
-    val userService = InMemoryUserFrontEndService(claimsDao, accounts, localDao)
-    populateAuthData(roles, userService, accounts, claimsDao)
-    Authentication.configure(
-        AuthenticationDao(
-            users = userService,
-            clientApps = InMemoryDao("client-apps"),
-            accounts = accounts
-        ),
-        AuthenticationService(users = userService)
-    )
-
-    Authorization.configureDao(AuthorizationDao(claimsDao, roles))
+    val userService = InMemoryUserFrontEndService(claimsDao, accounts, localDao,alg)
+//    populateAuthData(roles, userService, accounts, claimsDao)
+//    Authentication.configure(
+//        AuthenticationDao(
+//            users = userService,
+//            clientApps = InMemoryDao("client-apps"),
+//            accounts = accounts
+//        ),
+//        AuthenticationService(users = userService)
+//    )
+//
+//    Authorization.configureDao(AuthorizationDao(claimsDao, roles))
 }
 
 private fun Int.show() = if (this < 10) "0$this" else "$this"

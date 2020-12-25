@@ -16,6 +16,7 @@ kotlin {
         val main by getting {
             dependencies {
                 api(asoft("reakt-layouts", vers.asoft.reakt))
+                api(asoft("reakt-tables", vers.asoft.reakt))
                 api(asoft("reakt-buttons", vers.asoft.reakt))
                 api(asoft("reakt-inputs", vers.asoft.reakt))
                 api(asoft("reakt-text", vers.asoft.reakt))

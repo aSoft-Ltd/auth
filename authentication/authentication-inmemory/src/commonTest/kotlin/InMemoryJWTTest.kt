@@ -1,4 +1,6 @@
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.job
 import kotlinx.serialization.json.Json
 import tz.co.asoft.*
 import tz.co.asoft.LoginFormViewModel.Intent
@@ -34,8 +36,8 @@ class InMemoryJWTTest {
     @Test
     fun should_create_a_signed_jwt() = asyncTest {
         val vm = Authentication.viewModels.loginForm()
-        vm.post(Intent.SignIn("account01@test.com", SHA256.digest("01".toByteArray()).hex))
-        delay(6000)
+        val job = vm.execute(Intent.SignIn("account01@test.com", SHA256.digest("01".toByteArray()).hex)) as Job
+        job.join()
         expect(true) { vm.ui.value is LoginFormViewModel.State.Success }
     }
 }

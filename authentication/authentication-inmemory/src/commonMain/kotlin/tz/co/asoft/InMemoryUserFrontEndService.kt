@@ -5,9 +5,9 @@ import kotlinx.serialization.json.Json
 class InMemoryUserFrontEndService(
     val claimsDao: IDao<Claim>,
     val accountsDao: IDao<UserAccount>,
-    override val localDao: IUsersLocalDao
+    override val localDao: IUsersLocalDao,
+    private val alg: JWTAlgorithm
 ) : IUsersDao by InMemoryUsersDao(), IUsersFrontendService {
-    val alg = HS256Algorithm("inmemorysecret")
 
     override suspend fun changePassword(userId: String, oldPass: String, newPass: String): User {
         TODO("Not yet implemented")
@@ -61,7 +61,6 @@ class InMemoryUserFrontEndService(
         val user = all().find { it.uid == userId } ?: throw Exception("User with $userId not found")
         val account = user.accounts.find { it.uid == accountId } ?: throw Exception("User ${user.name} doesn't have an account with id $accountId")
 
-        console.debug("Before creating jwt")
         val jwt = alg.createJWT {
             uid = userId
             userName = user.username ?: user.name
@@ -69,15 +68,11 @@ class InMemoryUserFrontEndService(
             aid = accountId
             claimId = user.claimId
             claims = listOf("test")
-            val json = Json { encodeDefaults = true }
-            put("user", Mapper.decodeFromString(json.encodeToString(User.serializer(), user)))
-            val accountJson = json.encodeToString(UserAccount.serializer(), account)
-            console.debug("Account Json", "json" to accountJson)
-            val map = Mapper.decodeFromString(accountJson)
-            put("account", map)
-//            console.log(map.toMap())
-            console.debug("Map", "map" to Mapper.encodeToString(map.toMap()))
+            put("user", Mapper.decodeFromString(Json.encodeToString(User.serializer(), user)))
+            put("account", Mapper.decodeFromString(Json.encodeToString(UserAccount.serializer(), account)))
         }
+//        val header =  jwt.header
+////        return jwt.token()
         return jwt.token()
     }
 

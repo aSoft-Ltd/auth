@@ -36,6 +36,7 @@ kotlin {
                 implementation(asoft("applikation-runtime", vers.asoft.builders))
                 implementation(project(":authentication-inmemory"))
                 implementation(project(":auth-react"))
+                implementation(asoft("jwt-hs", vers.asoft.jwt))
                 implementation(devNpm("file-loader", "*"))
             }
         }
