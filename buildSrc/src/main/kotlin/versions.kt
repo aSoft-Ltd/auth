@@ -12,7 +12,7 @@ object vers {
         val viewmodel = "0.0.5"
         val rest = "0.0.1"
         val mapper = "0.0.5"
-        val jwt = "0.0.1"
+        val jwt = "0.0.2"
         val form = "0.0.1"
         val logging = "0.0.1"
         val either = "0.0.1"

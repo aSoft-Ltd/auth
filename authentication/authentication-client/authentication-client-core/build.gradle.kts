@@ -18,5 +18,12 @@ kotlin {
                 api(project(":authorization-core"))
             }
         }
+
+        val commonTest by getting {
+            dependencies {
+                implementation(project(":authentication-inmemory"))
+                implementation(asoft("viewmodel-test",vers.asoft.viewmodel))
+            }
+        }
     }
 }

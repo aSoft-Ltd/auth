@@ -6,7 +6,7 @@ class InMemoryUserFrontEndService(
     val claimsDao: IDao<Claim>,
     val accountsDao: IDao<UserAccount>,
     override val localDao: IUsersLocalDao,
-    private val alg: JWTAlgorithm
+    private val alg: JWTAlgorithm = HS256Algorithm("secret")
 ) : IUsersDao by InMemoryUsersDao(), IUsersFrontendService {
 
     override suspend fun changePassword(userId: String, oldPass: String, newPass: String): User {
@@ -71,8 +71,6 @@ class InMemoryUserFrontEndService(
             put("user", Mapper.decodeFromString(Json.encodeToString(User.serializer(), user)))
             put("account", Mapper.decodeFromString(Json.encodeToString(UserAccount.serializer(), account)))
         }
-//        val header =  jwt.header
-////        return jwt.token()
         return jwt.token()
     }
 
