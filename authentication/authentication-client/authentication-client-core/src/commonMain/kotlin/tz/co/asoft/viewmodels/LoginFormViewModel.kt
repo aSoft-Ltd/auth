@@ -20,7 +20,7 @@ class LoginFormViewModel(
     }
 
     sealed class Intent {
-        data class SignIn(val email: String, val pwd: String) : Intent()
+        data class SignIn(val email: String, val pwd: ByteArray) : Intent()
         data class AuthenticateAccount(val account: UserAccount, val user: User) : Intent()
     }
 
@@ -43,7 +43,7 @@ class LoginFormViewModel(
     private fun signIn(i: Intent.SignIn) = launch {
         flow {
             emit(State.Loading("Signing you in"))
-            val res = repo.signInAndStoreToken(i.email, i.pwd)
+            val res = repo.signInAndStoreToken(i.email, SHA256.digest(i.pwd).hex)
             val user = res.leftOrNull()
             if (user != null) {
                 emit(State.AccountSelection(user))

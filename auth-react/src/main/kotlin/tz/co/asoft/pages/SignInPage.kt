@@ -89,7 +89,7 @@ class SignInPage : VComponent<Props, Intent, State, LoginFormViewModel>() {
     } onSubmit {
         val email by text()
         val password by text()
-        post(Intent.SignIn(email, SHA256.digest(password.toByteArray()).hex))
+        post(Intent.SignIn(email, password.toByteArray()))
     }
 
     private fun RBuilder.RightSideWrapper(builder: StyledDOMBuilder<DIV>.(ReactTheme) -> Unit) = Grid { theme ->
