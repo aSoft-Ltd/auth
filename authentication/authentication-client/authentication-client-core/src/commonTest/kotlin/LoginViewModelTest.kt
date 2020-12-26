@@ -14,7 +14,7 @@ class LoginViewModelTest {
     @Test
     fun should_fail_to_log_in() = asyncTest {
         vm.test(Intent.SignIn("account01@test.com", "04".toByteArray()))
-        assertEquals(vm.ui.value, State.ShowForm("account01@test.com"))
+        assertTrue("Expected Error but was ${vm.ui.value}") { vm.ui.value is State.Error }
     }
 
     private suspend fun login() {
@@ -38,7 +38,7 @@ class LoginViewModelTest {
     @Test
     fun should_login_a_user_with_more_than_one_account() = asyncTest {
         vm.test(Intent.SignIn("account02@test.com", "02".toByteArray()))
-        assertTrue { vm.ui.value is State.AccountSelection }
+        assertTrue("State is not in Account Selection") { vm.ui.value is State.AccountSelection }
         val ui = vm.ui.value as State.AccountSelection
         val user = ui.user
         vm.test(Intent.AuthenticateAccount(user.accounts.first(), user))

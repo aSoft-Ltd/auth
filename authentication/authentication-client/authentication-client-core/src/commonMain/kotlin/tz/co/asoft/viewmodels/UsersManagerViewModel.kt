@@ -17,6 +17,7 @@ class UsersManagerViewModel(
     }
 
     private val pagingSource = GenericPagingSource(usersRepo)
+    private var pager = pagingSource.pager(USERS_PER_PAGE)
 
     init {
         launch { collect { post(it) } }
@@ -25,13 +26,12 @@ class UsersManagerViewModel(
 
     sealed class State {
         data class Loading(val msg: String) : State()
-        data class Form(
-            val roles: List<UserRole>,
-            val onCancel: () -> Unit = { post(Intent.ViewUsers(predicate = null)) },
-            val onSubmit: (String, String, String, UserRole) -> Unit = { name, email, phone, role ->
-                post(Intent.CreateUser(name, email, phone, role))
+        data class Form(val roles: List<UserRole>) : State() {
+            val onCancel = { post(Intent.ViewUsers(predicate = null)) }
+            val onSubmit = { name: String, email: String, phone: String, type: UserAccount.Type ->
+                post(Intent.CreateUser(name, email, phone, type))
             }
-        ) : State()
+        }
 
         data class Users(val pager: Pager<User>) : State()
         data class Error(val msg: String) : State()
@@ -41,13 +41,13 @@ class UsersManagerViewModel(
     sealed class Intent {
         data class ViewUsers(val usersPerPage: Int = USERS_PER_PAGE, val predicate: ((User) -> Boolean)?) : Intent()
         object ViewForm : Intent()
-        data class CreateUser(val name: String, val email: String, val phone: String, val role: UserRole) : Intent()
+        data class CreateUser(val name: String, val email: String, val phone: String, val type: UserAccount.Type) : Intent()
     }
 
     override fun execute(i: Intent): Any = when (i) {
         is Intent.CreateUser -> createUser(i)
         is Intent.ViewForm -> loadForm()
-        is Intent.ViewUsers -> ui.value = State.Users(pagingSource.pager(i.usersPerPage))
+        is Intent.ViewUsers -> ui.value = State.Users(pager)
     }
 
     private fun loadForm() = launch {
@@ -69,7 +69,7 @@ class UsersManagerViewModel(
             )
 
             val (_, user) = usersRepo.register(
-                claim = claim,
+                accountType = i.type.name,
                 accountName = i.name,
                 userFullname = i.name,
                 email = Email(i.email),

@@ -6,6 +6,7 @@ import kotlinx.serialization.descriptors.buildClassSerialDescriptor
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
 
+@Deprecated("Consider using SystemPermits", replaceWith = ReplaceWith("SystemPermission"))
 @Serializable(with = Permit.Companion::class)
 data class Permit(
     val root: String,

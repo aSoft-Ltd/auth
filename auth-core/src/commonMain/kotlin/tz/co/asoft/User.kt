@@ -17,7 +17,6 @@ data class User(
     val emails: List<String> = listOf(),
     val phones: List<String> = listOf(),
     val photoUrl: String? = null,
-    val claimId: String,
     val status: Status = Status.SignedOut,
     val accounts: List<UserAccount>,
     val verifiedEmails: List<String> = listOf(),
@@ -41,7 +40,6 @@ data class User(
     fun ref() = UserRef(
         uid = uid,
         name = name,
-        claimId = claimId,
         photoUrl = photoUrl
     )
 }

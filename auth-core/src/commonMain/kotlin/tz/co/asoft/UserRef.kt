@@ -8,6 +8,5 @@ import kotlinx.serialization.Serializable
 class UserRef(
     val uid: String?,
     val name: String,
-    val claimId: String,
     val photoUrl: String?
 )

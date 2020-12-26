@@ -9,24 +9,30 @@ import tz.co.asoft.LoginFormViewModel.State
 
 class LoginFormViewModel(
     private val repo: IUsersRepo
-) : VModel<LoginFormViewModel.Intent, State>(State.ShowForm()) {
-
+) : VModel<LoginFormViewModel.Intent, State>(State.ShowForm(email = null)) {
+    companion object : IntentBus<Intent>()
     sealed class State {
         data class Loading(val msg: String) : State()
-        data class ShowForm(val email: String? = null) : State()
+        data class ShowForm(val email: String?) : State()
         data class AccountSelection(val user: User) : State()
-        data class Error(val msg: String, val reason: String?, val stacktrace: String) : State()
+        data class Error(val msg: String, val reason: String?, val stacktrace: String, val i: Intent) : State() {
+            val onTryAgain = { post(i) }
+            val onGoBack = { post(Intent.ViewForm(i.email)) }
+        }
+
         object Success : State()
     }
 
-    sealed class Intent {
-        data class SignIn(val email: String, val pwd: ByteArray) : Intent()
-        data class AuthenticateAccount(val account: UserAccount, val user: User) : Intent()
+    sealed class Intent(open val email: String?) {
+        data class ViewForm(override val email: String?) : Intent(email)
+        data class SignIn(override val email: String, val pwd: ByteArray) : Intent(email)
+        data class AuthenticateAccount(val account: UserAccount, val user: User) : Intent(user.emails.firstOrNull())
     }
 
     override fun execute(i: Intent): Any = when (i) {
         is Intent.SignIn -> signIn(i)
         is Intent.AuthenticateAccount -> authenticateAccount(i)
+        is Intent.ViewForm -> ui.value = State.ShowForm(i.email)
     }
 
     private fun authenticateAccount(i: Intent.AuthenticateAccount) = launch {
@@ -37,7 +43,11 @@ class LoginFormViewModel(
                 userId = i.user.uid ?: throw Exception("User id can't be null")
             )
             emit(State.Success)
-        }.terminateGracefully(i.user.emails.first())
+        }.catch {
+            emit(State.Error("Failed to authenticate your accounts", it.message, it.stackTraceToString(), i))
+        }.collect {
+            ui.value = it
+        }
     }
 
     private fun signIn(i: Intent.SignIn) = launch {
@@ -50,16 +60,10 @@ class LoginFormViewModel(
             } else {
                 emit(State.Success)
             }
-        }.terminateGracefully(i.email)
-    }
-
-    private suspend fun Flow<State>.terminateGracefully(email: String) = catch {
-        repeat(5) { seconds ->
-            emit(State.Error("Failed to sign you in (${5 - seconds})", it.message, it.stackTraceToString()))
-            delay(1000)
+        }.catch {
+            emit(State.Error("Failed to sign you in", it.message, it.stackTraceToString(), i))
+        }.collect {
+            ui.value = it
         }
-        emit(State.ShowForm(email))
-    }.collect {
-        ui.value = it
     }
 }

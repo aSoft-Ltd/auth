@@ -13,6 +13,7 @@ kotlin {
                 api(asoft("files", vers.asoft.files))
                 api(asoft("persist-local", vers.asoft.persist))
                 api(asoft("krypto-core", vers.asoft.krypto))
+                api(asoft("jwt-core", vers.asoft.jwt))
                 api(project(":auth-core"))
             }
         }

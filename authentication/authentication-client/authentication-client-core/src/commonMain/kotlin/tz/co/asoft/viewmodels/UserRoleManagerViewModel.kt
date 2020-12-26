@@ -35,7 +35,7 @@ class UserRoleManagerViewModel(
     }
 
     init {
-        launch { collect { post(it) } }
+        observeIntentBus()
     }
 
     override fun execute(i: Intent): Any = when (i) {

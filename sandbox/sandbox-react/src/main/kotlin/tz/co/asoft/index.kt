@@ -15,6 +15,8 @@ fun setupAuthSandbox() {
 
 fun main() = document.getElementById("root").setContent {
     setupAuthSandbox()
+    val p : Either<Int,String> = Either.Left(1)
+    p.rightOrNull()
     AuthSandbox(
         signInPageUrl = "/imgs/sign-up.jpg"
     )

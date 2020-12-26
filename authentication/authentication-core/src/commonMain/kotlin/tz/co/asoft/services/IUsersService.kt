@@ -3,24 +3,8 @@
 package tz.co.asoft
 
 interface IUsersService : IUsersDao, IUserPhotoUploader {
+    val accountsDao: IDao<UserAccount>
     suspend fun changePassword(userId: String, oldPass: String, newPass: String): User
-    suspend fun register(
-        claim: Claim,
-        accountName: String,
-        userAccountUID: String? = null,
-        userFullname: String,
-        userUID: String? = null,
-        username: String? = null,
-        email: Email,
-        phone: Phone,
-        password: String
-    ): Pair<UserAccount, User>
-
-    /**
-     * Sign in the respective user/clientApp
-     * @return [Either] [User] or <JWT Token> as [String]
-     */
-    suspend fun signIn(loginId: String, password: String): Either<User, String>?
 
     /**
      * @return <JWT token> as [String]
@@ -31,9 +15,4 @@ interface IUsersService : IUsersDao, IUserPhotoUploader {
      * This might cause too much traffic
      */
     suspend fun updateLastSeen(userId: String, status: User.Status): User
-
-    suspend fun addUserToAccount(account: UserAccount, userId: String): User {
-        val user = load(userId) ?: throw Exception("Failed to load User(uid=$userId)")
-        return edit(user.copy(accounts = user.accounts + account))
-    }
 }

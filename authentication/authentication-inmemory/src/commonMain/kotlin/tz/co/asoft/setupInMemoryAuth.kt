@@ -29,27 +29,28 @@ private fun populateAuthData(
     accounts: InMemoryDao<UserAccount>,
     claimsDao: InMemoryDao<Claim>
 ) = GlobalScope.launch {
-    val claim = Claim(permits = listOf(Permit.DEV))
+    //    val claim = Claim(permits = SystemPermission.DEV.permissions.toList())
     suspend fun registerUser(num: Int) = userService.register(
-        claim = claim,
         accountName = "User Account ${num.show()}",
         userFullname = "Test User ${num.show()}",
+        accountType = "guest",
         email = Email("account${num.show()}@test.com"),
         phone = Phone("255${(6..7).random()}${num.show().repeat(4)}"),
         password = SHA256.digest(num.show().toByteArray()).hex
     )
+
     userService.register(
-        claim = claim,
         accountName = "User Account One",
         userFullname = "Test User One",
+        accountType = "system.admin",
         email = Email("account01@test.com"),
         phone = Phone("255701010101"),
         password = SHA256.digest("01".toByteArray()).hex
     )
     val (_, user2) = userService.register(
-        claim = claim,
         userFullname = "Test User Two",
         accountName = "User Account Two",
+        accountType = "system.admin",
         email = Email("account02@test.com"),
         phone = Phone("255702020202"),
         password = SHA256.digest("02".toByteArray()).hex
@@ -58,9 +59,8 @@ private fun populateAuthData(
     val accountX = accounts.create(
         UserAccount(
             name = "User Account X",
-            type = "developer",
-            scope = null,
-            claimId = claimsDao.create(claim).uid ?: throw Exception("Failed to register user account with claim(uid=null)")
+            type = "system.admin",
+            scope = null
         )
     )
 

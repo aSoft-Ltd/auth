@@ -75,9 +75,9 @@ suspend fun IUsersFrontendService.uploadPhotoThenReauthenticate(u: User, photo: 
 }
 
 suspend fun IUsersFrontendService.registerThenSignIn(
-    claim: Claim,
-    accountName: String,
     userAccountUID: String? = null,
+    accountType: String,
+    accountName: String,
     userFullname: String,
     userUID: String? = null,
     username: String? = null,
@@ -85,7 +85,7 @@ suspend fun IUsersFrontendService.registerThenSignIn(
     phone: Phone,
     password: String
 ): String {
-    val (account, user) = register(claim, accountName, userAccountUID, userFullname, userUID, username, email, phone, password)
+    val (account, user) = register(userAccountUID, accountType, accountName, userFullname, userUID, username, email, phone, password)
     val accountId = account.uid ?: throw Exception("Registered account came back a null uid")
     val userId = user.uid ?: throw Exception("Registered user came back with a null uid")
     return authenticateThenStoreToken(accountId, userId)

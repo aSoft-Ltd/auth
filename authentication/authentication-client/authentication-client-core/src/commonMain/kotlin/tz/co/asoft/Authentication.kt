@@ -8,6 +8,8 @@ object Authentication : DaoAndServiceFactory<AuthenticationDao, AuthenticationSe
     val systemPermits = mutableSetOf<Permit>()
     val state: MutableStateFlow<AuthenticationState> = MutableStateFlow(AuthenticationState.Unknown)
 
+    var accountTypes = listOf<UserAccount.Type>()
+
     object repo {
         fun users() = repo { UsersRepo(service.users) }
         fun accounts() = repo { Repo(dao.accounts) }
