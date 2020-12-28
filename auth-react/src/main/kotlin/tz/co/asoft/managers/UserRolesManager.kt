@@ -7,7 +7,6 @@ import kotlinx.html.InputType
 import react.RBuilder
 import react.RProps
 import react.child
-import react.dom.hr
 import react.dom.li
 import react.dom.ul
 import react.functionalComponent
@@ -17,7 +16,7 @@ import tz.co.asoft.RolesManagerViewModel.Intent
 import tz.co.asoft.RolesManagerViewModel.State
 
 private fun UserRole.toTab(
-    systemPermits: Set<Permit>,
+    systemPermits: List<SystemPermissionGroup>,
     onDelete: () -> Unit
 ) = Tab(name) { RoleManager(this@toTab, systemPermits, onDelete) }
 
@@ -34,7 +33,7 @@ private fun RBuilder.RoleCard(role: UserRole) = Accordion(role.name) {
 
 private fun RBuilder.RolesCard(
     data: List<UserRole>,
-    systemPermits: Set<Permit>,
+    systemPermits: List<SystemPermissionGroup>,
     onDelete: (UserRole) -> Unit
 ) = Grid {
     css {
@@ -54,7 +53,7 @@ private fun RBuilder.RolesCard(
 
 private fun RBuilder.RoleTabs(
     data: List<UserRole>,
-    systemPermits: Set<Permit>,
+    systemPermits: List<SystemPermissionGroup>,
     onDelete: (UserRole) -> Unit
 ) = if (data.isEmpty()) {
     styledDiv { +"No Roles" }
@@ -63,7 +62,7 @@ private fun RBuilder.RoleTabs(
 }
 
 private fun RBuilder.ShowRoleForm(
-    systemPermits: Set<Permit>,
+    systemPermits: List<SystemPermissionGroup>,
     onCancel: () -> Unit,
     onSubmit: (UserRole) -> Unit
 ) = Surface(margin = 0.5.em) {
@@ -86,13 +85,13 @@ private val UserRolesManagerHook = functionalComponent<RProps> {
         when (val ui = state) {
             is State.Loading -> Loader(text = ui.msg)
             is State.RoleForm -> ShowRoleForm(
-                systemPermits = ui.systemPermits,
+                systemPermits = ui.permissionGroups,
                 onCancel = { vm.post(Intent.LoadRoles) },
                 onSubmit = { vm.post(Intent.CreateRole(it)) }
             )
             is State.Roles -> RolesCard(
                 data = ui.roles,
-                systemPermits = ui.systemPermits,
+                systemPermits = ui.permissionGroups,
                 onDelete = { vm.post(Intent.DeleteRole(it)) }
             )
             is State.Error -> Error(ui.msg)

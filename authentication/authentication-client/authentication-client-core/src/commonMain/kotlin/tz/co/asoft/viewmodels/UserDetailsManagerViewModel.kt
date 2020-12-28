@@ -2,6 +2,7 @@
 
 package tz.co.asoft
 
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flow
@@ -29,7 +30,7 @@ class UserDetailsManagerViewModel(
         object SignOut : Intent()
     }
 
-    override fun execute(i: Intent): Any = when (i) {
+    override fun CoroutineScope.execute(i: Intent): Any = when (i) {
         is Intent.ViewPasswordForm -> ui.value = State.ShowPasswordForm(i.user)
         is Intent.ViewBasicInfoForm -> ui.value = State.ShowBasicInfoForm(i.u)
         is Intent.ViewUser -> viewUser(i)
@@ -40,7 +41,7 @@ class UserDetailsManagerViewModel(
 
     val user get() = Authentication.state.value.user
 
-    private fun editBasicInfo(i: Intent.EditBasicInfo) = launch {
+    private fun CoroutineScope.editBasicInfo(i: Intent.EditBasicInfo) = launch {
         flow {
             emit(State.Loading("Editing information"))
             val u = user ?: throw Exception("No logged in user")
@@ -52,7 +53,7 @@ class UserDetailsManagerViewModel(
         }
     }
 
-    private fun changePassword(i: Intent.ChangePassword) = launch {
+    private fun CoroutineScope.changePassword(i: Intent.ChangePassword) = launch {
         flow {
             emit(State.Loading("Changing your password"))
             val uid = user?.uid ?: throw Exception("No logged in user")
@@ -64,7 +65,7 @@ class UserDetailsManagerViewModel(
         }
     }
 
-    private fun viewUser(i: Intent.ViewUser) = launch {
+    private fun CoroutineScope.viewUser(i: Intent.ViewUser) = launch {
         flow {
             val u = user ?: throw Exception("No logged in user")
             emit(State.Loading("Loading User"))

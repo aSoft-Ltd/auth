@@ -8,19 +8,19 @@ import react.RBuilder
 import styled.css
 
 internal fun RBuilder.PermitsView(
-    userPermits: List<Permit>,
-    systemPermits: Set<Permit>,
+    userPermits: Collection<String>,
+    systemPermits: List<SystemPermissionGroup>,
     desktopHPadding: LinearDimension
 ) = Grid(cols = "1fr 1fr", rows = "auto") {
     css {
         onDesktop { padding(horizontal = desktopHPadding) }
     }
-    systemPermits.forEach {
-        Switch(
+    for (group in systemPermits) Accordion(group.name) {
+        for (permit in group.permissions) Switch(
             name = "permits",
-            value = it.toString(),
-            label = it.toString(),
-            checked = userPermits.contains(Permit.DEV) || userPermits.contains(it),
+            value = permit.name,
+            label = permit.name,
+            checked = userPermits.contains(permit.name),
             disabled = true
         )
     }

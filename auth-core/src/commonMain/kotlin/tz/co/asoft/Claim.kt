@@ -5,6 +5,6 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class Claim(
     override var uid: String? = null,
-    val permits: List<SystemPermission>,
+    val permits: List<String>,
     override var deleted: Boolean = false
 ) : Entity

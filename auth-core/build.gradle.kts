@@ -15,14 +15,14 @@ kotlin {
                 api(asoft("phone-core", vers.asoft.contacts))
                 api(asoft("email-core", vers.asoft.contacts))
                 api(asoft("name-core", vers.asoft.contacts))
-                api(asoft("result", vers.asoft.result))
+                api(asoft("result-core", vers.asoft.duality))
                 api(asoft("logging-console", vers.asoft.logging))
             }
         }
 
         val commonTest by getting {
             dependencies {
-                implementation(asoft("test", vers.asoft.test))
+                implementation(asoft("test-core", vers.asoft.test))
             }
         }
     }

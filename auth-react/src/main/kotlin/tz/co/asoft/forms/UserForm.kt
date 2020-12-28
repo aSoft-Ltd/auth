@@ -10,8 +10,8 @@ import styled.styledDiv
 
 fun RBuilder.UserForm(
     onCancel: () -> Unit,
-    onSubmit: (name: String, email: String, phone: String, role: UserRole) -> Unit,
-    roles: List<UserRole>,
+    onSubmit: (name: String, email: String, phone: String, type: UserAccount.Type) -> Unit,
+    accounts: List<UserAccount.Type>,
     user: User?
 ) = Form {
     css {
@@ -49,8 +49,8 @@ fun RBuilder.UserForm(
         )
 
         DropDown(
-            name = "userRole",
-            options = listOf("Select Role") + roles.map { it.name }
+            name = "type",
+            options = listOf("Select Account Type") + accounts.map { it.name }
         )
 
         Grid(cols = "auto auto") {
@@ -62,6 +62,6 @@ fun RBuilder.UserForm(
     val name by text()
     val email by text()
     val phone by text()
-    val userRole by text()
-    onSubmit(name, email, phone, roles.first { it.name == userRole })
+    val type by text()
+    onSubmit(name, email, phone, accounts.first { it.name == type })
 }

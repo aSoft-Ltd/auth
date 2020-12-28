@@ -1,11 +1,9 @@
 package tz.co.asoft
 
-import kotlinx.serialization.Serializable
-
-@Serializable
 data class SystemPermission(
     val name: String,
-    val details: String
+    val details: String,
+    val needs: List<String> = listOf()
 ) {
     companion object {
         val DEV = SystemPermissionGroup(

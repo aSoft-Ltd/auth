@@ -4,7 +4,6 @@ import kotlinx.css.height
 import kotlinx.css.vh
 import react.RBuilder
 import react.RProps
-import react.dom.span
 import styled.css
 import tz.co.asoft.AuthSandboxApp.Props
 import tz.co.asoft.AuthenticationState.*
@@ -15,7 +14,7 @@ class AuthSandboxApp : VComponent<Props, Any, AuthenticationState, AuthSandboxVi
     override val viewModel by lazy { AuthSandboxViewModel(Authentication.service.users) }
 
     class Props(
-        val signInPageUrl: String
+        val signInPageImageUrl: String
     ) : RProps
 
     override fun RBuilder.render(ui: AuthenticationState) = ThemeProvider {
@@ -25,7 +24,7 @@ class AuthSandboxApp : VComponent<Props, Any, AuthenticationState, AuthSandboxVi
                 Loader("Setting up workspace")
             }
             LoggedOut -> AuthSandboxWebsite(
-                signInPageImageUrl = props.signInPageUrl
+                signInPageImageUrl = props.signInPageImageUrl
             )
             is LoggedIn -> AuthSandboxWebapp(
                 state = ui,

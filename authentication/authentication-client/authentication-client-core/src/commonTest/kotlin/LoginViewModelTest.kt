@@ -14,14 +14,16 @@ class LoginViewModelTest {
     @Test
     fun should_fail_to_log_in() = asyncTest {
         vm.test(Intent.SignIn("account01@test.com", "04".toByteArray()))
-        assertTrue("Expected Error but was ${vm.ui.value}") { vm.ui.value is State.Error }
+        expect(vm).toBeIn<State.Error>()
     }
+
+    private val user get() = Authentication.state.value.user
 
     private suspend fun login() {
         delay(10)
         vm.test(Intent.SignIn("account01@test.com", "01".toByteArray()))
-        assertEquals(State.Success, vm.ui.value)
-        assertEquals(Authentication.state.value.user?.emails?.first(), "account01@test.com")
+        expect(vm).toBeIn(State.Success)
+        expect(user?.emails?.first()).toBe("account01@test.com")
     }
 
     @Test
@@ -31,17 +33,16 @@ class LoginViewModelTest {
     fun should_succeed_in_logging_out() = asyncTest {
         login()
         Authentication.service.users.signOut().join()
-        assertNull(Authentication.state.value.user)
-        assertEquals(Authentication.state.value, AuthenticationState.LoggedOut)
+        expect(user).toBeNull()
+        expect(Authentication.state).toBe(AuthenticationState.LoggedOut)
     }
 
     @Test
     fun should_login_a_user_with_more_than_one_account() = asyncTest {
         vm.test(Intent.SignIn("account02@test.com", "02".toByteArray()))
-        assertTrue("State is not in Account Selection") { vm.ui.value is State.AccountSelection }
-        val ui = vm.ui.value as State.AccountSelection
-        val user = ui.user
-        vm.test(Intent.AuthenticateAccount(user.accounts.first(), user))
-        expect("account02@test.com") { Authentication.state.value.user?.emails?.first() }
+        val ui = expect(vm).toBeIn<State.AccountSelection>()
+        val u = ui.user
+        vm.test(Intent.AuthenticateAccount(u.accounts.first(), u))
+        expect(user?.emails?.first()).toBe("account02@test.com")
     }
 }

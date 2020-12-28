@@ -40,12 +40,6 @@ kotlin {
                 implementation(devNpm("file-loader", "*"))
             }
         }
-
-        val test by getting {
-            dependencies {
-                implementation(asoft("test", vers.asoft.test))
-            }
-        }
     }
 }
 

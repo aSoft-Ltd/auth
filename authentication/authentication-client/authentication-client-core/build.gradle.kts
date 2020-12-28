@@ -13,7 +13,7 @@ kotlin {
                 api(asoft("viewmodel-core", vers.asoft.viewmodel))
                 api(asoft("jwt-core", vers.asoft.jwt))
                 api(asoft("kotlinx-serialization-mapper",vers.asoft.mapper))
-                api(asoft("either", vers.asoft.either))
+                api(asoft("either-core", vers.asoft.duality))
                 api(project(":authentication-core"))
                 api(project(":authorization-core"))
             }
@@ -22,7 +22,8 @@ kotlin {
         val commonTest by getting {
             dependencies {
                 implementation(project(":authentication-inmemory"))
-                implementation(asoft("viewmodel-test",vers.asoft.viewmodel))
+                implementation(asoft("expect-coroutines",vers.asoft.expect))
+                implementation(asoft("viewmodel-test-expect",vers.asoft.viewmodel))
             }
         }
     }

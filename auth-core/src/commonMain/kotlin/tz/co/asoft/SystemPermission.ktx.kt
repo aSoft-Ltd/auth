@@ -1,9 +1,9 @@
 package tz.co.asoft
 
-val SystemPermission.qualifier get() = name.split(".").first()
-
-fun Collection<SystemPermission>.groups(): Map<String, Set<SystemPermission>> = groupBy {
-    it.qualifier
-}.mapValues { (_, v) ->
-    v.map { it.copy(name = it.name.replace("${it.qualifier}.", "")) }.toSet()
+fun Collection<SystemPermission>.hasPermit(name: String): Boolean {
+    if (any { it.name == "system.developer" }) return true
+    if (any { it.name == name }) return true
+    return false
 }
+
+fun Collection<SystemPermission>.hasPermit(permit: SystemPermission) = hasPermit(permit.name)

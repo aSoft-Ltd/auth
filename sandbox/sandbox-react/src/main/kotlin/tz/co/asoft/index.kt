@@ -10,13 +10,12 @@ val kfg by lazy { konfig() }
 fun setupAuthSandbox() {
     setupTheme()
     setupLogging()
+    Authentication.accountTypes = UserAccountType.all()
     setupInMemoryAuth(UsersLocalDao(kfg["package"] as String))
 }
 
 fun main() = document.getElementById("root").setContent {
     setupAuthSandbox()
-    val p : Either<Int,String> = Either.Left(1)
-    p.rightOrNull()
     AuthSandbox(
         signInPageUrl = "/imgs/sign-up.jpg"
     )

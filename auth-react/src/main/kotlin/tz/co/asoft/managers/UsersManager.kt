@@ -21,9 +21,9 @@ class UsersManager private constructor() : VComponent<RProps, Intent, State, Use
     override val viewModel = vm
 
     private fun RBuilder.Form(
-        roles: List<UserRole>,
+        accounts: List<UserAccount.Type>,
         onCancel: () -> Unit,
-        onSubmit: (name: String, email: String, phone: String, role: UserRole) -> Unit
+        onSubmit: (name: String, email: String, phone: String, type: UserAccount.Type) -> Unit
     ) = Grid {
         css {
             onDesktop {
@@ -32,7 +32,7 @@ class UsersManager private constructor() : VComponent<RProps, Intent, State, Use
         }
         UserForm(
             user = null,
-            roles = roles,
+            accounts = accounts,
             onCancel = onCancel,//{ post(Intent.ViewUsers(null)) },
             onSubmit = onSubmit // { name, email, phone, role -> post(Intent.CreateUser(name, email, phone, role)) }
         )

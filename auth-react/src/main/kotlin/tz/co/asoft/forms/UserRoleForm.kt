@@ -9,7 +9,7 @@ import styled.styledH1
 
 fun RBuilder.UserRoleForm(
     role: UserRole?,
-    systemPermits: Set<Permit>,
+    systemPermits: List<SystemPermissionGroup>,
     onCancel: () -> Unit,
     onSubmit: (UserRole) -> Unit
 ) = Form {
@@ -33,12 +33,12 @@ fun RBuilder.UserRoleForm(
             label = "Role Name"
         )
 
-        systemPermits.forEach {
-            Switch(
+        for (group in systemPermits) Accordion(group.name) {
+            for (permit in group.permissions) Switch(
                 name = "permits",
-                checked = role?.permits?.contains(it) == true,
-                label = it.toString(),
-                value = it.toString()
+                checked = role?.permits?.contains(permit.name) == true,
+                label = permit.name,
+                value = permit.name
             )
         }
 
@@ -54,7 +54,7 @@ fun RBuilder.UserRoleForm(
         UserRole(
             uid = role?.uid,
             name = name,
-            permits = permits.mapNotNull { it.toPermitOrNull() },
+            permits = permits,
             deleted = role?.deleted ?: false
         )
     )

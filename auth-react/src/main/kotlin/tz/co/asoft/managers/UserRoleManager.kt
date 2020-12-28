@@ -15,12 +15,14 @@ import tz.co.asoft.UserRoleManagerViewModel.State
 
 private class RoleManagerProps(
     val role: UserRole,
-    val systemPermits: Set<Permit>,
+    val permissionGroups: List<SystemPermissionGroup>,
     val onDelete: () -> Unit
 ) : RProps
 
+private val viewModel by lazy { userRoleManager() }
+
 private val RoleManagerHook = functionalComponent<RoleManagerProps> { props->
-    val vm = useViewModel { userRoleManager() }
+    val vm = useViewModel { viewModel }
     useEffect(listOf()) {
         vm.post(Intent.ViewRole(props.role))
     }
@@ -29,13 +31,13 @@ private val RoleManagerHook = functionalComponent<RoleManagerProps> { props->
         is State.Loading -> Loader(ui.msg)
         is State.RolePermits -> RolePermits(
             userPermits = ui.role.permits,
-            systemPermits = props.systemPermits,
+            systemPermits = props.permissionGroups,
             onEdit = ui.onEdit,
             onDelete = ui.onDelete
         )
         is State.RoleForm -> UserRoleForm(
             role = ui.role,
-            systemPermits = props.systemPermits,
+            systemPermits = props.permissionGroups,
             onCancel = ui.onCancel,
             onSubmit = ui.onSubmit
         )
@@ -44,8 +46,8 @@ private val RoleManagerHook = functionalComponent<RoleManagerProps> { props->
 }
 
 private fun RBuilder.RolePermits(
-    userPermits: List<Permit>,
-    systemPermits: Set<Permit>,
+    userPermits: Collection<String>,
+    systemPermits: List<SystemPermissionGroup>,
     onEdit: () -> Unit,
     onDelete: () -> Unit
 ) = Grid(rows = "auto") {
@@ -67,6 +69,6 @@ private fun RBuilder.RolePermits(
 
 fun RBuilder.RoleManager(
     role: UserRole,
-    systemPermits: Set<Permit>,
+    systemPermits: List<SystemPermissionGroup>,
     onDelete: () -> Unit
 ) = child(RoleManagerHook, RoleManagerProps(role, systemPermits, onDelete)) {}

@@ -1,4 +1,5 @@
 import tz.co.asoft.*
+import tz.co.asoft.UserRoleManagerViewModel.State
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -11,6 +12,6 @@ class UserRolesViewModelTest {
 
     @Test
     fun should_begin_with_a_loading_state() = asyncTest {
-        assertEquals(vm.ui.value, UserRoleManagerViewModel.State.Loading("Loading"))
+        expect(vm).toBeIn(State.Loading("Loading"))
     }
 }

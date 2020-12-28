@@ -4,7 +4,7 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
 fun setupInMemoryAuth(localDao: IUsersLocalDao) {
-    val roles = InMemoryDao<UserRole>("user-role")
+    val roles = UniqueNameInMemoryDao<UserRole>("user-role")
     val claimsDao = InMemoryDao<Claim>("claim")
     val accounts = InMemoryDao<UserAccount>("user-accounts")
     val userService = InMemoryUserFrontEndService(claimsDao, accounts, localDao)
@@ -69,6 +69,9 @@ private fun populateAuthData(
     for (i in 3..99) registerUser(i)
 
     for (i in 1..10) roles.create(
-        UserRole(name = "Role ${i.show()}", permits = (1..10).map { "system.permission.perm_$it.*".toPermit() })
+        UserRole(
+            name = "Role ${i.show()}",
+            permits = Authentication.accountTypes.random().permissionGroups.random().permissions.map { it.name }
+        )
     )
 }

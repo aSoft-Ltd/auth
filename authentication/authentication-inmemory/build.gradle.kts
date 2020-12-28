@@ -18,7 +18,8 @@ kotlin {
 
         val commonTest by getting {
             dependencies {
-                implementation(asoft("test",vers.asoft.test))
+                implementation(asoft("test-coroutines", vers.asoft.test))
+                implementation(asoft("viewmodel-test-expect", vers.asoft.viewmodel))
             }
         }
     }

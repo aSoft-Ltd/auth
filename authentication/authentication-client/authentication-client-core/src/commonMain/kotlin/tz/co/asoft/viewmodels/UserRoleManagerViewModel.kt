@@ -2,6 +2,7 @@
 
 package tz.co.asoft
 
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flow
@@ -38,13 +39,13 @@ class UserRoleManagerViewModel(
         observeIntentBus()
     }
 
-    override fun execute(i: Intent): Any = when (i) {
+    override fun CoroutineScope.execute(i: Intent): Any = when (i) {
         is Intent.ViewRole -> ui.value = State.RolePermits(i.role)
         is Intent.RoleForm -> ui.value = State.RoleForm(i.role)
         is Intent.EditRole -> editRole(i)
     }
 
-    private fun editRole(i: Intent.EditRole) = launch {
+    private fun CoroutineScope.editRole(i: Intent.EditRole) = launch {
         flow {
             emit(State.Loading("Editing role ${i.role.name}"))
             emit(State.RolePermits(repo.edit(i.role)))

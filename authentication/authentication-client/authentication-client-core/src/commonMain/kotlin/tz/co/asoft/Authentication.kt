@@ -5,7 +5,9 @@ import tz.co.asoft.Authentication.repo.users
 import tz.co.asoft.Authorization.repo.roles
 
 object Authentication : DaoAndServiceFactory<AuthenticationDao, AuthenticationService>() {
+    @Deprecated("User Permission Groups")
     val systemPermits = mutableSetOf<Permit>()
+    val permissionGroups: MutableStateFlow<List<SystemPermissionGroup>> = MutableStateFlow(listOf())
     val state: MutableStateFlow<AuthenticationState> = MutableStateFlow(AuthenticationState.Unknown)
 
     var accountTypes = listOf<UserAccount.Type>()
@@ -18,12 +20,12 @@ object Authentication : DaoAndServiceFactory<AuthenticationDao, AuthenticationSe
 
     object viewModels {
         fun loginForm() = LoginFormViewModel(users())
-        fun rolesManager() = RolesManagerViewModel(roles(), systemPermits)
+        fun rolesManager() = RolesManagerViewModel(roles(), permissionGroups.value)
         fun userDetailsManager() = UserDetailsManagerViewModel(users())
-        fun userPermissionsManager() = UserPermissionsManagerViewModel(roles(), systemPermits)
+        fun userPermissionsManager() = UserPermissionsManagerViewModel(roles(), permissionGroups.value)
         fun userProfileContainer() = UserProfileContainerViewModel(users())
         fun userProfilePicManager() = UserProfilePicManagerViewModel(users())
         fun userRoleManager() = UserRoleManagerViewModel(roles())
-        fun usersManager() = UsersManagerViewModel(users(), roles())
+        fun usersManager() = UsersManagerViewModel(users(), accountTypes)
     }
 }

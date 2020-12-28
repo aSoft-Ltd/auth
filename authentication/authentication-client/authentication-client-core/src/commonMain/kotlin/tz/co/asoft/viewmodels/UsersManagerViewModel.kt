@@ -2,6 +2,7 @@
 
 package tz.co.asoft
 
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
@@ -10,7 +11,7 @@ import tz.co.asoft.UsersManagerViewModel.State
 
 class UsersManagerViewModel(
     private val usersRepo: IUsersRepo,
-    private val rolesRepo: IRepo<UserRole>
+    private val accounts: List<UserAccount.Type>
 ) : VModel<Intent, State>(State.Loading("Loading Form")) {
     companion object : IntentBus<Intent>() {
         var USERS_PER_PAGE = 10
@@ -20,13 +21,13 @@ class UsersManagerViewModel(
     private var pager = pagingSource.pager(USERS_PER_PAGE)
 
     init {
-        launch { collect { post(it) } }
-        launch { post(Intent.ViewUsers(USERS_PER_PAGE, null)) }
+        observeIntentBus()
+        post(Intent.ViewUsers(USERS_PER_PAGE, null))
     }
 
     sealed class State {
         data class Loading(val msg: String) : State()
-        data class Form(val roles: List<UserRole>) : State() {
+        data class Form(val roles: List<UserAccount.Type>) : State() {
             val onCancel = { post(Intent.ViewUsers(predicate = null)) }
             val onSubmit = { name: String, email: String, phone: String, type: UserAccount.Type ->
                 post(Intent.CreateUser(name, email, phone, type))
@@ -44,16 +45,16 @@ class UsersManagerViewModel(
         data class CreateUser(val name: String, val email: String, val phone: String, val type: UserAccount.Type) : Intent()
     }
 
-    override fun execute(i: Intent): Any = when (i) {
+    override fun CoroutineScope.execute(i: Intent): Any = when (i) {
         is Intent.CreateUser -> createUser(i)
         is Intent.ViewForm -> loadForm()
         is Intent.ViewUsers -> ui.value = State.Users(pager)
     }
 
-    private fun loadForm() = launch {
+    private fun CoroutineScope.loadForm() = launch {
         flow {
             emit(State.Loading("Loading form please wait"))
-            emit(State.Form(rolesRepo.all()))
+            emit(State.Form(accounts))
         }.catch {
             emit(State.Error("Failed to load form: ${it.message}"))
         }.collect {
@@ -61,7 +62,7 @@ class UsersManagerViewModel(
         }
     }
 
-    private fun createUser(i: Intent.CreateUser) = launch {
+    private fun CoroutineScope.createUser(i: Intent.CreateUser) = launch {
         flow {
             emit(State.Loading("Creating user"))
             val claim = Claim(

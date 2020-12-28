@@ -2,6 +2,7 @@
 
 package tz.co.asoft
 
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flow
@@ -22,11 +23,11 @@ class UserProfileContainerViewModel(
         class ViewProfile(val uid: String) : Intent()
     }
 
-    override fun execute(i: Intent) = when (i) {
+    override fun CoroutineScope.execute(i: Intent) = when (i) {
         is Intent.ViewProfile -> viewProfile(i)
     }
 
-    private fun viewProfile(i: Intent.ViewProfile) = launch {
+    private fun CoroutineScope.viewProfile(i: Intent.ViewProfile) = launch {
         flow {
             emit(State.Loading("Preparing profile"))
             val liveUser = Authentication.state.value.user

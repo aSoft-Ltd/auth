@@ -8,6 +8,7 @@ import kotlinx.serialization.Serializable
 data class UserAccount(
     override var uid: String? = null,
     override val name: String,
+    val photoUrl: String? = null,
     val scope: String?,
     val type: String,
     override var deleted: Boolean = false

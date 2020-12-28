@@ -2,6 +2,7 @@
 
 package tz.co.asoft
 
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
@@ -29,13 +30,13 @@ class LoginFormViewModel(
         data class AuthenticateAccount(val account: UserAccount, val user: User) : Intent(user.emails.firstOrNull())
     }
 
-    override fun execute(i: Intent): Any = when (i) {
+    override fun CoroutineScope.execute(i: Intent): Any = when (i) {
         is Intent.SignIn -> signIn(i)
         is Intent.AuthenticateAccount -> authenticateAccount(i)
         is Intent.ViewForm -> ui.value = State.ShowForm(i.email)
     }
 
-    private fun authenticateAccount(i: Intent.AuthenticateAccount) = launch {
+    private fun CoroutineScope.authenticateAccount(i: Intent.AuthenticateAccount) = launch {
         flow {
             emit(State.Loading("Authenticating ${i.account.name}"))
             repo.authenticateThenStoreToken(
@@ -50,7 +51,7 @@ class LoginFormViewModel(
         }
     }
 
-    private fun signIn(i: Intent.SignIn) = launch {
+    private fun CoroutineScope.signIn(i: Intent.SignIn) = launch {
         flow {
             emit(State.Loading("Signing you in"))
             val res = repo.signInAndStoreToken(i.email, SHA256.digest(i.pwd).hex)

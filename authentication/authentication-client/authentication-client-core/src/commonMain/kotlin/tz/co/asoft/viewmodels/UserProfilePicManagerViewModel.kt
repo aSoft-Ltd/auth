@@ -2,6 +2,7 @@
 
 package tz.co.asoft
 
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flow
@@ -29,13 +30,13 @@ class UserProfilePicManagerViewModel(
 
     private val viewer get() = Authentication.state.value.user ?: throw Exception("Can't find viewer's info")
 
-    override fun execute(i: Intent): Any = when (i) {
+    override fun CoroutineScope.execute(i: Intent): Any = when (i) {
         is Intent.UploadPhoto -> uploadPhoto(i)
         is Intent.EditPhoto -> ui.value = State.EditPhoto(i.file)
         is Intent.ViewPicture -> viewPicture(i)
     }
 
-    private fun viewPicture(i: Intent.ViewPicture) = launch {
+    private fun CoroutineScope.viewPicture(i: Intent.ViewPicture) = launch {
         flow<State> {
             emit(State.ShowPicture(i.user, viewer))
         }.catch {
@@ -45,7 +46,7 @@ class UserProfilePicManagerViewModel(
         }
     }
 
-    private fun uploadPhoto(i: Intent.UploadPhoto) = launch {
+    private fun CoroutineScope.uploadPhoto(i: Intent.UploadPhoto) = launch {
         flow {
             emit(State.Loading("Uploading photo"))
             val user = Authentication.state.value.user ?: throw Exception("No logged in user")

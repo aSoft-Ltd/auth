@@ -43,7 +43,11 @@ private class UserPermissionsManager : VComponent<Props, Intent, State, UserPerm
         post(Intent.UpdateUserWithRole(r, ui.u))
     }
 
-    private fun RBuilder.UserPermissions(u: User, userPermits: List<Permit>, systemPermits: Set<Permit>) = Grid(rows = "auto") { theme ->
+    private fun RBuilder.UserPermissions(
+        user: User,
+        userPermits: Collection<String>,
+        systemPermits: List<SystemPermissionGroup>
+    ) = Grid(rows = "auto") { theme ->
         styledDiv {
             css {
                 +theme.text.h2.clazz
@@ -56,7 +60,7 @@ private class UserPermissionsManager : VComponent<Props, Intent, State, UserPerm
             systemPermits,
             desktopHPadding = 0.5.em
         )
-        ContainedButton("Change Role") { post(Intent.UserRoleForm(u)) }
+        ContainedButton("Change Role") { post(Intent.UserRoleForm(user)) }
     }
 
     override fun RBuilder.render(ui: State): Any = when (ui) {

@@ -11,6 +11,5 @@ data class ClientApp(
     val secret: String,
     val account: UserAccount,
     val hosts: List<String>,
-    val claimId: String,
     override var deleted: Boolean = false
 ) : NamedEntity

@@ -18,7 +18,7 @@ kotlin {
 
         val commonTest by getting {
             dependencies {
-                api(asoft("test", vers.asoft.test))
+                implementation(asoft("test-core", vers.asoft.test))
             }
         }
     }

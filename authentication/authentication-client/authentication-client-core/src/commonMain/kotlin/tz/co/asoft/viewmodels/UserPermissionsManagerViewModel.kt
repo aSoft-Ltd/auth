@@ -2,6 +2,7 @@
 
 package tz.co.asoft
 
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flow
@@ -11,11 +12,11 @@ import tz.co.asoft.UserPermissionsManagerViewModel.State
 
 class UserPermissionsManagerViewModel(
     private val rolesRepo: IRepo<UserRole>,
-    private val systemPermissions: Set<Permit>
+    private val systemPermissions: List<SystemPermissionGroup>
 ) : VModel<Intent, State>(State.Loading("Loading")) {
     sealed class State {
         class Loading(val msg: String) : State()
-        class ShowPermissions(val u: User, val userPermits: List<Permit>, val systemPermissions: Set<Permit>) : State()
+        class ShowPermissions(val u: User, val userPermits: Collection<String>, val systemPermissions: List<SystemPermissionGroup>) : State()
         object ConcealPermissions : State()
         class Error(val msg: String) : State()
         class UserRoleForm(val u: User, val userRole: UserRole?, val roles: List<UserRole>) : State()
@@ -27,13 +28,13 @@ class UserPermissionsManagerViewModel(
         class UpdateUserWithRole(val r: UserRole, val u: User) : Intent()
     }
 
-    override fun execute(i: Intent): Any = when (i) {
+    override fun CoroutineScope.execute(i: Intent): Any = when (i) {
         is Intent.Init -> initiate(i)
         is Intent.UserRoleForm -> userRoleForm(i)
         is Intent.UpdateUserWithRole -> updateUserWithRole(i)
     }
 
-    private fun updateUserWithRole(i: Intent.UpdateUserWithRole) = launch {
+    private fun CoroutineScope.updateUserWithRole(i: Intent.UpdateUserWithRole) = launch {
         flow<State> {
             emit(State.Loading("Changing user's role"))
             TODO("Feature is not yet implemented")
@@ -44,7 +45,7 @@ class UserPermissionsManagerViewModel(
         }
     }
 
-    private fun userRoleForm(i: Intent.UserRoleForm) = launch {
+    private fun CoroutineScope.userRoleForm(i: Intent.UserRoleForm) = launch {
         ui.value = State.Loading("Fetching all available roles")
         val roles = rolesRepo.all()
         var userRole: UserRole? = null
