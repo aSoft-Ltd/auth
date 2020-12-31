@@ -3,7 +3,7 @@
 package tz.co.asoft
 
 interface IUsersLocalDao {
-    suspend fun save(token: String): String
-    suspend fun load(): String?
-    suspend fun delete()
+    fun save(token: String): String
+    fun load(): String?
+    fun delete()
 }

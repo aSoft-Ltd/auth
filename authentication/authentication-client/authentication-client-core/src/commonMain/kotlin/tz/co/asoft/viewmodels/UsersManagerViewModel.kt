@@ -76,7 +76,7 @@ class UsersManagerViewModel(
                 email = Email(i.email),
                 phone = Phone(i.phone),
                 password = "123456"
-            )
+            ).await()
             emit(State.Success)
         }.catch {
             emit(State.Error("Failed to create user"))

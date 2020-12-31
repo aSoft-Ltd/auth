@@ -2,7 +2,7 @@
 
 package tz.co.asoft
 
-suspend fun IUsersService.editBasicInfo(u: User, name: String, email: Email, phone: Phone) = edit(
+fun IUsersService.editBasicInfo(u: User, name: String, email: Email, phone: Phone) = edit(
     u.copy(
         name = name,
         emails = mutableSetOf(email.value).apply { addAll(u.emails) }.toList(),

@@ -9,7 +9,7 @@ class LoginViewModelTest {
         setupInMemoryAuth(InMemoryUsersLocalDao())
     }
 
-    private val vm = Authentication.viewModels.loginForm()
+    private val vm by lazy { Authentication.viewModels.loginForm() }
 
     @Test
     fun should_fail_to_log_in() = asyncTest {
@@ -20,7 +20,6 @@ class LoginViewModelTest {
     private val user get() = Authentication.state.value.user
 
     private suspend fun login() {
-        delay(10)
         vm.test(Intent.SignIn("account01@test.com", "01".toByteArray()))
         expect(vm).toBeIn(State.Success)
         expect(user?.emails?.first()).toBe("account01@test.com")
@@ -32,7 +31,7 @@ class LoginViewModelTest {
     @Test
     fun should_succeed_in_logging_out() = asyncTest {
         login()
-        Authentication.service.users.signOut().join()
+        Authentication.service.users.signOut()
         expect(user).toBeNull()
         expect(Authentication.state).toBe(AuthenticationState.LoggedOut)
     }

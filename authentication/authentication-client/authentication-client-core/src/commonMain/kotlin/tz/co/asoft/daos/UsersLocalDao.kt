@@ -3,14 +3,14 @@
 package tz.co.asoft
 
 open class UsersLocalDao(private val db: IStorage) : IUsersLocalDao {
-    override suspend fun save(token: String): String {
+    override fun save(token: String): String {
         db.set("token", token)
         return token
     }
 
-    override suspend fun load(): String? = db.get("token")
+    override fun load(): String? = db.get("token")
 
-    override suspend fun delete() {
+    override fun delete() {
         db.clear()
     }
 }

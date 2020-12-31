@@ -1,5 +1,4 @@
 import tz.co.asoft.SystemPermission
-import tz.co.asoft.groups
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -33,8 +32,5 @@ class SystemPermissionTest {
                 SystemPermission("users.edit", "Can edit new users")
             )
         )
-        val groups = permSet.groups()
-        assertEquals(map, groups)
-        println(groups)
     }
 }

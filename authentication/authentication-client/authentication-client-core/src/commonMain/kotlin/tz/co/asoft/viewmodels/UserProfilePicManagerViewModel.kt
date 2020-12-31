@@ -50,7 +50,7 @@ class UserProfilePicManagerViewModel(
         flow {
             emit(State.Loading("Uploading photo"))
             val user = Authentication.state.value.user ?: throw Exception("No logged in user")
-            repo.uploadPhotoThenReauthenticate(user, i.photo)
+            repo.uploadPhotoThenReauthenticate(user, i.photo).await()
             emit(State.ShowPicture(user, user))
         }.catch {
             emit(State.Error("Failed to upload photo: ${it.message}"))

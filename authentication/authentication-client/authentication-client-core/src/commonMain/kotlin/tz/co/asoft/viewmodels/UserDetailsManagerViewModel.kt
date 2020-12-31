@@ -45,7 +45,7 @@ class UserDetailsManagerViewModel(
         flow {
             emit(State.Loading("Editing information"))
             val u = user ?: throw Exception("No logged in user")
-            emit(State.ShowDetails(repo.editBasicInfoAndReauthenticateIfNeedBe(u, i.name, Email(i.email), Phone(i.phone)), u))
+            emit(State.ShowDetails(repo.editBasicInfoAndReauthenticateIfNeedBe(u, i.name, Email(i.email), Phone(i.phone)).await(), u))
         }.catch {
             emit(State.Error("Failed to edit info: ${it.message}"))
         }.collect {
@@ -57,7 +57,7 @@ class UserDetailsManagerViewModel(
         flow {
             emit(State.Loading("Changing your password"))
             val uid = user?.uid ?: throw Exception("No logged in user")
-            emit(State.ShowDetails(repo.changePasswordThenStoreToken(uid, i.old, i.new), user))
+            emit(State.ShowDetails(repo.changePasswordThenStoreToken(uid, i.old, i.new).await(), user))
         }.catch {
             emit(State.Error("Failed to change password"))
         }.collect {

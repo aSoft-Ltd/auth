@@ -47,7 +47,7 @@ class UserPermissionsManagerViewModel(
 
     private fun CoroutineScope.userRoleForm(i: Intent.UserRoleForm) = launch {
         ui.value = State.Loading("Fetching all available roles")
-        val roles = rolesRepo.all()
+        val roles = rolesRepo.all().await()
         var userRole: UserRole? = null
         var userPermits = ""//i.u.permits.sorted().joinToString()
         for (role in roles) {

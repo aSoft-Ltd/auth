@@ -2,30 +2,31 @@
 
 package tz.co.asoft
 
-import kotlin.jvm.JvmName
-
-suspend fun IUsersService.load(loginId: String, password: String) = if (loginId.contains("@")) {
-    load(Email(loginId), password)
-} else {
-    load(Phone(loginId), password)
+fun IUsersService.load(loginId: String, password: String) = scope.later {
+    if (loginId.contains("@")) {
+        load(Email(loginId), password).await()
+    } else {
+        load(Phone(loginId), password).await()
+    }
 }
 
 /**
  * Sign in the respective user
  * @return [Either] [User] or <JWT Token> as [String]
  */
-suspend fun IUsersService.signIn(loginId: String, password: String): Either<User, String>? {
-    val user = load(loginId = loginId, password = password) ?: throw RuntimeException("User(loginId=$loginId) and provided password not found")
+fun IUsersService.signIn(loginId: String, password: String): Later<Either<User, String>?> = scope.later {
+    val user =
+        load(loginId = loginId, password = password).await() ?: throw RuntimeException("User(loginId=$loginId) and provided password not found")
     if (user.accounts.size == 1) {
-        val userId = user.uid ?: return null
+        val userId = user.uid ?: return@later null
         val account = user.accounts.firstOrNull()
-        val accountId = account?.uid ?: return null
-        return authenticate(accountId, userId).asEither()
+        val accountId = account?.uid ?: return@later null
+        return@later authenticate(accountId, userId).await().asEither()
     }
-    return user.asEither()
+    user.asEither()
 }
 
-suspend fun IUsersService.register(
+fun IUsersService.register(
     userAccountUID: String? = null,
     accountType: String,
     accountName: String,
@@ -35,7 +36,7 @@ suspend fun IUsersService.register(
     email: Email,
     phone: Phone,
     password: String
-): Pair<UserAccount, User> {
+): Later<Pair<UserAccount, User>> = scope.later {
     val account = UserAccount(
         uid = userAccountUID,
         name = accountName,
@@ -43,7 +44,7 @@ suspend fun IUsersService.register(
         scope = null
     )
 
-    val newAccount: UserAccount = accountsDao.create(account)
+    val newAccount: UserAccount = accountsDao.create(account).await()
 
     val user = User(
         uid = userUID,
@@ -54,10 +55,10 @@ suspend fun IUsersService.register(
         phones = listOf(phone.value),
         accounts = listOf(newAccount)
     )
-    return newAccount to create(user)
+    newAccount to create(user).await()
 }
 
-suspend fun IUsersService.addUserToAccount(account: UserAccount, userId: String): User {
-    val user = load(userId) ?: throw Exception("Failed to load User(uid=$userId)")
-    return edit(user.copy(accounts = user.accounts + account))
+fun IUsersService.addUserToAccount(account: UserAccount, userId: String): Later<User> = scope.later {
+    val user = load(userId).await() ?: throw Exception("Failed to load User(uid=$userId)")
+    edit(user.copy(accounts = user.accounts + account)).await()
 }

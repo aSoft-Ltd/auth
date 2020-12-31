@@ -42,7 +42,7 @@ class LoginFormViewModel(
             repo.authenticateThenStoreToken(
                 accountId = i.account.uid ?: throw Exception("Account Id can't be null"),
                 userId = i.user.uid ?: throw Exception("User id can't be null")
-            )
+            ).await()
             emit(State.Success)
         }.catch {
             emit(State.Error("Failed to authenticate your accounts", it.message, it.stackTraceToString(), i))
@@ -54,7 +54,7 @@ class LoginFormViewModel(
     private fun CoroutineScope.signIn(i: Intent.SignIn) = launch {
         flow {
             emit(State.Loading("Signing you in"))
-            val res = repo.signInAndStoreToken(i.email, SHA256.digest(i.pwd).hex)
+            val res = repo.signInAndStoreToken(i.email, SHA256.digest(i.pwd).hex).await()
             val user = res.leftOrNull()
             if (user != null) {
                 emit(State.AccountSelection(user))

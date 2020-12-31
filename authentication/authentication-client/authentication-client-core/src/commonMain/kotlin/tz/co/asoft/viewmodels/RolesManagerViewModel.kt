@@ -26,6 +26,8 @@ class RolesManagerViewModel(
             val onCancel = { post(Intent.LoadRoles) }
             val onRetry = { post(origin) }
         }
+
+        val onCreateRole get() = { post(Intent.NewRoleForm) }.takeIf { true }
     }
 
     sealed class Intent {
@@ -50,9 +52,9 @@ class RolesManagerViewModel(
     private fun CoroutineScope.deleteRole(i: Intent.DeleteRole) = launch {
         flow {
             emit(State.Loading("Deleting ${i.role.name} role"))
-            repo.delete(i.role)
+            repo.delete(i.role).await()
             emit(State.Loading("Role deleted. Loading all roles . . ."))
-            emit(State.Roles(repo.all(), permissionGroups))
+            emit(State.Roles(repo.all().await(), permissionGroups))
         }.catch {
             emit(State.Error("Failed to delete role ${i.role.name}", it, i))
         }.collect { ui.value = it }
@@ -61,9 +63,9 @@ class RolesManagerViewModel(
     private fun CoroutineScope.createRole(i: Intent.CreateRole) = launch {
         flow {
             emit(State.Loading("Creating role ${i.role.name}"))
-            repo.create(i.role)
+            repo.create(i.role).await()
             emit(State.Loading("Role created. Loading all roles . . ."))
-            emit(State.Roles(repo.all(), permissionGroups))
+            emit(State.Roles(repo.all().await(), permissionGroups))
         }.catch {
             emit(State.Error("Failed to create role ${i.role.name}", it, i))
         }.collect {
@@ -74,7 +76,7 @@ class RolesManagerViewModel(
     private fun CoroutineScope.loadRoles() = launch {
         flow {
             emit(State.Loading("Loading all roles"))
-            emit(State.Roles(repo.all(), permissionGroups))
+            emit(State.Roles(repo.all().await(), permissionGroups))
         }.catch {
             emit(State.Error("Failed to load all roles: ${it.message}", it, Intent.LoadRoles))
         }.collect {

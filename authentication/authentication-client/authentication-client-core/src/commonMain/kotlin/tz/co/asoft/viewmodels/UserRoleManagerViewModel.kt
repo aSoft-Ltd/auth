@@ -48,7 +48,7 @@ class UserRoleManagerViewModel(
     private fun CoroutineScope.editRole(i: Intent.EditRole) = launch {
         flow {
             emit(State.Loading("Editing role ${i.role.name}"))
-            emit(State.RolePermits(repo.edit(i.role)))
+            emit(State.RolePermits(repo.edit(i.role).await()))
         }.catch {
             emit(State.Error("Failed to edit role"))
         }.collect {

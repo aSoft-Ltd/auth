@@ -34,7 +34,7 @@ class UserProfileContainerViewModel(
             val user = if (liveUser?.uid == i.uid) {
                 liveUser
             } else {
-                repo.load(i.uid)
+                repo.load(i.uid).await()
             }
 
             if (user == null) {

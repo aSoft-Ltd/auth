@@ -1,14 +1,15 @@
 package tz.co.asoft
 
 import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-fun setupInMemoryAuth(localDao: IUsersLocalDao) {
+fun setupInMemoryAuth(localDao: IUsersLocalDao): Later<Unit> {
     val roles = UniqueNameInMemoryDao<UserRole>("user-role")
     val claimsDao = InMemoryDao<Claim>("claim")
     val accounts = InMemoryDao<UserAccount>("user-accounts")
     val userService = InMemoryUserFrontEndService(claimsDao, accounts, localDao)
-    populateAuthData(roles, userService, accounts, claimsDao)
+    val later = populateAuthData(roles, userService, accounts, claimsDao)
     Authentication.configure(
         AuthenticationDao(
             users = userService,
@@ -19,6 +20,7 @@ fun setupInMemoryAuth(localDao: IUsersLocalDao) {
     )
 
     Authorization.configureDao(AuthorizationDao(claimsDao, roles))
+    return later
 }
 
 private fun Int.show() = if (this < 10) "0$this" else "$this"
@@ -28,9 +30,9 @@ private fun populateAuthData(
     userService: InMemoryUserFrontEndService,
     accounts: InMemoryDao<UserAccount>,
     claimsDao: InMemoryDao<Claim>
-) = GlobalScope.launch {
+) = GlobalScope.later {
     //    val claim = Claim(permits = SystemPermission.DEV.permissions.toList())
-    suspend fun registerUser(num: Int) = userService.register(
+    fun registerUser(num: Int) = userService.register(
         accountName = "User Account ${num.show()}",
         userFullname = "Test User ${num.show()}",
         accountType = "guest",
@@ -46,7 +48,8 @@ private fun populateAuthData(
         email = Email("account01@test.com"),
         phone = Phone("255701010101"),
         password = SHA256.digest("01".toByteArray()).hex
-    )
+    ).await()
+
     val (_, user2) = userService.register(
         userFullname = "Test User Two",
         accountName = "User Account Two",
@@ -54,7 +57,7 @@ private fun populateAuthData(
         email = Email("account02@test.com"),
         phone = Phone("255702020202"),
         password = SHA256.digest("02".toByteArray()).hex
-    )
+    ).await()
 
     val accountX = accounts.create(
         UserAccount(
@@ -62,16 +65,16 @@ private fun populateAuthData(
             type = "system.admin",
             scope = null
         )
-    )
+    ).await()
 
-    userService.addUserToAccount(accountX, user2.uid!!)
+    userService.addUserToAccount(accountX, user2.uid!!).await()
 
-    for (i in 3..99) registerUser(i)
+    for (i in 3..99) registerUser(i).await()
 
     for (i in 1..10) roles.create(
         UserRole(
             name = "Role ${i.show()}",
             permits = Authentication.accountTypes.random().permissionGroups.random().permissions.map { it.name }
         )
-    )
+    ).await()
 }

@@ -9,21 +9,21 @@ class InMemoryUserFrontEndService(
     private val alg: JWTAlgorithm = HS256Algorithm("secret")
 ) : IUsersDao by InMemoryUsersDao(), IUsersFrontendService {
 
-    override suspend fun changePassword(userId: String, oldPass: String, newPass: String): User {
+    override fun changePassword(userId: String, oldPass: String, newPass: String): Later<User> {
         TODO("Not yet implemented")
     }
 
-    override suspend fun authenticate(accountId: String, userId: String): String {
-        val user = load(userId) ?: throw Exception("User with $userId not found")
+    override fun authenticate(accountId: String, userId: String): Later<String> = scope.later{
+        val user = load(userId).await() ?: throw Exception("User with $userId not found")
         val account = user.accounts.find { it.uid == accountId } ?: throw Exception("User ${user.name} doesn't have an account with id $accountId")
-        return alg.createToken(account, user)
+        alg.createToken(account, user)
     }
 
-    override suspend fun updateLastSeen(userId: String, status: User.Status): User {
+    override fun updateLastSeen(userId: String, status: User.Status): Later<User> {
         TODO("Not yet implemented")
     }
 
-    override suspend fun uploadPhoto(user: User, photo: File): FileRef {
+    override fun uploadPhoto(user: User, photo: File): Later<FileRef> {
         TODO("Not yet implemented")
     }
 }
