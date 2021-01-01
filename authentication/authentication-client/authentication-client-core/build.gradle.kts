@@ -20,7 +20,7 @@ kotlin {
 
         val commonTest by getting {
             dependencies {
-                implementation(project(":authentication-inmemory"))
+                implementation(project(":authentication-test-data"))
                 implementation(asoft("expect-coroutines",vers.asoft.expect))
                 implementation(asoft("viewmodel-test-expect",vers.asoft.viewmodel))
             }

@@ -23,6 +23,9 @@ project(":authorization-core").projectDir = File("authorization/authorization-co
 include(":authentication-core")
 project(":authentication-core").projectDir = File("authentication/authentication-core")
 
+include(":authentication-test-data")
+project(":authentication-test-data").projectDir = File("authentication/authentication-test-data")
+
 include(":authentication-client-core")
 project(":authentication-client-core").projectDir = File("authentication/authentication-client/authentication-client-core")
 

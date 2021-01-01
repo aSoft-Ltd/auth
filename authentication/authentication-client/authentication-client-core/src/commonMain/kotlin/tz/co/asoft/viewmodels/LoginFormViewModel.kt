@@ -3,7 +3,6 @@
 package tz.co.asoft
 
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import tz.co.asoft.LoginFormViewModel.State
@@ -14,14 +13,13 @@ class LoginFormViewModel(
     companion object : IntentBus<Intent>()
     sealed class State {
         data class Loading(val msg: String) : State()
+        class Success(val state: AuthenticationState.LoggedIn) : State()
         data class ShowForm(val email: String?) : State()
         data class AccountSelection(val user: User) : State()
-        data class Error(val msg: String, val reason: String?, val stacktrace: String, val i: Intent) : State() {
-            val onTryAgain = { post(i) }
-            val onGoBack = { post(Intent.ViewForm(i.email)) }
+        data class Error(val cause: Throwable, val origin: Intent) : State() {
+            val onTryAgain = { post(origin) }
+            val onGoBack = { post(Intent.ViewForm(origin.email)) }
         }
-
-        object Success : State()
     }
 
     sealed class Intent(open val email: String?) {
@@ -39,13 +37,13 @@ class LoginFormViewModel(
     private fun CoroutineScope.authenticateAccount(i: Intent.AuthenticateAccount) = launch {
         flow {
             emit(State.Loading("Authenticating ${i.account.name}"))
-            repo.authenticateThenStoreToken(
+            val token = repo.authenticateThenStoreToken(
                 accountId = i.account.uid ?: throw Exception("Account Id can't be null"),
                 userId = i.user.uid ?: throw Exception("User id can't be null")
             ).await()
-            emit(State.Success)
+            emit(State.Success(AuthenticationState.LoggedIn(token)))
         }.catch {
-            emit(State.Error("Failed to authenticate your accounts", it.message, it.stackTraceToString(), i))
+            emit(State.Error(Exception("Failed to authenticate your accounts", it), i))
         }.collect {
             ui.value = it
         }
@@ -58,11 +56,16 @@ class LoginFormViewModel(
             val user = res.leftOrNull()
             if (user != null) {
                 emit(State.AccountSelection(user))
-            } else {
-                emit(State.Success)
+                return@flow
             }
+            val token = res.rightOrNull()
+            if (token != null) {
+                emit(State.Success(AuthenticationState.LoggedIn(token)))
+                return@flow
+            }
+            throw IllegalStateException("Sign in flow returned neither token or user object")
         }.catch {
-            emit(State.Error("Failed to sign you in", it.message, it.stackTraceToString(), i))
+            emit(State.Error(Exception("Failed to sign you in", it), i))
         }.collect {
             ui.value = it
         }

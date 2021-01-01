@@ -1,6 +1,8 @@
 import tz.co.asoft.*
 import tz.co.asoft.RolesManagerViewModel.Intent
 import tz.co.asoft.RolesManagerViewModel.State
+import tz.co.asoft.daos.UserRolesTestDao
+import tz.co.asoft.repos.UserRolesTestRepo
 import kotlin.test.Test
 
 class RolesManagerViewModelTest {
@@ -8,7 +10,7 @@ class RolesManagerViewModelTest {
 //        setupInMemoryAuth(InMemoryUsersLocalDao())
 //    }
 //
-//    private val vm: RolesManagerViewModel = Authentication.viewModels.rolesManager()
+//    private val vm = RolesManagerViewModel(UserRolesTestRepo(),)
 //
 //    @Test
 //    fun should_either_be_in_a_loading_state_or_showing_roles() = asyncTest {

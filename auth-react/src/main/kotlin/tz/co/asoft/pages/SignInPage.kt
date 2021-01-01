@@ -10,7 +10,6 @@ import kotlinx.html.InputType
 import kotlinx.html.js.onClickFunction
 import react.RBuilder
 import react.RProps
-import react.dom.br
 import react.dom.div
 import react.dom.span
 import react.router.dom.routeLink
@@ -172,7 +171,7 @@ class SignInPage : VComponent<Props, Intent, State, LoginFormViewModel>() {
             is State.Loading -> Loader(ui.msg)
             is State.ShowForm -> ShowForm(ui.email)
             is State.AccountSelection -> ShowAccountSelection(ui.user)
-            is State.Error -> Error("${ui.msg}: ${ui.reason}")
+            is State.Error -> Error("${ui.cause}: ${ui.reason}")
             State.Success -> Success("Success")
         }.let { }
     }

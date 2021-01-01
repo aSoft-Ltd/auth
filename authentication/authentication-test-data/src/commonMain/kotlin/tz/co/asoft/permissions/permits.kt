@@ -2,8 +2,6 @@
 
 package tz.co.asoft
 
-import tz.co.asoft.permissions.adminPermits
-
 object UserAccountType {
     val DEVELOPER = UserAccount.Type(
         name = "System Developer",
@@ -24,4 +22,6 @@ object UserAccountType {
     )
 
     fun all() = listOf(DEVELOPER, ADMIN, TESTER)
+
+    val permits = all().flatMap { it.permissionGroups }.flatMap { it.permissions }.map { it.name }
 }

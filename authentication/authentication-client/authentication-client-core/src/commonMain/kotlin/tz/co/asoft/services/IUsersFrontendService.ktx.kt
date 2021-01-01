@@ -69,7 +69,7 @@ fun IUsersFrontendService.signInAndStoreToken(loginId: String, password: String)
 }
 
 fun IUsersFrontendService.useToken(token: String): String {
-    Authentication.state.value = AuthenticationState.LoggedIn(token)
+//    Authentication.state.value = AuthenticationState.LoggedIn(token)
     return localDao.save(token)
 }
 

@@ -3,9 +3,18 @@ package tz.co.asoft
 import kotlinx.serialization.Serializable
 
 @Serializable
-sealed class Principle {
+sealed class Principle : IPrinciple {
     @Serializable
-    data class UserPrinciple(val user: User, val account: UserAccount) : Principle()
+    data class UserPrinciple(
+        override val user: User,
+        override val account: UserAccount,
+        override val claims: List<String>
+    ) : Principle(), IUserPrinciple
+
     @Serializable
-    data class ClientAppPrinciple(val app: ClientApp, val account: UserAccount) : Principle()
+    data class ClientAppPrinciple(
+        val app: ClientApp,
+        override val account: UserAccount,
+        override val claims: List<String>
+    ) : Principle()
 }
