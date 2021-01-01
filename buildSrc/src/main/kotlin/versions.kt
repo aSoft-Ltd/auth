@@ -21,7 +21,7 @@ object vers {
         val krypto = "0.0.4"
         val paging = "0.0.30"
         val persist = "0.1.10"
-        val builders = "1.2.0"
+        val builders = "1.3.0"
         val expect = "0.0.10"
         val test = "1.1.0"
     }

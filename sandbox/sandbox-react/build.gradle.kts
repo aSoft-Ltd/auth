@@ -14,21 +14,7 @@ applikation {
 }
 
 kotlin {
-    js(IR) {
-        compilations.all {
-            kotlinOptions.metaInfo = false
-        }
-        browser {
-            commonWebpackConfig {
-                cssSupport.enabled = true
-                devServer = DevServer(
-                    open = false,
-                    contentBase = listOf(file("build/processedResources/js/main").absolutePath)
-                )
-            }
-        }
-        binaries.executable()
-    }
+    js(IR) { application() }
 
     sourceSets {
         val main by getting {

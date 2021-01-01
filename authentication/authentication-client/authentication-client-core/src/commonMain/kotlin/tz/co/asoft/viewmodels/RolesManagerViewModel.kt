@@ -12,6 +12,7 @@ import tz.co.asoft.RolesManagerViewModel.State
 
 class RolesManagerViewModel(
     private val repo: IRepo<UserRole>,
+    private val authState: AuthenticationState.LoggedIn,
     private val permissionGroups: List<SystemPermissionGroup>
 ) : VModel<Intent, State>(State.Loading("Loading")) {
     companion object : IntentBus<Intent>()
@@ -20,14 +21,17 @@ class RolesManagerViewModel(
         data class Loading(val msg: String) : State()
         data class RoleForm(val permissionGroups: List<SystemPermissionGroup>) : State()
         data class Roles(val roles: List<UserRole>, val permissionGroups: List<SystemPermissionGroup>) : State()
-        data class Error(val msg: String, val cause: Throwable, val origin: Intent) : State() {
-            val reason = cause.message
-            val stackTrace = cause.stackTraceToString()
+        data class Error(val cause: Throwable, val origin: Intent) : State() {
             val onCancel = { post(Intent.LoadRoles) }
             val onRetry = { post(origin) }
         }
 
-        val onCreateRole get() = { post(Intent.NewRoleForm) }.takeIf { true }
+        val onCreateRole get() = { post(Intent.NewRoleForm) }.takeIf { canCreateRole() }
+
+        companion object {
+            var authState: AuthenticationState.LoggedIn? = null
+            fun canCreateRole() = authState?.has("authentication.roles.create") == true
+        }
     }
 
     sealed class Intent {
@@ -39,6 +43,7 @@ class RolesManagerViewModel(
 
     init {
         observeIntentBus()
+        State.authState = authState
         post(Intent.LoadRoles)
     }
 
@@ -56,18 +61,19 @@ class RolesManagerViewModel(
             emit(State.Loading("Role deleted. Loading all roles . . ."))
             emit(State.Roles(repo.all().await(), permissionGroups))
         }.catch {
-            emit(State.Error("Failed to delete role ${i.role.name}", it, i))
+            emit(State.Error(Throwable("Failed to delete role ${i.role.name}", it), i))
         }.collect { ui.value = it }
     }
 
     private fun CoroutineScope.createRole(i: Intent.CreateRole) = launch {
         flow {
+            require(State.canCreateRole()) { "You are not authorized to create a role" }
             emit(State.Loading("Creating role ${i.role.name}"))
             repo.create(i.role).await()
             emit(State.Loading("Role created. Loading all roles . . ."))
             emit(State.Roles(repo.all().await(), permissionGroups))
         }.catch {
-            emit(State.Error("Failed to create role ${i.role.name}", it, i))
+            emit(State.Error(Throwable("Failed to create role ${i.role.name}", it), i))
         }.collect {
             ui.value = it
         }
@@ -78,7 +84,7 @@ class RolesManagerViewModel(
             emit(State.Loading("Loading all roles"))
             emit(State.Roles(repo.all().await(), permissionGroups))
         }.catch {
-            emit(State.Error("Failed to load all roles: ${it.message}", it, Intent.LoadRoles))
+            emit(State.Error(Throwable("Failed to load all roles: ${it.message}", it), Intent.LoadRoles))
         }.collect {
             ui.value = it
         }

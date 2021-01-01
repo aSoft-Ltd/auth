@@ -13,7 +13,7 @@ sealed class AuthenticationState {
         val account = Json.decodeFromString(UserAccount.serializer(), Mapper.encodeToString(jwt.payload["account"] as Map<String, Any?>))
 
         fun has(claim: String): Boolean {
-            if (jwt.payload.claimsOrNull?.contains("*") == true) return true
+            if (jwt.payload.claimsOrNull?.contains("systems.developer") == true) return true
             if (jwt.payload.claimsOrNull?.contains(claim) == true) return true
             return false
         }

@@ -20,7 +20,7 @@ object Authentication : DaoAndServiceFactory<AuthenticationDao, AuthenticationSe
 
     object viewModels {
         fun loginForm() = LoginFormViewModel(users())
-        fun rolesManager() = RolesManagerViewModel(roles(), permissionGroups.value)
+        fun rolesManager(authState: AuthenticationState.LoggedIn) = RolesManagerViewModel(roles(), authState, permissionGroups.value)
         fun userDetailsManager() = UserDetailsManagerViewModel(users())
         fun userPermissionsManager() = UserPermissionsManagerViewModel(roles(), permissionGroups.value)
         fun userProfileContainer() = UserProfileContainerViewModel(users())

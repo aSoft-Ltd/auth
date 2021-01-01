@@ -4,14 +4,7 @@ plugins {
 }
 
 kotlin {
-    js(IR) {
-        compilations.all {
-            kotlinOptions {
-                languageVersion = "1.4"
-            }
-        }    
-        browser() 
-    }
+    js(IR) { library() }
     sourceSets {
         val main by getting {
             dependencies {
