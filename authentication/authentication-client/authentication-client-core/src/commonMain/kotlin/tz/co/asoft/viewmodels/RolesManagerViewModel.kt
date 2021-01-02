@@ -48,43 +48,55 @@ class RolesManagerViewModel(
     }
 
     override fun CoroutineScope.execute(i: Intent): Any = when (i) {
-        Intent.LoadRoles -> loadRoles()
-        Intent.NewRoleForm -> ui.value = State.RoleForm(permissionGroups)
+        is Intent.LoadRoles -> loadRoles(i)
+        is Intent.NewRoleForm -> newRoleForm(i)
         is Intent.CreateRole -> createRole(i)
         is Intent.DeleteRole -> deleteRole(i)
     }
 
-    private fun CoroutineScope.deleteRole(i: Intent.DeleteRole) = launch {
+    private fun CoroutineScope.newRoleForm(intent: Intent.NewRoleForm) = launch {
         flow {
-            emit(State.Loading("Deleting ${i.role.name} role"))
-            repo.delete(i.role).await()
-            emit(State.Loading("Role deleted. Loading all roles . . ."))
-            emit(State.Roles(repo.all().await(), permissionGroups))
-        }.catch {
-            emit(State.Error(Throwable("Failed to delete role ${i.role.name}", it), i))
-        }.collect { ui.value = it }
-    }
-
-    private fun CoroutineScope.createRole(i: Intent.CreateRole) = launch {
-        flow {
+            emit(State.Loading("Preparing form"))
             require(State.canCreateRole()) { "You are not authorized to create a role" }
-            emit(State.Loading("Creating role ${i.role.name}"))
-            repo.create(i.role).await()
-            emit(State.Loading("Role created. Loading all roles . . ."))
-            emit(State.Roles(repo.all().await(), permissionGroups))
+            emit(State.RoleForm(permissionGroups))
         }.catch {
-            emit(State.Error(Throwable("Failed to create role ${i.role.name}", it), i))
+            emit(State.Error(Exception("Failed to display role form", it), intent))
         }.collect {
             ui.value = it
         }
     }
 
-    private fun CoroutineScope.loadRoles() = launch {
+    private fun CoroutineScope.deleteRole(intent: Intent.DeleteRole) = launch {
+        flow {
+            emit(State.Loading("Deleting ${intent.role.name} role"))
+            repo.delete(intent.role).await()
+            emit(State.Loading("Role deleted. Loading all roles . . ."))
+            emit(State.Roles(repo.all().await(), permissionGroups))
+        }.catch {
+            emit(State.Error(Throwable("Failed to delete role ${intent.role.name}", it), intent))
+        }.collect { ui.value = it }
+    }
+
+    private fun CoroutineScope.createRole(intent: Intent.CreateRole) = launch {
+        flow {
+            require(State.canCreateRole()) { "You are not authorized to create a role" }
+            emit(State.Loading("Creating role ${intent.role.name}"))
+            repo.create(intent.role).await()
+            emit(State.Loading("Role created. Loading all roles . . ."))
+            emit(State.Roles(repo.all().await(), permissionGroups))
+        }.catch {
+            emit(State.Error(Throwable("Failed to create role ${intent.role.name}", it), intent))
+        }.collect {
+            ui.value = it
+        }
+    }
+
+    private fun CoroutineScope.loadRoles(intent: Intent.LoadRoles) = launch {
         flow {
             emit(State.Loading("Loading all roles"))
             emit(State.Roles(repo.all().await(), permissionGroups))
         }.catch {
-            emit(State.Error(Throwable("Failed to load all roles: ${it.message}", it), Intent.LoadRoles))
+            emit(State.Error(Throwable("Failed to load all roles: ${it.message}", it), origin = intent))
         }.collect {
             ui.value = it
         }
