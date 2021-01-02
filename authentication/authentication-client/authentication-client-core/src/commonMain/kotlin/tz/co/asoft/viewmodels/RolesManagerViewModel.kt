@@ -12,7 +12,7 @@ import tz.co.asoft.RolesManagerViewModel.State
 
 class RolesManagerViewModel(
     private val repo: IRepo<UserRole>,
-    private val authState: AuthenticationState.LoggedIn,
+    private val principle: IUserPrinciple,
     private val permissionGroups: List<SystemPermissionGroup>
 ) : VModel<Intent, State>(State.Loading("Loading")) {
     companion object : IntentBus<Intent>()
@@ -29,8 +29,8 @@ class RolesManagerViewModel(
         val onCreateRole get() = { post(Intent.NewRoleForm) }.takeIf { canCreateRole() }
 
         companion object {
-            var authState: AuthenticationState.LoggedIn? = null
-            fun canCreateRole() = authState?.has("authentication.roles.create") == true
+            var principle: IUserPrinciple? = null
+            fun canCreateRole() = principle?.has("authentication.roles.create") == true
         }
     }
 
@@ -42,8 +42,8 @@ class RolesManagerViewModel(
     }
 
     init {
+        State.principle = principle
         observeIntentBus()
-        State.authState = authState
         post(Intent.LoadRoles)
     }
 

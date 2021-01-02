@@ -7,6 +7,4 @@ class UsersFrontEndServiceTest {
     val accountsDao: IDao<UserAccount> = InMemoryDao("user-account")
     val localDao: IUsersLocalDao = InMemoryUsersLocalDao()
     val service: IUsersFrontendService = InMemoryUserFrontEndService(claimsDao, accountsDao, localDao)
-
-
 }
