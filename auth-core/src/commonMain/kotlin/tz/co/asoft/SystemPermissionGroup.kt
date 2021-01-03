@@ -3,7 +3,7 @@ package tz.co.asoft
 data class SystemPermissionGroup(
     val name: String,
     val details: String,
-    val permissions: Set<SystemPermission>
+    val permissions: Set<ISystemPermission>
 ) {
     companion object {
         val DEV = SystemPermissionGroup(

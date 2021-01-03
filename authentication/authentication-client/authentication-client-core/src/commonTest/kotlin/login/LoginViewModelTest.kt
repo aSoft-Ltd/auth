@@ -1,7 +1,8 @@
+package login
+
 import tz.co.asoft.*
 import tz.co.asoft.LoginFormViewModel.Intent
 import tz.co.asoft.LoginFormViewModel.State
-import kotlin.test.Ignore
 import kotlin.test.Test
 
 class LoginViewModelTest {

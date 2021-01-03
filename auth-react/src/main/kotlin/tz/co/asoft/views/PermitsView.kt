@@ -18,9 +18,9 @@ internal fun RBuilder.PermitsView(
     for (group in systemPermits) Accordion(group.name) {
         for (permit in group.permissions) Switch(
             name = "permits",
-            value = permit.name,
-            label = permit.name,
-            checked = userPermits.contains(permit.name),
+            value = permit.title,
+            label = permit.title,
+            checked = userPermits.contains(permit.title),
             disabled = true
         )
     }

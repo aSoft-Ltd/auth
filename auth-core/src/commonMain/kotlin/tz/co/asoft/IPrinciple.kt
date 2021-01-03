@@ -4,9 +4,11 @@ interface IPrinciple {
     val claims: List<String>
     val account: UserAccount
 
-    fun has(claim: String): Boolean {
+    fun has(permission: String): Boolean {
         if (claims.contains("systems.developer")) return true
-        if (claims.contains(claim)) return true
+        if (claims.contains(permission)) return true
         return false
     }
+
+    fun has(permission: ISystemPermission): Boolean = has(permission.title)
 }

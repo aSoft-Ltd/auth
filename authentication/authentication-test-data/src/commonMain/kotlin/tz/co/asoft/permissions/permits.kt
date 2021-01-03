@@ -24,5 +24,5 @@ object UserAccountType {
     fun all() = listOf(DEVELOPER, ADMIN, TESTER)
 
     val permissionGroups = all().flatMap { it.permissionGroups }
-    val permits = permissionGroups.flatMap { it.permissions }.map { it.name }
+    val permits = permissionGroups.flatMap { it.permissions }.map { it.title }
 }

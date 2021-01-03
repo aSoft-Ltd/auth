@@ -19,46 +19,55 @@ class RolesManagerViewModel(
 
     sealed class State {
         data class Loading(val msg: String) : State()
-        data class RoleForm(val permissionGroups: List<SystemPermissionGroup>) : State()
+        data class RoleForm(val role: UserRole?, val permissionGroups: List<SystemPermissionGroup>) : State()
+        data class ShowRole(val role: UserRole) : State()
         data class Roles(val roles: List<UserRole>, val permissionGroups: List<SystemPermissionGroup>) : State()
         data class Error(val cause: Throwable, val origin: Intent) : State() {
-            val onCancel = { post(Intent.LoadRoles) }
             val onRetry = { post(origin) }
-        }
-
-        val onCreateRole get() = { post(Intent.NewRoleForm) }.takeIf { canCreateRole() }
-
-        companion object {
-            var principle: IUserPrinciple? = null
-            fun canCreateRole() = principle?.has("authentication.roles.create") == true
         }
     }
 
     sealed class Intent {
+        object LoadRoles : Intent()
         data class CreateRole(val role: UserRole) : Intent()
         data class DeleteRole(val role: UserRole) : Intent()
-        object LoadRoles : Intent()
-        object NewRoleForm : Intent()
+        data class UpdateRole(val role: UserRole) : Intent()
+        class ViewRoleForm(val role: UserRole?) : Intent()
+    }
+
+    val defaultIntents = object {
+        val onCreateRole get() = { post(Intent.ViewRoleForm(null)) }.takeIf { principle.has(UserRole.Permissions.Create) }
     }
 
     init {
-        State.principle = principle
         observeIntentBus()
         post(Intent.LoadRoles)
     }
 
     override fun CoroutineScope.execute(i: Intent): Any = when (i) {
         is Intent.LoadRoles -> loadRoles(i)
-        is Intent.NewRoleForm -> newRoleForm(i)
+        is Intent.ViewRoleForm -> viewRoleForm(i)
         is Intent.CreateRole -> createRole(i)
         is Intent.DeleteRole -> deleteRole(i)
+        is Intent.UpdateRole -> updateRole(i)
     }
 
-    private fun CoroutineScope.newRoleForm(intent: Intent.NewRoleForm) = launch {
+    private fun CoroutineScope.updateRole(intent: Intent.UpdateRole) = launch {
         flow {
+            require(principle.has(UserRole.Permissions.Update)) { "You are not permitted to update a user role" }
+            emit(State.Loading("Updating ${intent.role.name}'s role"))
+            val role = repo.edit(intent.role).await()
+            emit(State.ShowRole(role))
+        }.catch {
+            emit(State.Error(Exception("Failed to update user info", it), intent))
+        }.collect { ui.value = it }
+    }
+
+    private fun CoroutineScope.viewRoleForm(intent: Intent.ViewRoleForm) = launch {
+        flow {
+            require(principle.has(UserRole.Permissions.Create)) { "You are not authorized to create a user role" }
             emit(State.Loading("Preparing form"))
-            require(State.canCreateRole()) { "You are not authorized to create a role" }
-            emit(State.RoleForm(permissionGroups))
+            emit(State.RoleForm(intent.role, permissionGroups))
         }.catch {
             emit(State.Error(Exception("Failed to display role form", it), intent))
         }.collect {
@@ -68,24 +77,25 @@ class RolesManagerViewModel(
 
     private fun CoroutineScope.deleteRole(intent: Intent.DeleteRole) = launch {
         flow {
+            require(principle.has(UserRole.Permissions.Delete)) { "You are not authorized to delete a user role" }
             emit(State.Loading("Deleting ${intent.role.name} role"))
             repo.delete(intent.role).await()
             emit(State.Loading("Role deleted. Loading all roles . . ."))
             emit(State.Roles(repo.all().await(), permissionGroups))
         }.catch {
-            emit(State.Error(Throwable("Failed to delete role ${intent.role.name}", it), intent))
+            emit(State.Error(Exception("Failed to delete role ${intent.role.name}", it), intent))
         }.collect { ui.value = it }
     }
 
     private fun CoroutineScope.createRole(intent: Intent.CreateRole) = launch {
         flow {
-            require(State.canCreateRole()) { "You are not authorized to create a role" }
+            require(principle.has(UserRole.Permissions.Create)) { "You are not authorized to create a user role" }
             emit(State.Loading("Creating role ${intent.role.name}"))
             repo.create(intent.role).await()
             emit(State.Loading("Role created. Loading all roles . . ."))
             emit(State.Roles(repo.all().await(), permissionGroups))
         }.catch {
-            emit(State.Error(Throwable("Failed to create role ${intent.role.name}", it), intent))
+            emit(State.Error(Exception("Failed to create ${intent.role.name} role", it), intent))
         }.collect {
             ui.value = it
         }
@@ -93,6 +103,7 @@ class RolesManagerViewModel(
 
     private fun CoroutineScope.loadRoles(intent: Intent.LoadRoles) = launch {
         flow {
+            require(principle.has(UserRole.Permissions.Read)) { "You are not authorized to read user roles" }
             emit(State.Loading("Loading all roles"))
             emit(State.Roles(repo.all().await(), permissionGroups))
         }.catch {

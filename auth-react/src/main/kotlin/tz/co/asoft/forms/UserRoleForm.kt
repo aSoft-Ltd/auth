@@ -36,9 +36,9 @@ fun RBuilder.UserRoleForm(
         for (group in systemPermits) Accordion(group.name) {
             for (permit in group.permissions) Switch(
                 name = "permits",
-                checked = role?.permits?.contains(permit.name) == true,
-                label = permit.name,
-                value = permit.name
+                checked = role?.permits?.contains(permit.title) == true,
+                label = permit.title,
+                value = permit.title
             )
         }
 

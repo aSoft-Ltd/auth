@@ -68,27 +68,7 @@ fun adminPermits() = listOf(
     ),
     SystemPermissionGroup(
         name = "authorization",
-        details = "Scopes for creating user roles and editing permission",
-        permissions = setOf(
-            SystemPermission(
-                name = "authorization.roles.read",
-                details = "Grants access to edit user roles"
-            ),
-            SystemPermission(
-                name = "authorization.roles.create",
-                details = "Grants access to create different user roles for the system",
-                needs = listOf("authorization.roles.read")
-            ),
-            SystemPermission(
-                name = "authorization.roles.update",
-                details = "Grants access to update user roles",
-                needs = listOf("authorization.roles.read")
-            ),
-            SystemPermission(
-                name = "authorization.roles.delete",
-                details = "Grants access to delete user roles from the system",
-                needs = listOf("authorization.roles.read")
-            )
-        )
+        details = "Scopes for managing user roles",
+        permissions = UserRole.Permissions.values().toSet()
     )
 )

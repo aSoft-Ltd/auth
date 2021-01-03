@@ -1,8 +1,6 @@
 package tz.co.asoft
 
 import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 
 fun setupInMemoryAuth(localDao: IUsersLocalDao): Later<Unit> {
     val roles = UniqueNameInMemoryDao<UserRole>("user-role")
@@ -74,7 +72,7 @@ private fun populateAuthData(
     for (i in 1..10) roles.create(
         UserRole(
             name = "Role ${i.show()}",
-            permits = Authentication.accountTypes.random().permissionGroups.random().permissions.map { it.name }
+            permits = Authentication.accountTypes.random().permissionGroups.random().permissions.map { it.title }
         )
     ).await()
 }
