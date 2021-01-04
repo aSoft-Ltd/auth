@@ -35,7 +35,7 @@ private fun RBuilder.RolesContainerAppBar(
         left = { +"Roles" },
         right = {
             if (state.has(permission = "roles:create")) {
-                TextButton("New Role", FaPlus) { RolesManagerViewModel.post(Intent.NewRoleForm) }
+                TextButton("New Role", FaPlus) { RolesManagerViewModel.post(Intent.ViewRoleForm(null)) }
             }
         }
     )

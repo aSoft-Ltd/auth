@@ -56,9 +56,9 @@ class UsersManager private constructor() : VComponent<RProps, Intent, State, Use
     override fun RBuilder.render(ui: State): Any = Surface(margin = 0.5.em) {
         when (ui) {
             is State.Loading -> Loader(ui.msg)
-            is State.Form -> Form(ui.roles, ui.onCancel, ui.onSubmit)
+            is State.Form -> Form(ui.accountTypes, ui.onCancel, ui.onSubmit)
             is State.Users -> ShowUsers(ui.pager)
-            is State.Error -> Error(ui.msg)
+            is State.Error -> Error(ui.exception.message ?: "Unkown Error")
             State.Success -> Success("Success")
         }
     }

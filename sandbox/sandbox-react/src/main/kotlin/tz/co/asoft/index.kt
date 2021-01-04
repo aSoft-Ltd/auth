@@ -12,9 +12,9 @@ fun setupAuthSandbox() {
     setupTheme()
     setupLogging()
     Authentication.accountTypes = UserAccountType.all()
-    setupInMemoryAuth(UsersLocalDao(kfg["package"] as String)).finally {
-        console.log("Finished setting up")
-    }
+//    setupInMemoryAuth(UsersLocalDao(kfg["package"] as String)).finally {
+//        console.log("Finished setting up")
+//    }
 }
 
 fun main() = document.getElementById("root").setContent {

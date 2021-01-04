@@ -7,7 +7,7 @@ import react.router.dom.route
 import react.router.dom.switch
 
 fun RBuilder.AuthSandboxWebapp(
-    state: AuthenticationState.LoggedIn,
+    state: IUserPrinciple,
     moduleGroups: Map<String, List<NavMenu>>,
     modules: List<AbstractModuleRoute<out RProps>>
 ) = MainDrawerControllerConsumer { drawerController ->
@@ -25,7 +25,6 @@ fun RBuilder.AuthSandboxWebapp(
             content = {
                 switch {
                     for (module in modules) {
-                        Authentication.systemPermits.addAll(module.permits.map { it.toPermit() })
                         route(path = module.path, exact = true, strict = true, render = module.render)
                     }
                 }

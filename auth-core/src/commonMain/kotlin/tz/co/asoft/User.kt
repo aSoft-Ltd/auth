@@ -37,6 +37,32 @@ data class User(
         SignedOut
     }
 
+    enum class Permissions(
+        override val title: String,
+        override val details: String,
+        override val needs: List<String> = listOf(),
+    ) : ISystemPermission {
+        Read(
+            title = "authentication.users.read",
+            details = "Grants access to view/edit users in the system"
+        ),
+        Create(
+            title = "authentication.users.create",
+            details = "Grants access to create different users for the system",
+            needs = listOf(Read.title)
+        ),
+        Update(
+            title = "authentication.users.update",
+            details = "Grants access to update user information",
+            needs = listOf(Read.title)
+        ),
+        Delete(
+            title = "authentication.users.delete",
+            details = "Grants access to delete users from the system",
+            needs = listOf(Read.title)
+        )
+    }
+
     fun ref() = UserRef(
         uid = uid,
         name = name,

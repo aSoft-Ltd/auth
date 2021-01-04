@@ -171,8 +171,8 @@ class SignInPage : VComponent<Props, Intent, State, LoginFormViewModel>() {
             is State.Loading -> Loader(ui.msg)
             is State.ShowForm -> ShowForm(ui.email)
             is State.AccountSelection -> ShowAccountSelection(ui.user)
-            is State.Error -> Error("${ui.cause}: ${ui.reason}")
-            State.Success -> Success("Success")
+            is State.Error -> Error("${ui.cause}")
+            is State.Success -> Success("Success")
         }.let { }
     }
 }

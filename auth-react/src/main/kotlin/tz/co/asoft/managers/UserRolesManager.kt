@@ -94,7 +94,7 @@ private val UserRolesManagerHook = functionalComponent<RProps> {
                 systemPermits = ui.permissionGroups,
                 onDelete = { vm.post(Intent.DeleteRole(it)) }
             )
-            is State.Error -> Error(ui.msg)
+            is State.Error -> Error(ui.exception.message ?: "Unkown Error")
         }
     }
 }

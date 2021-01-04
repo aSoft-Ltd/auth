@@ -32,6 +32,8 @@ project(":authentication-client-core").projectDir = File("authentication/authent
 include(":authentication-inmemory")
 project(":authentication-inmemory").projectDir = File("authentication/authentication-inmemory")
 
+include(":auth-client")
+
 include(":auth-react")
 //project(":auth-react").projectDir = File("auth-react")
 

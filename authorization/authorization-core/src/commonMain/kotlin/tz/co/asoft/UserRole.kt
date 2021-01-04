@@ -18,7 +18,7 @@ data class UserRole(
     ) : ISystemPermission {
         Read(
             title = "authorization.roles.read",
-            details = "Grants access to edit user roles"
+            details = "Grants access to view/read user roles"
         ),
         Create(
             title = "authorization.roles.create",

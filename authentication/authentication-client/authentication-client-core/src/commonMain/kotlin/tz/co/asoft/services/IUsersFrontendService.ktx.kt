@@ -81,14 +81,14 @@ fun IUsersFrontendService.uploadPhotoThenReauthenticate(u: User, photo: File): L
 
 fun IUsersFrontendService.registerThenSignIn(
     userAccountUID: String? = null,
-    accountType: String,
+    accountType: UserAccount.Type,
     accountName: String,
     userFullname: String,
     userUID: String? = null,
     username: String? = null,
     email: Email,
     phone: Phone,
-    password: String
+    password: ByteArray
 ): Later<String> = scope.later {
     val (account, user) = register(userAccountUID, accountType, accountName, userFullname, userUID, username, email, phone, password).await()
     val accountId = account.uid ?: throw Exception("Registered account came back a null uid")

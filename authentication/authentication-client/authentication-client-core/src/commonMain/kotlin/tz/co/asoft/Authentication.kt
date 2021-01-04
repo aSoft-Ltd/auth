@@ -26,6 +26,6 @@ object Authentication : DaoAndServiceFactory<AuthenticationDao, AuthenticationSe
         fun userProfileContainer() = UserProfileContainerViewModel(users())
         fun userProfilePicManager() = UserProfilePicManagerViewModel(users())
         fun userRoleManager() = UserRoleManagerViewModel(roles())
-        fun usersManager() = UsersManagerViewModel(users(), accountTypes)
+        fun usersManager(principle: IUserPrinciple) = UsersManagerViewModel(users(), principle, accountTypes)
     }
 }

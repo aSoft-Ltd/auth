@@ -12,7 +12,7 @@ import tz.co.asoft.RolesManagerViewModel.State
 
 class RolesManagerViewModel(
     private val repo: IRepo<UserRole>,
-    private val principle: IUserPrinciple,
+    private val principle: IPrinciple,
     private val permissionGroups: List<SystemPermissionGroup>
 ) : VModel<Intent, State>(State.Loading("Loading")) {
     companion object : IntentBus<Intent>()
@@ -20,9 +20,9 @@ class RolesManagerViewModel(
     sealed class State {
         data class Loading(val msg: String) : State()
         data class RoleForm(val role: UserRole?, val permissionGroups: List<SystemPermissionGroup>) : State()
-        data class ShowRole(val role: UserRole) : State()
+        data class ShowRole(val role: UserRole, val permissionGroups: List<SystemPermissionGroup>) : State()
         data class Roles(val roles: List<UserRole>, val permissionGroups: List<SystemPermissionGroup>) : State()
-        data class Error(val cause: Throwable, val origin: Intent) : State() {
+        data class Error(val exception: Throwable, val origin: Intent) : State() {
             val onRetry = { post(origin) }
         }
     }
@@ -57,7 +57,7 @@ class RolesManagerViewModel(
             require(principle.has(UserRole.Permissions.Update)) { "You are not permitted to update a user role" }
             emit(State.Loading("Updating ${intent.role.name}'s role"))
             val role = repo.edit(intent.role).await()
-            emit(State.ShowRole(role))
+            emit(State.ShowRole(role, permissionGroups))
         }.catch {
             emit(State.Error(Exception("Failed to update user info", it), intent))
         }.collect { ui.value = it }

@@ -28,19 +28,19 @@ fun IUsersService.signIn(loginId: String, password: String): Later<Either<User, 
 
 fun IUsersService.register(
     userAccountUID: String? = null,
-    accountType: String,
+    accountType: UserAccount.Type,
     accountName: String,
     userFullname: String,
     userUID: String? = null,
     username: String? = null,
     email: Email,
     phone: Phone,
-    password: String
+    password: ByteArray
 ): Later<Pair<UserAccount, User>> = scope.later {
     val account = UserAccount(
         uid = userAccountUID,
         name = accountName,
-        type = accountType,
+        type = accountType.name,
         scope = null
     )
 
@@ -50,12 +50,17 @@ fun IUsersService.register(
         uid = userUID,
         username = username,
         name = userFullname,
-        password = password,
+        password = SHA256.digest(password).hex,
         emails = listOf(email.value),
         phones = listOf(phone.value),
         accounts = listOf(newAccount)
     )
-    newAccount to create(user).await()
+    val newUser = create(user).await()
+    val claims = Claim(
+        uid = "${newAccount.uid}-${newUser.uid}",
+        permits = accountType.permissionGroups.flatMap { it.permissions }.map { it.title }
+    )
+    newAccount to newUser
 }
 
 fun IUsersService.addUserToAccount(account: UserAccount, userId: String): Later<User> = scope.later {

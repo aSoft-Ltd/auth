@@ -26,13 +26,15 @@ class AuthSandboxApp : VComponent<Props, Any, AuthenticationState, AuthSandboxVi
             LoggedOut -> AuthSandboxWebsite(
                 signInPageImageUrl = props.signInPageImageUrl
             )
-            is LoggedIn -> AuthSandboxWebapp(
-                state = ui,
-                moduleGroups = mapOf(
-                    "Authentication" to AuthReact.menus("admin")
-                ),
-                modules = AuthReact.modules(ui,"admin")
-            )
+            is LoggedIn -> PrincipleProvider(ui) {
+                AuthSandboxWebapp(
+                    state = ui,
+                    moduleGroups = mapOf(
+                        "Authentication" to AuthReact.menus("admin")
+                    ),
+                    modules = AuthReact.modules(ui, "admin")
+                )
+            }
         }
     }
 }

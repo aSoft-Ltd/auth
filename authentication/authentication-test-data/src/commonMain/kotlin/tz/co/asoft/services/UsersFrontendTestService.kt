@@ -14,19 +14,19 @@ class UsersFrontendTestService(
         register(
             accountName = "User Account One",
             userFullname = "Test User One",
-            accountType = "system.admin",
+            accountType = UserAccountType.ADMIN,
             email = Email("account01@test.com"),
             phone = Phone("255701010101"),
-            password = SHA256.digest("01".toByteArray()).hex
+            password = "01".toByteArray()
         ).await()
 
         val (_, user2) = register(
             userFullname = "Test User Two",
             accountName = "User Account Two",
-            accountType = "system.admin",
+            accountType = UserAccountType.ADMIN,
             email = Email("account02@test.com"),
             phone = Phone("255702020202"),
-            password = SHA256.digest("02".toByteArray()).hex
+            password = "02".toByteArray()
         ).await()
 
         val accountX = accountsDao.create(
@@ -47,9 +47,9 @@ class UsersFrontendTestService(
     fun registerUser(num: Int) = register(
         accountName = "User Account ${num.show()}",
         userFullname = "Test User ${num.show()}",
-        accountType = "guest",
+        accountType = UserAccountType.TESTER,
         email = Email("account${num.show()}@test.com"),
         phone = Phone("255${(6..7).random()}${num.show().repeat(4)}"),
-        password = SHA256.digest(num.show().toByteArray()).hex
+        password = num.show().toByteArray()
     )
 }
