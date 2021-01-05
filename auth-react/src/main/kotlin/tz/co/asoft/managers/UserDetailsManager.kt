@@ -9,9 +9,9 @@ import tz.co.asoft.UserDetailsManagerViewModel.Intent
 import tz.co.asoft.UserDetailsManagerViewModel.State
 
 private class UserDetailsManager : VComponent<Props, Intent, State, UserDetailsManagerViewModel>() {
-    override val viewModel by lazy { AuthReact.viewModel.userDetailsManager() }
+    override val viewModel by lazy { props.moduleState.viewModel.userDetailsManager() }
 
-    class Props(val user: User) : RProps
+    class Props(val user: User, val moduleState: AuthModuleState) : RProps
 
     override fun componentDidMount() {
         super.componentDidMount()
@@ -39,4 +39,7 @@ private class UserDetailsManager : VComponent<Props, Intent, State, UserDetailsM
     }
 }
 
-fun RBuilder.UserDetailsManager(user: User) = child(UserDetailsManager::class.js, Props(user)) {}
+fun RBuilder.UserDetailsManager(
+    user: User,
+    moduleState: AuthModuleState
+) = child(UserDetailsManager::class.js, Props(user, moduleState)) {}

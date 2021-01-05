@@ -7,19 +7,36 @@ import tz.co.asoft.setup.setupTheme
 
 val kfg by lazy { konfig() }
 
-fun setupAuthSandbox() {
+fun setupAuthSandbox(): AuthModuleState {
     console.log("Setting up")
     setupTheme()
     setupLogging()
-    Authentication.accountTypes = UserAccountType.all()
-//    setupInMemoryAuth(UsersLocalDao(kfg["package"] as String)).finally {
-//        console.log("Finished setting up")
-//    }
+    val dao = AuthModuleDao(
+        users = InMemoryUsersDao(),
+        clientApps = InMemoryDao("client-app"),
+        accounts = InMemoryDao("user-account"),
+        claims = InMemoryDao("claim"),
+        roles = InMemoryDao("role")
+    )
+    val moduleState = AuthModuleState(
+        accountTypes = UserAccountType.all(),
+        dao = dao,
+        service = AuthenticationService(
+            InMemoryUserFrontEndService(
+                claimsDao = dao.claims,
+                accountsDao = dao.accounts,
+                localDao = InMemoryUsersLocalDao()
+            )
+        ),
+    )
+    return moduleState
 }
 
 fun main() = document.getElementById("root").setContent {
-    setupAuthSandbox()
+    val state = setupAuthSandbox()
+    console.log(state)
     AuthSandbox(
-        signInPageUrl = "/imgs/sign-up.jpg"
+        signInPageUrl = "/imgs/sign-up.jpg",
+        state
     )
 }

@@ -6,12 +6,13 @@ import kotlinx.coroutines.launch
 import tz.co.asoft.*
 
 class AuthSandboxViewModel(
-    private val usersService: IUsersFrontendService
+    private val moduleState: AuthModuleState
 ) : VModel<Any, AuthenticationState>(AuthenticationState.Unknown) {
     init {
         coroutineScope.launch {
-            launch { usersService.authenticateLocallyOrLogout() }
-            Authentication.state.collect { ui.value = it }
+            val state = moduleState.authenticationState
+            launch { moduleState.service.users.authenticateLocallyOrLogout(state) }
+            state.collect { ui.value = it }
         }
     }
 

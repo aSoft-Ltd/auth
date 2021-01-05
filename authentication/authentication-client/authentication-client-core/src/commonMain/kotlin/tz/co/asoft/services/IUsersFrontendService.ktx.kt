@@ -2,11 +2,11 @@
 
 package tz.co.asoft
 
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.MutableStateFlow
 
-fun IUsersFrontendService.authenticateLocallyOrLogout() {
+fun IUsersFrontendService.authenticateLocallyOrLogout(state: MutableStateFlow<AuthenticationState>) {
     val token = localDao.load()
-    Authentication.state.value = if (token == null) {
+    state.value = if (token == null) {
         AuthenticationState.LoggedOut
     } else {
         AuthenticationState.LoggedIn(token)
@@ -18,9 +18,9 @@ fun IUsersFrontendService.authenticateThenStoreToken(accountId: String, userId: 
     useToken(token)
 }
 
-fun IUsersFrontendService.reAuthenticateIfNeedBe(user: User): Later<String?> = scope.later {
-    if (user.uid == Authentication.state.value.user?.uid) {
-        val authState = Authentication.state.value
+fun IUsersFrontendService.reAuthenticateIfNeedBe(user: User, state: MutableStateFlow<AuthenticationState>): Later<String?> = scope.later {
+    if (user.uid == state.value.user?.uid) {
+        val authState = state.value
         val userId = authState.user?.uid ?: throw Exception("Current logged in user has null uid")
         val accountId = authState.account?.uid ?: throw Exception("Current logged in account has null uid")
         authenticateThenStoreToken(accountId, userId).await()
@@ -31,15 +31,16 @@ fun IUsersFrontendService.reAuthenticateIfNeedBe(user: User): Later<String?> = s
 fun IUsersFrontendService.changePasswordThenStoreToken(
     userId: String,
     oldPass: String,
-    newPass: String
+    newPass: String,
+    state: MutableStateFlow<AuthenticationState>
 ) = scope.later {
     val user = changePassword(userId, oldPass, newPass).await()
-    reAuthenticateIfNeedBe(user).await()
+    reAuthenticateIfNeedBe(user, state).await()
     user
 }
 
-fun IUsersFrontendService.signOut() {
-    Authentication.state.value = AuthenticationState.LoggedOut
+fun IUsersFrontendService.signOut(state: MutableStateFlow<AuthenticationState>) {
+    state.value = AuthenticationState.LoggedOut
     localDao.delete()
 }
 
@@ -47,10 +48,11 @@ fun IUsersFrontendService.editBasicInfoAndReauthenticateIfNeedBe(
     u: User,
     name: String,
     email: Email,
-    phone: Phone
+    phone: Phone,
+    state: MutableStateFlow<AuthenticationState>
 ) = scope.later {
     val user = editBasicInfo(u, name, email, phone).await()
-    reAuthenticateIfNeedBe(user).await()
+    reAuthenticateIfNeedBe(user, state).await()
     user
 }
 
@@ -73,9 +75,9 @@ fun IUsersFrontendService.useToken(token: String): String {
     return localDao.save(token)
 }
 
-fun IUsersFrontendService.uploadPhotoThenReauthenticate(u: User, photo: File): Later<FileRef> = scope.later {
+fun IUsersFrontendService.uploadPhotoThenReauthenticate(u: User, photo: File, state: MutableStateFlow<AuthenticationState>) = scope.later {
     val fileRef = uploadPhoto(u, photo).await()
-    reAuthenticateIfNeedBe(u).await()
+    reAuthenticateIfNeedBe(u, state).await()
     fileRef
 }
 

@@ -6,19 +6,19 @@ import kotlinx.css.*
 import react.RBuilder
 import react.RProps
 import styled.css
-import tz.co.asoft.Authentication.viewModels.usersManager
+import tz.co.asoft.UsersManager.Props
 import tz.co.asoft.UsersManagerViewModel.Intent
 import tz.co.asoft.UsersManagerViewModel.State
 
-private val vm by lazy {
-    console.log("Instantiated UsersManagerViewModel")
-    usersManager()
-}
-
 @JsExport
-class UsersManager private constructor() : VComponent<RProps, Intent, State, UsersManagerViewModel>() {
+class UsersManager private constructor() : VComponent<Props, Intent, State, UsersManagerViewModel>() {
 
-    override val viewModel = vm
+    class Props(
+        val principle: IUserPrinciple,
+        val moduleState: AuthModuleState
+    ) : RProps
+
+    override val viewModel by lazy { props.moduleState.viewModel.usersManager(props.principle) }
 
     private fun RBuilder.Form(
         accounts: List<UserAccount.Type>,
@@ -64,4 +64,7 @@ class UsersManager private constructor() : VComponent<RProps, Intent, State, Use
     }
 }
 
-fun RBuilder.UsersManager() = child(UsersManager::class) {}
+fun RBuilder.UsersManager(
+    principle: IUserPrinciple,
+    moduleState: AuthModuleState
+) = child(UsersManager::class.js, Props(principle, moduleState)) {}

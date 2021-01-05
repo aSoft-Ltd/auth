@@ -23,11 +23,12 @@ import tz.co.asoft.SignInPage.Props
 
 @JsExport
 class SignInPage : VComponent<Props, Intent, State, LoginFormViewModel>() {
-    override val viewModel by lazy { AuthReact.viewModel.loginForm() }
+    override val viewModel by lazy { props.moduleState.viewModel.loginForm() }
 
     class Props(
         val imageUrl: String,
         val includeSignUpLink: Boolean,
+        val moduleState: AuthModuleState,
         val overlay: (StyledDOMBuilder<DIV>.() -> Unit)?
     ) : RProps
 
@@ -180,5 +181,6 @@ class SignInPage : VComponent<Props, Intent, State, LoginFormViewModel>() {
 fun RBuilder.SignInPage(
     imageUrl: String,
     includeSignUpLink: Boolean = true,
+    moduleState: AuthModuleState,
     overlay: (StyledDOMBuilder<DIV>.() -> Unit)? = null
-) = child(withRouter(SignInPage::class), Props(imageUrl, includeSignUpLink, overlay)) {}
+) = child(withRouter(SignInPage::class), Props(imageUrl, includeSignUpLink, moduleState, overlay)) {}

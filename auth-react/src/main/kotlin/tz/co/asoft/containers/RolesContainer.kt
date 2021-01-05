@@ -17,12 +17,13 @@ import tz.co.asoft.RolesManagerViewModel.Intent
  */
 fun RBuilder.RolesContainer(
     state: AuthenticationState.LoggedIn,
+    moduleState: AuthModuleState,
     drawerController: MutableStateFlow<DrawerState>? = null
 ) = MainDrawerControllerConsumer { mainDrawerController ->
     styledDiv {
         css { width = 100.pct }
         RolesContainerAppBar(state, drawerController)
-        RolesManager()
+        RolesManager(moduleState)
     }
 }
 

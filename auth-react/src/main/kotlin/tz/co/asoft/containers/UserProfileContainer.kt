@@ -11,15 +11,14 @@ import tz.co.asoft.UserProfileContainerViewModel.State
 import tz.co.asoft.containers.UserProfileContainer.Props
 
 private class UserProfileContainer : VComponent<Props, Intent, State, UserProfileContainerViewModel>() {
-    override val viewModel by lazy { AuthReact.viewModel.userProfileContainer() }
+    override val viewModel by lazy { props.authModuleState.viewModel.userProfileContainer() }
 
-    class Props(val uid: String, val builder: (User) -> List<Tab>) : RProps
+    class Props(val uid: String, val authModuleState: AuthModuleState, val builder: (User) -> List<Tab>) : RProps
 
     override fun componentDidMount() {
         super.componentDidMount()
         post(Intent.ViewProfile(props.uid))
     }
-
 
     override fun componentWillReceiveProps(nextProps: Props) {
         if (nextProps.uid != props.uid) {
@@ -38,7 +37,7 @@ private class UserProfileContainer : VComponent<Props, Intent, State, UserProfil
             when (ui) {
                 is State.Loading -> Loader(ui.msg)
                 is State.Profile -> Tabs(
-                    Tab("Basic") { UserInfo(ui.user) },
+                    Tab("Basic") { UserInfo(ui.user, props.authModuleState) },
                     *props.builder(ui.user).toTypedArray()
                 )
                 is State.Error -> Error(ui.msg)
@@ -49,5 +48,6 @@ private class UserProfileContainer : VComponent<Props, Intent, State, UserProfil
 
 fun RBuilder.UserProfileContainer(
     uid: String,
+    authModuleState: AuthModuleState,
     builder: (User) -> List<Tab>
-) = child(UserProfileContainer::class.js, Props(uid, builder)) {}
+) = child(UserProfileContainer::class.js, Props(uid, authModuleState, builder)) {}

@@ -10,15 +10,14 @@ import react.RBuilder
 import react.RProps
 import styled.css
 import styled.styledDiv
-import tz.co.asoft.Authentication.viewModels.userPermissionsManager
 import tz.co.asoft.UserPermissionsManager.Props
 import tz.co.asoft.UserPermissionsManagerViewModel.Intent
 import tz.co.asoft.UserPermissionsManagerViewModel.State
 
 private class UserPermissionsManager : VComponent<Props, Intent, State, UserPermissionsManagerViewModel>() {
-    override val viewModel by lazy { userPermissionsManager() }
+    override val viewModel by lazy { props.moduleState.viewModel.userPermissionsManager() }
 
-    class Props(val u: User) : RProps
+    class Props(val u: User, val moduleState: AuthModuleState) : RProps
 
     override fun componentDidMount() {
         super.componentDidMount()
@@ -75,4 +74,7 @@ private class UserPermissionsManager : VComponent<Props, Intent, State, UserPerm
     }
 }
 
-fun RBuilder.UserPermissionsManager(user: User) = child(UserPermissionsManager::class.js, Props(user)) {}
+fun RBuilder.UserPermissionsManager(
+    user: User,
+    moduleState: AuthModuleState
+) = child(UserPermissionsManager::class.js, Props(user, moduleState)) {}

@@ -16,13 +16,14 @@ import tz.co.asoft.UserProfilePicManagerViewModel.State
 @JsExport
 class UserProfilePicManager private constructor() : VComponent<Props, Intent, State, UserProfilePicManagerViewModel>() {
 
-    override val viewModel by lazy { AuthReact.viewModel.userProfilePicManager() }
+    override val viewModel by lazy { props.moduleState.viewModel.userProfilePicManager() }
 
     class Props(
         val u: User,
         val aspectRatio: Float,
         val textFontSize: LinearDimension,
-        val radius: LinearDimension
+        val radius: LinearDimension,
+        val moduleState: AuthModuleState
     ) : RProps
 
     override fun componentDidMount() {
@@ -61,5 +62,6 @@ fun RBuilder.UserProfilePicManager(
     user: User,
     aspectRatio: Float = 1f / 1f,
     radius: LinearDimension = 10.px,
-    textFontSize: LinearDimension = 3.rem
-) = child(UserProfilePicManager::class.js, Props(user, aspectRatio, textFontSize, radius)) {}
+    textFontSize: LinearDimension = 3.rem,
+    moduleState: AuthModuleState
+) = child(UserProfilePicManager::class.js, Props(user, aspectRatio, textFontSize, radius, moduleState)) {}

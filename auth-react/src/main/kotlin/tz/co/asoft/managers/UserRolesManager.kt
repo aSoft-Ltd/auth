@@ -2,23 +2,23 @@
 
 package tz.co.asoft
 
+import kotlinext.js.jsObject
 import kotlinx.css.*
 import kotlinx.html.InputType
 import react.RBuilder
 import react.RProps
-import react.child
 import react.dom.li
 import react.dom.ul
 import react.functionalComponent
 import styled.*
-import tz.co.asoft.Authentication.viewModels.rolesManager
 import tz.co.asoft.RolesManagerViewModel.Intent
 import tz.co.asoft.RolesManagerViewModel.State
 
 private fun UserRole.toTab(
     systemPermits: List<SystemPermissionGroup>,
+    moduleState: AuthModuleState,
     onDelete: () -> Unit
-) = Tab(name) { RoleManager(this@toTab, systemPermits, onDelete) }
+) = Tab(name) { RoleManager(this@toTab, systemPermits, moduleState, onDelete) }
 
 private fun RBuilder.RoleCard(role: UserRole) = Accordion(role.name) {
     ul {
@@ -54,11 +54,12 @@ private fun RBuilder.RolesCard(
 private fun RBuilder.RoleTabs(
     data: List<UserRole>,
     systemPermits: List<SystemPermissionGroup>,
+    moduleState: AuthModuleState,
     onDelete: (UserRole) -> Unit
 ) = if (data.isEmpty()) {
     styledDiv { +"No Roles" }
 } else {
-    Tabs(*data.map { it.toTab(systemPermits) { onDelete(it) } }.toTypedArray())
+    Tabs(*data.map { it.toTab(systemPermits, moduleState) { onDelete(it) } }.toTypedArray())
 }
 
 private fun RBuilder.ShowRoleForm(
@@ -74,8 +75,13 @@ private fun RBuilder.ShowRoleForm(
     )
 }
 
-private val UserRolesManagerHook = functionalComponent<RProps> {
-    val vm = useViewModel { rolesManager() }
+private external interface UserRolesManagerHookProps : RProps {
+    var moduleState: AuthModuleState
+    var principle: IUserPrinciple
+}
+
+private val UserRolesManagerHook = functionalComponent<UserRolesManagerHookProps> { props ->
+    val vm = useViewModel { props.moduleState.viewModel.rolesManager(props.principle) }
     val state by vm
     styledDiv {
         css {
@@ -99,4 +105,9 @@ private val UserRolesManagerHook = functionalComponent<RProps> {
     }
 }
 
-fun RBuilder.RolesManager() = child(UserRolesManagerHook)
+fun RBuilder.RolesManager(state: AuthModuleState) = PrincipleConsumer { prncple ->
+    child(UserRolesManagerHook, jsObject<UserRolesManagerHookProps> {
+        moduleState = state
+        principle = prncple
+    }) {}
+}

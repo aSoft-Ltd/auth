@@ -9,20 +9,18 @@ import react.functionalComponent
 import react.useEffect
 import styled.css
 import styled.styledDiv
-import tz.co.asoft.Authentication.viewModels.userRoleManager
 import tz.co.asoft.UserRoleManagerViewModel.Intent
 import tz.co.asoft.UserRoleManagerViewModel.State
 
 private class RoleManagerProps(
     val role: UserRole,
     val permissionGroups: List<SystemPermissionGroup>,
+    val moduleState: AuthModuleState,
     val onDelete: () -> Unit
 ) : RProps
 
-private val viewModel by lazy { userRoleManager() }
-
-private val RoleManagerHook = functionalComponent<RoleManagerProps> { props->
-    val vm = useViewModel { viewModel }
+private val RoleManagerHook = functionalComponent<RoleManagerProps> { props ->
+    val vm = useViewModel { props.moduleState.viewModel.userRoleManager() }
     useEffect(listOf()) {
         vm.post(Intent.ViewRole(props.role))
     }
@@ -70,5 +68,6 @@ private fun RBuilder.RolePermits(
 fun RBuilder.RoleManager(
     role: UserRole,
     systemPermits: List<SystemPermissionGroup>,
+    moduleState: AuthModuleState,
     onDelete: () -> Unit
-) = child(RoleManagerHook, RoleManagerProps(role, systemPermits, onDelete)) {}
+) = child(RoleManagerHook, RoleManagerProps(role, systemPermits, moduleState, onDelete)) {}

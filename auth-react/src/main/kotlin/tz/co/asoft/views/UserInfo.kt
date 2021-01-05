@@ -9,7 +9,7 @@ import kotlinx.css.pct
 import react.RBuilder
 import styled.css
 
-fun RBuilder.UserInfo(user: User) = Grid(rows = "auto") {
+fun RBuilder.UserInfo(user: User, moduleState: AuthModuleState) = Grid(rows = "auto") {
     css {
         onDesktop {
             padding(horizontal = 15.pct)
@@ -17,9 +17,9 @@ fun RBuilder.UserInfo(user: User) = Grid(rows = "auto") {
         }
         onMobile { gridTemplateColumns = GridTemplateColumns("1fr") }
     }
-    UserProfilePicManager(user = user)
+    UserProfilePicManager(user = user, moduleState = moduleState)
     Grid(rows = "auto") {
-        UserDetailsManager(user = user)
-        UserPermissionsManager(user = user)
+        UserDetailsManager(user = user, moduleState)
+        UserPermissionsManager(user = user, moduleState)
     }
 }

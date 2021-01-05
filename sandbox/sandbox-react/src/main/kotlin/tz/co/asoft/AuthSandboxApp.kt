@@ -11,10 +11,11 @@ import tz.co.asoft.viewmodel.AuthSandboxViewModel
 
 @JsExport
 class AuthSandboxApp : VComponent<Props, Any, AuthenticationState, AuthSandboxViewModel>() {
-    override val viewModel by lazy { AuthSandboxViewModel(Authentication.service.users) }
+    override val viewModel by lazy { AuthSandboxViewModel(props.moduleState) }
 
     class Props(
-        val signInPageImageUrl: String
+        val signInPageImageUrl: String,
+        val moduleState: AuthModuleState
     ) : RProps
 
     override fun RBuilder.render(ui: AuthenticationState) = ThemeProvider {
@@ -24,15 +25,16 @@ class AuthSandboxApp : VComponent<Props, Any, AuthenticationState, AuthSandboxVi
                 Loader("Setting up workspace")
             }
             LoggedOut -> AuthSandboxWebsite(
-                signInPageImageUrl = props.signInPageImageUrl
+                signInPageImageUrl = props.signInPageImageUrl,
+                moduleState = props.moduleState
             )
             is LoggedIn -> PrincipleProvider(ui) {
                 AuthSandboxWebapp(
                     state = ui,
                     moduleGroups = mapOf(
-                        "Authentication" to AuthReact.menus("admin")
+                        "Authentication" to props.moduleState.menus("admin")
                     ),
-                    modules = AuthReact.modules(ui, "admin")
+                    modules = props.moduleState.modules(ui, "admin")
                 )
             }
         }
@@ -40,5 +42,6 @@ class AuthSandboxApp : VComponent<Props, Any, AuthenticationState, AuthSandboxVi
 }
 
 fun RBuilder.AuthSandbox(
-    signInPageUrl: String
-) = child(AuthSandboxApp::class.js, Props(signInPageUrl)) {}
+    signInPageUrl: String,
+    moduleState: AuthModuleState
+) = child(AuthSandboxApp::class.js, Props(signInPageUrl, moduleState)) {}

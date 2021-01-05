@@ -3,6 +3,7 @@
 package tz.co.asoft
 
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flow
@@ -11,7 +12,8 @@ import tz.co.asoft.UserProfileContainerViewModel.Intent
 import tz.co.asoft.UserProfileContainerViewModel.State
 
 class UserProfileContainerViewModel(
-    private val repo: IUsersRepo
+    private val repo: IUsersRepo,
+    private val state: MutableStateFlow<AuthenticationState>
 ) : VModel<Intent, State>(State.Loading("Loading")) {
     sealed class State {
         class Loading(val msg: String) : State()
@@ -30,7 +32,7 @@ class UserProfileContainerViewModel(
     private fun CoroutineScope.viewProfile(i: Intent.ViewProfile) = launch {
         flow {
             emit(State.Loading("Preparing profile"))
-            val liveUser = Authentication.state.value.user
+            val liveUser = state.value.user
             val user = if (liveUser?.uid == i.uid) {
                 liveUser
             } else {

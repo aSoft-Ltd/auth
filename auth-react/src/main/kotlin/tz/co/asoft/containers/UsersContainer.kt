@@ -17,7 +17,8 @@ import tz.co.asoft.UsersManagerViewModel.Intent
 @JsExport
 class UsersContainer : RComponent<Props, RState>() {
     class Props(
-        val drawerController: MutableStateFlow<DrawerState>?
+        val drawerController: MutableStateFlow<DrawerState>?,
+        val moduleState: AuthModuleState
     ) : RProps
 
     private val inputCss: RuleSet = {
@@ -46,7 +47,7 @@ class UsersContainer : RComponent<Props, RState>() {
                     TextButton("New User", FaPlus) { UsersManagerViewModel.post(Intent.ViewForm) }
                 }
             )
-            UsersManager()
+            PrincipleConsumer { UsersManager(it, props.moduleState) }
         }
     }
 }
@@ -57,5 +58,6 @@ class UsersContainer : RComponent<Props, RState>() {
  *      if null is provided, the [MainDrawerController is used
  */
 fun RBuilder.UsersContainer(
-    drawerController: MutableStateFlow<DrawerState>? = null
-) = child(UsersContainer::class.js, Props(drawerController)) {}
+    drawerController: MutableStateFlow<DrawerState>? = null,
+    moduleState: AuthModuleState
+) = child(UsersContainer::class.js, Props(drawerController, moduleState)) {}

@@ -20,7 +20,7 @@ kotlin {
         val main by getting {
             dependencies {
                 implementation(asoft("applikation-runtime", vers.asoft.builders))
-                implementation(project(":authentication-inmemory"))
+                implementation(project(":authentication-test-data"))
                 implementation(project(":auth-react"))
                 implementation(asoft("jwt-hs", vers.asoft.jwt))
                 implementation(devNpm("file-loader", "*"))

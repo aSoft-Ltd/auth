@@ -1,5 +1,6 @@
 package login
 
+import kotlinx.coroutines.flow.MutableStateFlow
 import tz.co.asoft.*
 import tz.co.asoft.LoginFormViewModel.Intent
 import tz.co.asoft.LoginFormViewModel.State
@@ -9,6 +10,7 @@ class LoginViewModelTest {
     private val usersService = UsersFrontendTestService()
     private val vm = LoginFormViewModel(UsersRepo(usersService))
     private val populateLater = usersService.populate()
+    private val state = MutableStateFlow<AuthenticationState>(AuthenticationState.Unknown)
 
     @Test
     fun should_fail_to_log_in() = asyncTest {
@@ -32,7 +34,7 @@ class LoginViewModelTest {
     @Test
     fun should_succeed_in_logging_out() = asyncTest {
         login()
-        usersService.signOut()
+        usersService.signOut(state)
     }
 
     @Test

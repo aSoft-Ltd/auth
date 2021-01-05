@@ -3,6 +3,7 @@
 package tz.co.asoft
 
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flow
@@ -11,7 +12,8 @@ import tz.co.asoft.UserDetailsManagerViewModel.Intent
 import tz.co.asoft.UserDetailsManagerViewModel.State
 
 class UserDetailsManagerViewModel(
-    private val repo: IUsersRepo
+    private val repo: IUsersRepo,
+    private val state: MutableStateFlow<AuthenticationState>
 ) : VModel<Intent, State>(State.Loading("Loading")) {
     sealed class State {
         class Loading(val msg: String) : State()
@@ -36,16 +38,16 @@ class UserDetailsManagerViewModel(
         is Intent.ViewUser -> viewUser(i)
         is Intent.ChangePassword -> changePassword(i)
         is Intent.EditBasicInfo -> editBasicInfo(i)
-        is Intent.SignOut -> launch { repo.signOut() }
+        is Intent.SignOut -> repo.signOut(state)
     }
 
-    val user get() = Authentication.state.value.user
+    val user get() = state.value.user
 
     private fun CoroutineScope.editBasicInfo(i: Intent.EditBasicInfo) = launch {
         flow {
             emit(State.Loading("Editing information"))
             val u = user ?: throw Exception("No logged in user")
-            emit(State.ShowDetails(repo.editBasicInfoAndReauthenticateIfNeedBe(u, i.name, Email(i.email), Phone(i.phone)).await(), u))
+            emit(State.ShowDetails(repo.editBasicInfoAndReauthenticateIfNeedBe(u, i.name, Email(i.email), Phone(i.phone), state).await(), u))
         }.catch {
             emit(State.Error("Failed to edit info: ${it.message}"))
         }.collect {
@@ -57,7 +59,7 @@ class UserDetailsManagerViewModel(
         flow {
             emit(State.Loading("Changing your password"))
             val uid = user?.uid ?: throw Exception("No logged in user")
-            emit(State.ShowDetails(repo.changePasswordThenStoreToken(uid, i.old, i.new).await(), user))
+            emit(State.ShowDetails(repo.changePasswordThenStoreToken(uid, i.old, i.new, state).await(), user))
         }.catch {
             emit(State.Error("Failed to change password"))
         }.collect {

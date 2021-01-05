@@ -3,16 +3,14 @@
 package tz.co.asoft
 
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import tz.co.asoft.UserProfilePicManagerViewModel.Intent
 import tz.co.asoft.UserProfilePicManagerViewModel.State
 
 class UserProfilePicManagerViewModel(
-    private val repo: IUsersRepo
+    private val repo: IUsersRepo,
+    private val state: MutableStateFlow<AuthenticationState>
 ) : VModel<Intent, State>(State.Loading("Loading User")) {
 
     sealed class State {
@@ -28,7 +26,7 @@ class UserProfilePicManagerViewModel(
         class EditPhoto(val file: File) : Intent()
     }
 
-    private val viewer get() = Authentication.state.value.user ?: throw Exception("Can't find viewer's info")
+    private val viewer get() = state.value.user ?: throw Exception("Can't find viewer's info")
 
     override fun CoroutineScope.execute(i: Intent): Any = when (i) {
         is Intent.UploadPhoto -> uploadPhoto(i)
@@ -49,8 +47,8 @@ class UserProfilePicManagerViewModel(
     private fun CoroutineScope.uploadPhoto(i: Intent.UploadPhoto) = launch {
         flow {
             emit(State.Loading("Uploading photo"))
-            val user = Authentication.state.value.user ?: throw Exception("No logged in user")
-            repo.uploadPhotoThenReauthenticate(user, i.photo).await()
+            val user = state.value.user ?: throw Exception("No logged in user")
+            repo.uploadPhotoThenReauthenticate(user, i.photo, state).await()
             emit(State.ShowPicture(user, user))
         }.catch {
             emit(State.Error("Failed to upload photo: ${it.message}"))
