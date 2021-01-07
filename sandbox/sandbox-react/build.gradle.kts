@@ -1,5 +1,3 @@
-import org.jetbrains.kotlin.gradle.targets.js.webpack.KotlinWebpackConfig.DevServer
-
 plugins {
     kotlin("js")
     id("tz.co.asoft.applikation")

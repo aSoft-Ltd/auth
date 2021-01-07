@@ -7,10 +7,10 @@ import tz.co.asoft.*
 
 class AuthSandboxViewModel(
     private val moduleState: AuthModuleState
-) : VModel<Any, AuthenticationState>(AuthenticationState.Unknown) {
+) : VModel<Any, SessionState>(SessionState.Unknown) {
     init {
         coroutineScope.launch {
-            val state = moduleState.authenticationState
+            val state = moduleState.sessionState
             launch { moduleState.service.users.authenticateLocallyOrLogout(state) }
             state.collect { ui.value = it }
         }

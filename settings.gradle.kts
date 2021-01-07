@@ -18,8 +18,14 @@ pluginManagement {
 rootProject.name = "auth"
 
 include(":auth-core")
+
 include(":authorization-core")
 project(":authorization-core").projectDir = File("authorization/authorization-core")
+include(":authorization-client-core")
+project(":authorization-client-core").projectDir = File("authorization/authorization-client/authorization-client-core")
+include(":authorization-client-react")
+project(":authorization-client-react").projectDir = File("authorization/authorization-client/authorization-client-react")
+
 include(":authentication-core")
 project(":authentication-core").projectDir = File("authentication/authentication-core")
 
@@ -36,6 +42,9 @@ include(":auth-client")
 
 include(":auth-react")
 //project(":auth-react").projectDir = File("auth-react")
+
+include(":authorization-react")
+project(":authorization-react").projectDir = File("authorization/authorization-react")
 
 include(":sandbox-react")
 project(":sandbox-react").projectDir = File("sandbox/sandbox-react")

@@ -5,7 +5,7 @@ import react.RProps
 
 class AuthModuleState(
     override val accountTypes: List<UserAccount.Type>,
-    override val sessionState: MutableStateFlow<SessionState> = MutableStateFlow(SessionState.Unknown),
+    override val authenticationState: MutableStateFlow<AuthenticationState> = MutableStateFlow(AuthenticationState.Unknown),
     override val service: AuthenticationService,
     override val dao: AuthModuleDao
 ) : IAuthModuleState {
@@ -19,7 +19,7 @@ class AuthModuleState(
         NavMenu("User Roles", routes.userRoles, FaUser, scope)
     )
 
-    fun modules(state: SessionState.LoggedIn, scope: String): List<AbstractModuleRoute<out RProps>> = listOf(
+    fun modules(state: AuthenticationState.LoggedIn, scope: String): List<AbstractModuleRoute<out RProps>> = listOf(
         ModuleRoute(
             path = routes.users,
             permits = User.Permissions.values().map { it.title },

@@ -6,11 +6,11 @@ import react.RBuilder
 import react.RProps
 import styled.css
 import tz.co.asoft.AuthSandboxApp.Props
-import tz.co.asoft.AuthenticationState.*
+import tz.co.asoft.SessionState.*
 import tz.co.asoft.viewmodel.AuthSandboxViewModel
 
 @JsExport
-class AuthSandboxApp : VComponent<Props, Any, AuthenticationState, AuthSandboxViewModel>() {
+class AuthSandboxApp : VComponent<Props, Any, SessionState, AuthSandboxViewModel>() {
     override val viewModel by lazy { AuthSandboxViewModel(props.moduleState) }
 
     class Props(
@@ -18,7 +18,7 @@ class AuthSandboxApp : VComponent<Props, Any, AuthenticationState, AuthSandboxVi
         val moduleState: AuthModuleState
     ) : RProps
 
-    override fun RBuilder.render(ui: AuthenticationState) = ThemeProvider {
+    override fun RBuilder.render(ui: SessionState) = ThemeProvider {
         when (ui) {
             Unknown -> Grid {
                 css { centerContent(); height = 100.vh }

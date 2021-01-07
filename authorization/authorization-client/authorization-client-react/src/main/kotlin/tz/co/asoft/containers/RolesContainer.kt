@@ -16,7 +16,7 @@ import tz.co.asoft.RolesManagerViewModel.Intent
  *      if null is provided, the [MainDrawerController is used
  */
 fun RBuilder.RolesContainer(
-    state: SessionState.LoggedIn,
+    state: AuthenticationState.LoggedIn,
     moduleState: AuthModuleState,
     drawerController: MutableStateFlow<DrawerState>? = null
 ) = MainDrawerControllerConsumer { mainDrawerController ->
@@ -28,7 +28,7 @@ fun RBuilder.RolesContainer(
 }
 
 private fun RBuilder.RolesContainerAppBar(
-    state: SessionState.LoggedIn,
+    state: AuthenticationState.LoggedIn,
     drawerController: MutableStateFlow<DrawerState>?
 ) = MainDrawerControllerConsumer { mainDrawerController ->
     NavigationAppBar(

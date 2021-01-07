@@ -10,7 +10,8 @@ kotlin {
         val commonMain by getting {
             dependencies {
                 api(asoft("krypto-core", vers.asoft.krypto))
-                api(project(":auth-core"))
+                api(asoft("viewmodel-core", vers.asoft.viewmodel))
+                api(project(":authorization-core"))
             }
         }
 

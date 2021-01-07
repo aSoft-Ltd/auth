@@ -6,7 +6,7 @@ import tz.co.asoft.*
 class AuthModuleViewModel(
     private val accountTypes: List<UserAccount.Type>,
     private val repo: AuthModuleRepo,
-    private val state: MutableStateFlow<AuthenticationState>
+    private val state: MutableStateFlow<SessionState>
 ) {
     fun loginForm() = LoginFormViewModel(repo.users)
     fun rolesManager(principle: IUserPrinciple) = RolesManagerViewModel(repo.roles, principle, accountTypes.permissionGroups())

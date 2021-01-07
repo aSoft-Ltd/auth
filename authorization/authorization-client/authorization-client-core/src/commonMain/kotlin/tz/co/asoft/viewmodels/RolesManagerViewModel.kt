@@ -1,14 +1,15 @@
 @file:Suppress("PackageDirectoryMismatch")
 
-package tz.co.asoft
+package tz.co.asoft.viewmodels
 
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
-import tz.co.asoft.RolesManagerViewModel.Intent
-import tz.co.asoft.RolesManagerViewModel.State
+import tz.co.asoft.*
+import tz.co.asoft.viewmodels.RolesManagerViewModel.Intent
+import tz.co.asoft.viewmodels.RolesManagerViewModel.State
 
 class RolesManagerViewModel(
     private val repo: IRepo<UserRole>,

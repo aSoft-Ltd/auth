@@ -17,7 +17,7 @@ object vers {
         val logging = "0.0.1"
         val later = "0.0.42"
         val duality = "0.0.21"
-        val reakt = "0.0.8"
+        val reakt = "0.0.90"
         val files = "0.0.1"
         val krypto = "0.0.4"
         val paging = "0.0.30"

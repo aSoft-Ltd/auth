@@ -8,9 +8,9 @@ import tz.co.asoft.ui.AuthModuleViewModel
 
 interface IAuthModuleState {
     val accountTypes: List<UserAccount.Type>
-    val authenticationState: MutableStateFlow<AuthenticationState>
+    val sessionState: MutableStateFlow<SessionState>
     val service: AuthenticationService
     val dao: AuthModuleDao
     val repo get() = AuthModuleRepo(service.users, dao)
-    val viewModel get() = AuthModuleViewModel(accountTypes, repo, authenticationState)
+    val viewModel get() = AuthModuleViewModel(accountTypes, repo, sessionState)
 }
