@@ -8,6 +8,7 @@ import kotlinx.coroutines.launch
 import tz.co.asoft.LoginFormViewModel.State
 
 class LoginFormViewModel(
+    private val state: MutableStateFlow<SessionState>,
     private val repo: IUsersRepo
 ) : VModel<LoginFormViewModel.Intent, State>(State.ShowForm(email = null)) {
     companion object : IntentBus<Intent>()
@@ -41,7 +42,9 @@ class LoginFormViewModel(
                 accountId = i.account.uid ?: throw Exception("Account Id can't be null"),
                 userId = i.user.uid ?: throw Exception("User id can't be null")
             ).await()
-            emit(State.Success(SessionState.LoggedIn(token)))
+            val session = SessionState.LoggedIn(token)
+            state.value = session
+            emit(State.Success(session))
         }.catch {
             emit(State.Error(Exception("Failed to authenticate your accounts", it), i))
         }.collect {
@@ -60,7 +63,9 @@ class LoginFormViewModel(
             }
             val token = res.rightOrNull()
             if (token != null) {
-                emit(State.Success(SessionState.LoggedIn(token)))
+                val session = SessionState.LoggedIn(token)
+                state.value = session
+                emit(State.Success(session))
                 return@flow
             }
             throw IllegalStateException("Sign in flow returned neither token or user object")

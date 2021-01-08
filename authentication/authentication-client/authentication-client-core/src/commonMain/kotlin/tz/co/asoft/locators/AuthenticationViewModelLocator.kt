@@ -10,7 +10,7 @@ class AuthenticationViewModelLocator(
     private val authorizationRepo: AuthorizationRepoLocator,
     private val state: MutableStateFlow<SessionState>
 ) {
-    fun loginForm() = LoginFormViewModel(authenticationRepo.users)
+    fun loginForm() = LoginFormViewModel(state, authenticationRepo.users)
     fun userDetailsManager() = UserDetailsManagerViewModel(authenticationRepo.users, state)
     fun userPermissionsManager() = UserPermissionsManagerViewModel(authorizationRepo.roles, accountTypes.permissionGroups())
     fun userProfileContainer() = UserProfileContainerViewModel(authenticationRepo.users, state)

@@ -5,7 +5,8 @@ package tz.co.asoft
 class UsersFrontendTestService(
     claimDao: IDao<Claim> = ClaimsTestDao(),
     accountsDao: IDao<UserAccount> = UserAccountsTestDao(),
-) : IUsersFrontendService by InMemoryUserFrontEndService(claimDao, accountsDao, InMemoryUsersLocalDao()) {
+    override val localDao: IUsersLocalDao = InMemoryUsersLocalDao()
+) : IUsersFrontendService by InMemoryUserFrontEndService(claimDao, accountsDao, localDao) {
 
     fun populate() = scope.later {
         register(

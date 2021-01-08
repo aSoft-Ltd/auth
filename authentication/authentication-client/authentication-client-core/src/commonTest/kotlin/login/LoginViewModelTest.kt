@@ -8,9 +8,9 @@ import kotlin.test.Test
 
 class LoginViewModelTest {
     private val usersService = UsersFrontendTestService()
-    private val vm = LoginFormViewModel(UsersRepo(usersService))
-    private val populateLater = usersService.populate()
     private val state = MutableStateFlow<SessionState>(SessionState.Unknown)
+    private val vm = LoginFormViewModel(state, UsersRepo(usersService))
+    private val populateLater = usersService.populate()
 
     @Test
     fun should_fail_to_log_in() = asyncTest {
@@ -22,6 +22,7 @@ class LoginViewModelTest {
     private suspend fun login() {
         populateLater.await()
         vm.test(Intent.SignIn("account01@test.com", "01".toByteArray()))
+        expect(state.value).toBe<SessionState.LoggedIn>()
         val state = expect(vm).toBeIn<State.Success>().state
         println(state.token)
     }

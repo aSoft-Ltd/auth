@@ -5,17 +5,19 @@ package tz.co.asoft
 import kotlinx.coroutines.flow.MutableStateFlow
 
 fun setupAuthentication(
+    namespace: String,
     state: MutableStateFlow<SessionState>,
     accountTypes: List<UserAccount.Type>,
     authorization: AuthorizationLocator
 ): AuthenticationLocator {
+    val usersLocalDao = UsersLocalDao(namespace)
     val dao = AuthenticationDaoLocator(
         users = InMemoryUsersDao(),
         clientApps = InMemoryDao("client-app"),
         accounts = UserAccountsTestDao()
     )
 
-    val service = UsersFrontendTestService(authorization.dao.claims, dao.accounts).apply { populate() }
+    val service = UsersFrontendTestService(authorization.dao.claims, dao.accounts, usersLocalDao).apply { populate() }
 
     val repo = AuthenticationRepoLocator(service, dao)
 

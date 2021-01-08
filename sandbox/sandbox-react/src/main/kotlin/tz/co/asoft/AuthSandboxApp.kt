@@ -1,10 +1,7 @@
 package tz.co.asoft
 
-import kotlinx.css.height
-import kotlinx.css.vh
 import react.RBuilder
 import react.RProps
-import styled.css
 import tz.co.asoft.AuthSandboxApp.Props
 import tz.co.asoft.SessionState.*
 import tz.co.asoft.locators.SandboxLocator
