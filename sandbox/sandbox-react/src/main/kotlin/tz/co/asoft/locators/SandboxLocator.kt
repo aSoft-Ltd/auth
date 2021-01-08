@@ -6,7 +6,7 @@ import tz.co.asoft.AuthorizationLocator
 import tz.co.asoft.SessionState
 
 class SandboxLocator(
-    val state: MutableStateFlow<SessionState> = MutableStateFlow(SessionState.Unknown),
+    val state: MutableStateFlow<SessionState>,
     val authorization: AuthorizationLocator,
     val authentication: AuthenticationLocator
 )

@@ -22,9 +22,13 @@ kotlin {
                 implementation(project(":authorization-test-data"))
                 implementation(project(":authentication-client-react"))
                 implementation(project(":authorization-client-react"))
-                implementation(asoft("jwt-hs", vers.asoft.jwt))
+            }
+        }
+
+        val test by getting {
+            dependencies {
+                implementation(asoft("test-core", vers.asoft.test))
             }
         }
     }
 }
-

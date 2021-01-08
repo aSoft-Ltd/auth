@@ -4,7 +4,7 @@ plugins {
 }
 
 kotlin {
-    js(IR) { library() }
+    js(IR) { library(forNodeJs = false) }
     sourceSets {
         val main by getting {
             dependencies {
@@ -20,6 +20,12 @@ kotlin {
                 api(asoft("viewmodel-react", vers.asoft.viewmodel))
                 api(project(":auth-react"))
                 api(project(":authentication-client-core"))
+            }
+        }
+
+        val test by getting {
+            dependencies {
+                implementation(asoft("test-core", vers.asoft.test))
             }
         }
     }

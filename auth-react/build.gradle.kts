@@ -4,7 +4,7 @@ plugins {
 }
 
 kotlin {
-    js(IR) { library() }
+    js(IR) { library(forNodeJs = false) }
     sourceSets {
         val main by getting {
             dependencies {
