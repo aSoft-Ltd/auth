@@ -10,7 +10,7 @@ import tz.co.asoft.UserProfilePicManagerViewModel.State
 
 class UserProfilePicManagerViewModel(
     private val repo: IUsersRepo,
-    private val state: MutableStateFlow<AuthenticationState>
+    private val state: MutableStateFlow<SessionState>
 ) : VModel<Intent, State>(State.Loading("Loading User")) {
 
     sealed class State {

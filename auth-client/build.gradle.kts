@@ -9,8 +9,8 @@ kotlin {
     sourceSets {
         val commonMain by getting {
             dependencies {
-                api(project(":authentication-client-core"))
-                api(project(":authorization-core"))
+                api(asoft("jwt-core", vers.asoft.jwt))
+                api(project(":auth-core"))
             }
         }
 

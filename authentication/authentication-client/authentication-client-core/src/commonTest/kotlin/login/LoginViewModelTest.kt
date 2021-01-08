@@ -10,7 +10,7 @@ class LoginViewModelTest {
     private val usersService = UsersFrontendTestService()
     private val vm = LoginFormViewModel(UsersRepo(usersService))
     private val populateLater = usersService.populate()
-    private val state = MutableStateFlow<AuthenticationState>(AuthenticationState.Unknown)
+    private val state = MutableStateFlow<SessionState>(SessionState.Unknown)
 
     @Test
     fun should_fail_to_log_in() = asyncTest {

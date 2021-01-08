@@ -13,7 +13,7 @@ import tz.co.asoft.UserDetailsManagerViewModel.State
 
 class UserDetailsManagerViewModel(
     private val repo: IUsersRepo,
-    private val state: MutableStateFlow<AuthenticationState>
+    private val state: MutableStateFlow<SessionState>
 ) : VModel<Intent, State>(State.Loading("Loading")) {
     sealed class State {
         class Loading(val msg: String) : State()

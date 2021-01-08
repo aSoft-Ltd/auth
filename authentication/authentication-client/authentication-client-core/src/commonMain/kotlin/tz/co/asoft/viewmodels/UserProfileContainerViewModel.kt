@@ -13,12 +13,15 @@ import tz.co.asoft.UserProfileContainerViewModel.State
 
 class UserProfileContainerViewModel(
     private val repo: IUsersRepo,
-    private val state: MutableStateFlow<AuthenticationState>
+    private val state: MutableStateFlow<SessionState>
 ) : VModel<Intent, State>(State.Loading("Loading")) {
+    companion object : IntentBus<Intent>()
     sealed class State {
-        class Loading(val msg: String) : State()
-        class Profile(val user: User) : State()
-        class Error(val msg: String) : State()
+        data class Loading(val msg: String) : State()
+        data class Profile(val user: User) : State()
+        data class Error(val exception: Throwable, val origin: Intent) : State() {
+            val onRetry = { post(origin) }
+        }
     }
 
     sealed class Intent {
@@ -45,7 +48,7 @@ class UserProfileContainerViewModel(
                 emit(State.Profile(user))
             }
         }.catch {
-            emit(State.Error(it.message ?: "Unknown error while loading user with uid: ${i.uid}"))
+            emit(State.Error(Exception("Failed to view profile", it), i))
         }.collect {
             ui.value = it
         }

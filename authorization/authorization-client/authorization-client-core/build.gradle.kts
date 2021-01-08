@@ -18,6 +18,9 @@ kotlin {
         val commonTest by getting {
             dependencies {
                 implementation(asoft("test-core", vers.asoft.test))
+                implementation(project(":authorization-test-data"))
+                implementation(asoft("expect-coroutines", vers.asoft.expect))
+                implementation(asoft("viewmodel-test-expect", vers.asoft.viewmodel))
             }
         }
     }

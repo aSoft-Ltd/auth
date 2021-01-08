@@ -11,6 +11,7 @@ kotlin {
             dependencies {
                 api(project(":authentication-client-core"))
                 api(project(":authentication-inmemory"))
+                api(project(":auth-test"))
             }
         }
 

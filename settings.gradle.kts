@@ -26,6 +26,9 @@ project(":authorization-client-core").projectDir = File("authorization/authoriza
 include(":authorization-client-react")
 project(":authorization-client-react").projectDir = File("authorization/authorization-client/authorization-client-react")
 
+include(":authorization-test-data")
+project(":authorization-test-data").projectDir = File("authorization/authorization-test-data")
+
 include(":authentication-core")
 project(":authentication-core").projectDir = File("authentication/authentication-core")
 
@@ -35,10 +38,15 @@ project(":authentication-test-data").projectDir = File("authentication/authentic
 include(":authentication-client-core")
 project(":authentication-client-core").projectDir = File("authentication/authentication-client/authentication-client-core")
 
+include(":authentication-client-react")
+project(":authentication-client-react").projectDir = File("authentication/authentication-client/authentication-client-react")
+
 include(":authentication-inmemory")
 project(":authentication-inmemory").projectDir = File("authentication/authentication-inmemory")
 
 include(":auth-client")
+
+include(":auth-test")
 
 include(":auth-react")
 //project(":auth-react").projectDir = File("auth-react")

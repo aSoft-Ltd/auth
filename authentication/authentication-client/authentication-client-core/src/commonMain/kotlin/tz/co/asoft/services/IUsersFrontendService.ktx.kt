@@ -4,12 +4,12 @@ package tz.co.asoft
 
 import kotlinx.coroutines.flow.MutableStateFlow
 
-fun IUsersFrontendService.authenticateLocallyOrLogout(state: MutableStateFlow<AuthenticationState>) {
+fun IUsersFrontendService.authenticateLocallyOrLogout(state: MutableStateFlow<SessionState>) {
     val token = localDao.load()
     state.value = if (token == null) {
-        AuthenticationState.LoggedOut
+        SessionState.LoggedOut
     } else {
-        AuthenticationState.LoggedIn(token)
+        SessionState.LoggedIn(token)
     }
 }
 
@@ -18,7 +18,7 @@ fun IUsersFrontendService.authenticateThenStoreToken(accountId: String, userId: 
     useToken(token)
 }
 
-fun IUsersFrontendService.reAuthenticateIfNeedBe(user: User, state: MutableStateFlow<AuthenticationState>): Later<String?> = scope.later {
+fun IUsersFrontendService.reAuthenticateIfNeedBe(user: User, state: MutableStateFlow<SessionState>): Later<String?> = scope.later {
     if (user.uid == state.value.user?.uid) {
         val authState = state.value
         val userId = authState.user?.uid ?: throw Exception("Current logged in user has null uid")
@@ -32,15 +32,15 @@ fun IUsersFrontendService.changePasswordThenStoreToken(
     userId: String,
     oldPass: String,
     newPass: String,
-    state: MutableStateFlow<AuthenticationState>
+    state: MutableStateFlow<SessionState>
 ) = scope.later {
     val user = changePassword(userId, oldPass, newPass).await()
     reAuthenticateIfNeedBe(user, state).await()
     user
 }
 
-fun IUsersFrontendService.signOut(state: MutableStateFlow<AuthenticationState>) {
-    state.value = AuthenticationState.LoggedOut
+fun IUsersFrontendService.signOut(state: MutableStateFlow<SessionState>) {
+    state.value = SessionState.LoggedOut
     localDao.delete()
 }
 
@@ -49,7 +49,7 @@ fun IUsersFrontendService.editBasicInfoAndReauthenticateIfNeedBe(
     name: String,
     email: Email,
     phone: Phone,
-    state: MutableStateFlow<AuthenticationState>
+    state: MutableStateFlow<SessionState>
 ) = scope.later {
     val user = editBasicInfo(u, name, email, phone).await()
     reAuthenticateIfNeedBe(user, state).await()
@@ -71,11 +71,11 @@ fun IUsersFrontendService.signInAndStoreToken(loginId: String, password: String)
 }
 
 fun IUsersFrontendService.useToken(token: String): String {
-//    Authentication.state.value = AuthenticationState.LoggedIn(token)
+//    Authentication.state.value = SessionState.LoggedIn(token)
     return localDao.save(token)
 }
 
-fun IUsersFrontendService.uploadPhotoThenReauthenticate(u: User, photo: File, state: MutableStateFlow<AuthenticationState>) = scope.later {
+fun IUsersFrontendService.uploadPhotoThenReauthenticate(u: User, photo: File, state: MutableStateFlow<SessionState>) = scope.later {
     val fileRef = uploadPhoto(u, photo).await()
     reAuthenticateIfNeedBe(u, state).await()
     fileRef

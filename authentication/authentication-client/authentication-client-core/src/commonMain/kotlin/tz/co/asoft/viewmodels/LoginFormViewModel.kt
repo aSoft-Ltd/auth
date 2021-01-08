@@ -13,10 +13,10 @@ class LoginFormViewModel(
     companion object : IntentBus<Intent>()
     sealed class State {
         data class Loading(val msg: String) : State()
-        class Success(val state: AuthenticationState.LoggedIn) : State()
+        class Success(val state: SessionState.LoggedIn) : State()
         data class ShowForm(val email: String?) : State()
         data class AccountSelection(val user: User) : State()
-        data class Error(val cause: Throwable, val origin: Intent) : State() {
+        data class Error(val exception: Throwable, val origin: Intent) : State() {
             val onTryAgain = { post(origin) }
             val onGoBack = { post(Intent.ViewForm(origin.email)) }
         }
@@ -41,7 +41,7 @@ class LoginFormViewModel(
                 accountId = i.account.uid ?: throw Exception("Account Id can't be null"),
                 userId = i.user.uid ?: throw Exception("User id can't be null")
             ).await()
-            emit(State.Success(AuthenticationState.LoggedIn(token)))
+            emit(State.Success(SessionState.LoggedIn(token)))
         }.catch {
             emit(State.Error(Exception("Failed to authenticate your accounts", it), i))
         }.collect {
@@ -60,7 +60,7 @@ class LoginFormViewModel(
             }
             val token = res.rightOrNull()
             if (token != null) {
-                emit(State.Success(AuthenticationState.LoggedIn(token)))
+                emit(State.Success(SessionState.LoggedIn(token)))
                 return@flow
             }
             throw IllegalStateException("Sign in flow returned neither token or user object")

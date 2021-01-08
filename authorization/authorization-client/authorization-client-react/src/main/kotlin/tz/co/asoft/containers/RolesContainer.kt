@@ -16,26 +16,26 @@ import tz.co.asoft.RolesManagerViewModel.Intent
  *      if null is provided, the [MainDrawerController is used
  */
 fun RBuilder.RolesContainer(
-    state: AuthenticationState.LoggedIn,
-    moduleState: AuthModuleState,
+    state: IUserPrinciple,
+    locator: AuthorizationViewModelLocator,
     drawerController: MutableStateFlow<DrawerState>? = null
 ) = MainDrawerControllerConsumer { mainDrawerController ->
     styledDiv {
         css { width = 100.pct }
         RolesContainerAppBar(state, drawerController)
-        RolesManager(moduleState)
+        RolesManager(locator)
     }
 }
 
 private fun RBuilder.RolesContainerAppBar(
-    state: AuthenticationState.LoggedIn,
+    principle: IUserPrinciple,
     drawerController: MutableStateFlow<DrawerState>?
 ) = MainDrawerControllerConsumer { mainDrawerController ->
     NavigationAppBar(
         drawerController = drawerController ?: mainDrawerController,
         left = { +"Roles" },
         right = {
-            if (state.has(permission = "roles:create")) {
+            if (principle.has(permission = "roles:create")) {
                 TextButton("New Role", FaPlus) { RolesManagerViewModel.post(Intent.ViewRoleForm(null)) }
             }
         }

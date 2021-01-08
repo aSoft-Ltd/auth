@@ -18,6 +18,7 @@ kotlin {
                 api(asoft("paging-react", vers.asoft.paging))
                 api(asoft("form-react", vers.asoft.form))
                 api(asoft("viewmodel-react", vers.asoft.viewmodel))
+                api(project(":auth-react"))
                 api(project(":authorization-client-core"))
             }
         }
