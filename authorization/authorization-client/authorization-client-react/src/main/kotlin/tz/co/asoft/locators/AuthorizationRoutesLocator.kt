@@ -1,7 +1,8 @@
-package tz.co.asoft.locators
+@file:Suppress("PackageDirectoryMismatch")
+
+package tz.co.asoft
 
 import react.RProps
-import tz.co.asoft.*
 
 class AuthorizationRoutesLocator(
     private val viewModel: AuthorizationViewModelLocator
@@ -14,12 +15,12 @@ class AuthorizationRoutesLocator(
         NavMenu("User Roles", routes.userRoles, FaUser, scope)
     )
 
-    fun modules(principle: IUserPrinciple, scope: String): List<AbstractModuleRoute<out RProps>> = listOf(
+    fun modules(scope: String): List<AbstractModuleRoute<out RProps>> = listOf(
         ModuleRoute(
             path = routes.userRoles,
             permits = UserRole.Permissions.values().map { it.title },
             scope = scope,
-            builder = { RolesContainer(principle, locator = viewModel) }
+            builder = { PrincipleConsumer { RolesContainer(it, locator = viewModel) } }
         )
     )
 }

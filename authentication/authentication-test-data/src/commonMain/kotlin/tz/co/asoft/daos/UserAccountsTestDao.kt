@@ -1,7 +1,5 @@
-package tz.co.asoft.daos
+@file:Suppress("PackageDirectoryMismatch")
 
-import tz.co.asoft.IDao
-import tz.co.asoft.InMemoryDao
-import tz.co.asoft.UserAccount
+package tz.co.asoft
 
 class UserAccountsTestDao : IDao<UserAccount> by InMemoryDao("user-account")

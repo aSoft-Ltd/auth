@@ -1,42 +1,31 @@
 package tz.co.asoft
 
 import kotlinx.browser.document
-import org.w3c.dom.HTMLDivElement
+import kotlinx.coroutines.flow.MutableStateFlow
+import tz.co.asoft.locators.SandboxLocator
 import tz.co.asoft.setup.setupLogging
 import tz.co.asoft.setup.setupTheme
 
 val kfg by lazy { konfig() }
 
-fun setupAuthSandbox(): AuthModuleState {
+
+fun setupAuthSandbox(): SandboxLocator {
     console.log("Setting up")
     setupTheme()
     setupLogging()
-    val dao = AuthModuleDao(
-        users = InMemoryUsersDao(),
-        clientApps = InMemoryDao("client-app"),
-        accounts = InMemoryDao("user-account"),
-        claims = InMemoryDao("claim"),
-        roles = InMemoryDao("role")
-    )
-    val moduleState = AuthModuleState(
-        accountTypes = UserAccountType.all(),
-        dao = dao,
-        service = AuthenticationService(
-            InMemoryUserFrontEndService(
-                claimsDao = dao.claims,
-                accountsDao = dao.accounts,
-                localDao = InMemoryUsersLocalDao()
-            )
-        ),
-    )
-    return moduleState
+    val state = MutableStateFlow<SessionState>(SessionState.Unknown)
+    val accountTypes = UserAccountType.all()
+    val authorization = setupAuthorization(accountTypes)
+    val authentication = setupAuthentication(state, accountTypes, authorization)
+    return SandboxLocator(state, authorization, authentication)
 }
 
 fun main() = document.getElementById("root").setContent {
-    val state = setupAuthSandbox()
-    console.log(state)
-    AuthSandbox(
-        signInPageUrl = "/imgs/sign-up.jpg",
-        state
-    )
+//    setupAuthSandbox()
+//    val locator = setupAuthSandbox()
+//    console.log(locator)
+//    AuthSandbox(
+//        signInPageUrl = "/imgs/sign-up.jpg",
+//        locator
+//    )
 }

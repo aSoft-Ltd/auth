@@ -2,9 +2,6 @@
 
 package tz.co.asoft
 
-import tz.co.asoft.daos.ClaimsTestDao
-import tz.co.asoft.daos.UserAccountsTestDao
-
 class UsersFrontendTestService(
     claimDao: IDao<Claim> = ClaimsTestDao(),
     accountsDao: IDao<UserAccount> = UserAccountsTestDao(),

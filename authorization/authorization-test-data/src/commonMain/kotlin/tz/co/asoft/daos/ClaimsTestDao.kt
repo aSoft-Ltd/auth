@@ -1,7 +1,5 @@
-package tz.co.asoft.daos
+@file:Suppress("PackageDirectoryMismatch")
 
-import tz.co.asoft.Claim
-import tz.co.asoft.IDao
-import tz.co.asoft.InMemoryDao
+package tz.co.asoft
 
 class ClaimsTestDao : IDao<Claim> by InMemoryDao("claim")

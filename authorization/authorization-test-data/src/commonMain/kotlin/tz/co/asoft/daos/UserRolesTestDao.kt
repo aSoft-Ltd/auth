@@ -1,5 +1,5 @@
-package tz.co.asoft.daos
+@file:Suppress("PackageDirectoryMismatch")
 
-import tz.co.asoft.*
+package tz.co.asoft
 
 class UserRolesTestDao : IDao<UserRole> by UniqueNameInMemoryDao("role")

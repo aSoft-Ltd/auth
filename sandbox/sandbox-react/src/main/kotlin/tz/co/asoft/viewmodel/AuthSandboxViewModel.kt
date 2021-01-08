@@ -1,17 +1,18 @@
 package tz.co.asoft.viewmodel
 
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import tz.co.asoft.*
 
 class AuthSandboxViewModel(
-    private val moduleState: AuthModuleState
+    state: MutableStateFlow<SessionState>,
+    service: IUsersFrontendService
 ) : VModel<Any, SessionState>(SessionState.Unknown) {
     init {
         coroutineScope.launch {
-            val state = moduleState.sessionState
-            launch { moduleState.service.users.authenticateLocallyOrLogout(state) }
+            launch { service.authenticateLocallyOrLogout(state) }
             state.collect { ui.value = it }
         }
     }

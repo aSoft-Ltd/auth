@@ -1,9 +1,10 @@
-package tz.co.asoft.repos
+@file:Suppress("PackageDirectoryMismatch")
 
-import tz.co.asoft.*
-import tz.co.asoft.daos.UserRolesTestDao
+package tz.co.asoft
 
-class UserRolesTestRepo : IRepo<UserRole> by Repo(UserRolesTestDao()) {
+class UserRolesTestRepo(
+    private val dao: IDao<UserRole> = UserRolesTestDao()
+) : IRepo<UserRole> by Repo(dao) {
     fun populate() = scope.later {
         for (i in 1..10) UserRole(
             name = "User Role - $i",

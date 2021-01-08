@@ -19,9 +19,10 @@ kotlin {
             dependencies {
                 implementation(asoft("applikation-runtime", vers.asoft.builders))
                 implementation(project(":authentication-test-data"))
-                implementation(project(":auth-react"))
+                implementation(project(":authorization-test-data"))
+                implementation(project(":authentication-client-react"))
+                implementation(project(":authorization-client-react"))
                 implementation(asoft("jwt-hs", vers.asoft.jwt))
-                implementation(devNpm("file-loader", "*"))
             }
         }
     }
