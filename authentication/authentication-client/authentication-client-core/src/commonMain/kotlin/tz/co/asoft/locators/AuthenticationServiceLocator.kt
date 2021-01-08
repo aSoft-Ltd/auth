@@ -2,8 +2,8 @@
 
 package tz.co.asoft
 
-class AuthenticationDaoLocator(
-    val users: IUsersDao,
+class AuthenticationServiceLocator(
+    val users: IUsersFrontendService,
     val clientApps: IDao<ClientApp>,
     val accounts: IDao<UserAccount>
 )

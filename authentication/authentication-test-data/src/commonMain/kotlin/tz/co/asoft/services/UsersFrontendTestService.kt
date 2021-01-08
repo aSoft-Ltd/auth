@@ -3,12 +3,21 @@
 package tz.co.asoft
 
 class UsersFrontendTestService(
-    claimDao: IDao<Claim> = ClaimsTestDao(),
-    accountsDao: IDao<UserAccount> = UserAccountsTestDao(),
+    override val claimsDao: IDao<Claim> = ClaimsTestDao(),
+    override val accountsDao: IDao<UserAccount> = UserAccountsTestDao(),
     override val localDao: IUsersLocalDao = InMemoryUsersLocalDao()
-) : IUsersFrontendService by InMemoryUserFrontEndService(claimDao, accountsDao, localDao) {
+) : IUsersFrontendService by InMemoryUserFrontEndService(claimsDao, accountsDao, localDao) {
 
     fun populate() = scope.later {
+        register(
+            accountName = "Dev Account One",
+            userFullname = "Test Dev One",
+            accountType = UserAccountType.DEVELOPER,
+            email = Email("dev01@test.com"),
+            phone = Phone("255799010101"),
+            password = "01".toByteArray()
+        ).await()
+
         register(
             accountName = "User Account One",
             userFullname = "Test User One",

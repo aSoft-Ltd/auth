@@ -11,19 +11,20 @@ fun setupAuthentication(
     authorization: AuthorizationLocator
 ): AuthenticationLocator {
     val usersLocalDao = UsersLocalDao(namespace)
-    val dao = AuthenticationDaoLocator(
-        users = InMemoryUsersDao(),
-        clientApps = InMemoryDao("client-app"),
-        accounts = UserAccountsTestDao()
+
+    val accountsDao = UserAccountsTestDao()
+
+    val service = AuthenticationServiceLocator(
+        accounts = accountsDao,
+        users = UsersFrontendTestService(authorization.dao.claims, accountsDao, usersLocalDao).apply { populate() },
+        clientApps = InMemoryDao("client-app")
     )
 
-    val service = UsersFrontendTestService(authorization.dao.claims, dao.accounts, usersLocalDao).apply { populate() }
-
-    val repo = AuthenticationRepoLocator(service, dao)
+    val repo = AuthenticationRepoLocator(service)
 
     val viewModel = AuthenticationViewModelLocator(accountTypes, repo, authorization.repo, state)
 
     val routes = AuthenticationRoutesLocator(viewModel)
 
-    return AuthenticationLocator(dao, service, repo, viewModel, routes)
+    return AuthenticationLocator(service, repo, viewModel, routes)
 }

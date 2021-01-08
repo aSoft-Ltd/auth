@@ -37,11 +37,11 @@ class UsersManagerViewModel(
 
         data class Users(val pager: Pager<User>) : State()
         data class Error(val exception: Throwable, val origin: Intent) : State() {
-            val onCancel = { post(Intent.ViewUsers(predicate = null)) }
-            val onRetry = { post(origin) }
+            val cancel = { post(Intent.ViewUsers(predicate = null)) }
+            val retry = { post(origin) }
         }
 
-        object Success : State()
+        class Success(val msg: String = "Success") : State()
     }
 
     sealed class Intent {
@@ -89,13 +89,11 @@ class UsersManagerViewModel(
                 phone = Phone(intent.phone),
                 password = "123456".toByteArray()
             ).await()
-            emit(State.Success)
+            emit(State.Success())
         }.catch {
             emit(State.Error(Exception("Failed to create user", it), intent))
         }.collect {
             ui.value = it
         }
-        delay(3000)
-        post(Intent.ViewUsers(predicate = null))
     }
 }

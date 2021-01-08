@@ -10,7 +10,7 @@ import tz.co.asoft.viewmodel.AuthSandboxViewModel
 @JsExport
 class AuthSandboxApp : VComponent<Props, Any, SessionState, AuthSandboxViewModel>() {
     override val viewModel by lazy {
-        AuthSandboxViewModel(props.locator.state, props.locator.authentication.service)
+        AuthSandboxViewModel(props.locator.state, props.locator.authentication.service.users)
     }
 
     class Props(

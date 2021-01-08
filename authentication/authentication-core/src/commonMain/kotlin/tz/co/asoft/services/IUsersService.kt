@@ -4,6 +4,7 @@ package tz.co.asoft
 
 interface IUsersService : IUsersDao, IUserPhotoUploader {
     val accountsDao: IDao<UserAccount>
+    val claimsDao: IDao<Claim>
     fun changePassword(userId: String, oldPass: String, newPass: String): Later<User>
 
     /**

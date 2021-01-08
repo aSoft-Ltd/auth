@@ -22,10 +22,8 @@ fun setupAuthSandbox(): SandboxLocator {
 }
 
 fun main() = document.getElementById("root").setContent {
-    val locator = setupAuthSandbox()
-    console.log(locator)
     AuthSandbox(
         signInPageUrl = "/imgs/sign-up.jpg",
-        locator
+        locator = setupAuthSandbox()
     )
 }

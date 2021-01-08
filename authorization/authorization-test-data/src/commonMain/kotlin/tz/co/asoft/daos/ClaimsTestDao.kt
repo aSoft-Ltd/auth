@@ -2,4 +2,4 @@
 
 package tz.co.asoft
 
-class ClaimsTestDao : IDao<Claim> by InMemoryDao("claim")
+class ClaimsTestDao : IDao<Claim> by InMemoryDao("")

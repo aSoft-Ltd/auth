@@ -5,7 +5,7 @@ interface IPrinciple {
     val account: UserAccount
 
     fun has(permission: String): Boolean {
-        if (claims.contains("systems.developer")) return true
+        if (claims.contains("system.developer")) return true
         if (claims.contains(permission)) return true
         return false
     }

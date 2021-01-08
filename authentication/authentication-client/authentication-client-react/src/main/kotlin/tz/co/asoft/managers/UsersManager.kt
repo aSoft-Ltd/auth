@@ -33,8 +33,8 @@ class UsersManager private constructor() : VComponent<Props, Intent, State, User
         UserForm(
             user = null,
             accounts = accounts,
-            onCancel = onCancel,//{ post(Intent.ViewUsers(null)) },
-            onSubmit = onSubmit // { name, email, phone, role -> post(Intent.CreateUser(name, email, phone, role)) }
+            onCancel = onCancel,
+            onSubmit = onSubmit
         )
     }
 
@@ -58,8 +58,14 @@ class UsersManager private constructor() : VComponent<Props, Intent, State, User
             is State.Loading -> LoadingBox(ui.msg)
             is State.Form -> Form(ui.accountTypes, ui.onCancel, ui.onSubmit)
             is State.Users -> ShowUsers(ui.pager)
-            is State.Error -> ErrorBox(ui.exception)
-            State.Success -> SuccessBox()
+            is State.Error -> ErrorBox(
+                exception = ui.exception,
+                actions = listOf(
+                    AButton.Contained("Cancel", icon = FaArrowLeft) { ui.cancel() },
+                    AButton.Contained("Retry", icon = FaSync) { ui.retry() }
+                )
+            )
+            is State.Success -> SuccessBox(ui.msg)
         }
     }
 }

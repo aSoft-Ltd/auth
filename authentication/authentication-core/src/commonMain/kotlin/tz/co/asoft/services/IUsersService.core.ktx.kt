@@ -15,8 +15,10 @@ fun IUsersService.load(loginId: String, password: String) = scope.later {
  * @return [Either] [User] or <JWT Token> as [String]
  */
 fun IUsersService.signIn(loginId: String, password: String): Later<Either<User, String>?> = scope.later {
-    val user =
-        load(loginId = loginId, password = password).await() ?: throw RuntimeException("User(loginId=$loginId) and provided password not found")
+    val user = load(
+        loginId = loginId,
+        password = password
+    ).await() ?: throw RuntimeException("User(loginId=$loginId) and provided password not found")
     if (user.accounts.size == 1) {
         val userId = user.uid ?: return@later null
         val account = user.accounts.firstOrNull()
@@ -56,10 +58,11 @@ fun IUsersService.register(
         accounts = listOf(newAccount)
     )
     val newUser = create(user).await()
-    val claims = Claim(
+    val claim = Claim(
         uid = "${newAccount.uid}-${newUser.uid}",
         permits = accountType.permissionGroups.flatMap { it.permissions }.map { it.title }
     )
+    claimsDao.create(claim).await()
     newAccount to newUser
 }
 
