@@ -9,7 +9,7 @@ kotlin {
         val main by getting {
             dependencies {
                 api(asoft("reakt-core", vers.asoft.reakt))
-                api(project(":auth-client"))
+                api(project(":auth-client-core"))
             }
         }
     }

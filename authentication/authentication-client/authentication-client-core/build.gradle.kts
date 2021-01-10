@@ -14,7 +14,7 @@ kotlin {
                 api(asoft("kotlinx-serialization-mapper", vers.asoft.mapper))
                 api(asoft("either-core", vers.asoft.duality))
                 api(asoft("later-ktx", vers.asoft.later))
-                api(project(":auth-client"))
+                api(project(":auth-client-core"))
                 api(project(":authentication-core"))
                 api(project(":authorization-client-core"))
             }

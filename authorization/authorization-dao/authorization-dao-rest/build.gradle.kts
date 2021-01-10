@@ -9,18 +9,15 @@ kotlin {
     sourceSets {
         val commonMain by getting {
             dependencies {
-                api(asoft("krypto-core", vers.asoft.krypto))
-                api(asoft("viewmodel-core", vers.asoft.viewmodel))
-                api(project(":auth-client-core"))
                 api(project(":authorization-core"))
+                api(asoft("jwt-rs", vers.asoft.jwt))
+                api(asoft("persist-inmemory", vers.asoft.persist))
             }
         }
 
         val commonTest by getting {
             dependencies {
-                implementation(asoft("test-core", vers.asoft.test))
-                implementation(project(":authorization-test-data"))
-                implementation(asoft("expect-coroutines", vers.asoft.expect))
+                implementation(asoft("test-coroutines", vers.asoft.test))
                 implementation(asoft("viewmodel-test-expect", vers.asoft.viewmodel))
             }
         }
