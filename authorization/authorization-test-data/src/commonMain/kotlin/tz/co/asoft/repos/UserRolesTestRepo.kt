@@ -2,6 +2,8 @@
 
 package tz.co.asoft
 
+import tz.co.asoft.entities.UserRole
+
 class UserRolesTestRepo(
     private val dao: IDao<UserRole> = UserRolesTestDao()
 ) : IRepo<UserRole> by Repo(dao) {

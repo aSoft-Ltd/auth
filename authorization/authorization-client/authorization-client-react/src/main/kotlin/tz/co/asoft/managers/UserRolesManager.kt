@@ -13,6 +13,7 @@ import react.functionalComponent
 import styled.*
 import tz.co.asoft.RolesManagerViewModel.Intent
 import tz.co.asoft.RolesManagerViewModel.State
+import tz.co.asoft.entities.UserRole
 
 private fun RBuilder.RoleCard(role: UserRole) = Accordion(role.name) {
     ul {

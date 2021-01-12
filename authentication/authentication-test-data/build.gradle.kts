@@ -10,7 +10,7 @@ kotlin {
         val commonMain by getting {
             dependencies {
                 api(project(":authentication-client-core"))
-                api(project(":authentication-inmemory"))
+                api(project(":authentication-dao-inmemory"))
                 api(project(":authorization-test-data"))
                 api(project(":auth-test"))
             }

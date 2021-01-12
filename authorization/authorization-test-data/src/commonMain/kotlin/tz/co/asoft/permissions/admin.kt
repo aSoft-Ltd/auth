@@ -2,6 +2,8 @@
 
 package tz.co.asoft
 
+import tz.co.asoft.entities.UserRole
+
 fun adminPermits() = listOf(
     SystemPermissionGroup(
         name = "authentication",

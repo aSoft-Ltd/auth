@@ -9,6 +9,7 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
 import tz.co.asoft.UserPermissionsManagerViewModel.Intent
 import tz.co.asoft.UserPermissionsManagerViewModel.State
+import tz.co.asoft.entities.UserRole
 
 class UserPermissionsManagerViewModel(
     private val rolesRepo: IRepo<UserRole>,

@@ -11,6 +11,7 @@ import styled.css
 import styled.styledDiv
 import tz.co.asoft.UserRoleManagerViewModel.Intent
 import tz.co.asoft.UserRoleManagerViewModel.State
+import tz.co.asoft.entities.UserRole
 
 private class RoleManagerProps(
     val role: UserRole,

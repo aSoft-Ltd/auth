@@ -12,8 +12,10 @@ kotlin {
                 api(asoft("files", vers.asoft.files))
                 api(asoft("persist-local", vers.asoft.persist))
                 api(asoft("krypto-core", vers.asoft.krypto))
+                api(asoft("either-core", vers.asoft.duality))
                 api(asoft("jwt-core", vers.asoft.jwt))
-                api(project(":auth-core"))
+                api(project(":authorization-core"))
+                api(asoft("access-system", vers.asoft.access))
             }
         }
     }

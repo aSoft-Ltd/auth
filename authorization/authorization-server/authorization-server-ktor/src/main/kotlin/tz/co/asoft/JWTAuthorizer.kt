@@ -5,6 +5,6 @@ open class JWTAuthorizer(
     override val allowedUrls: List<String>
 ) : Authorizer {
     override suspend fun authorize(principle: Principle) = alg.createJWT {
-        putAll(principle.toKotlinMap(Principle.serializer()))
+//        putAll(principle.toKotlinMap(Principle.serializer()))
     }.token()
 }

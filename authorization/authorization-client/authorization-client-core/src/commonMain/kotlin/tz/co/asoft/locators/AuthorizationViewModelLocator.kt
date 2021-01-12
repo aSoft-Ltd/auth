@@ -2,6 +2,8 @@
 
 package tz.co.asoft
 
+import tz.co.asoft.locators.AuthorizationRepoLocator
+
 class AuthorizationViewModelLocator(
     private val accountTypes: List<UserAccount.Type>,
     private val repo: AuthorizationRepoLocator

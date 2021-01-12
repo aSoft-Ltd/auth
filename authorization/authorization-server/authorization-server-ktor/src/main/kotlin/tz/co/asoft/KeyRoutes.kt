@@ -1,14 +1,12 @@
 package tz.co.asoft
 
-import io.ktor.application.call
-import io.ktor.http.HttpStatusCode
-import io.ktor.routing.Route
-import io.ktor.routing.get
-import io.ktor.routing.post
+import io.ktor.application.*
+import io.ktor.http.*
+import io.ktor.routing.*
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flow
-import kotlinx.serialization.builtins.list
+import kotlinx.serialization.builtins.ListSerializer
 import kotlinx.serialization.builtins.nullable
 
 internal fun Route.keyRoutes(fetcher: KeyFetcher, logger: Logger) {
@@ -41,7 +39,7 @@ internal fun Route.keyRoutes(fetcher: KeyFetcher, logger: Logger) {
                 )
             )
         }.collect {
-            send(call, logger, HttpStatusCode.OK, SecurityKey.serializer().list, it)
+            send(call, logger, HttpStatusCode.OK, ListSerializer(SecurityKey.serializer()), it)
         }
     }
 }

@@ -12,7 +12,6 @@ kotlin {
                 api(asoft("viewmodel-core", vers.asoft.viewmodel))
                 api(asoft("jwt-core", vers.asoft.jwt))
                 api(asoft("kotlinx-serialization-mapper", vers.asoft.mapper))
-                api(asoft("either-core", vers.asoft.duality))
                 api(asoft("later-ktx", vers.asoft.later))
                 api(project(":auth-client-core"))
                 api(project(":authentication-core"))

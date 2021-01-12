@@ -13,6 +13,7 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flow
 import kotlinx.serialization.builtins.serializer
+import kotlinx.serialization.json.Json
 
 internal fun Route.authorizeRoute(authorizer: Authorizer, log: Logger) = post("/authorization/authorize") {
     flow<Result<String>> {
@@ -21,7 +22,7 @@ internal fun Route.authorizeRoute(authorizer: Authorizer, log: Logger) = post("/
         }
         val params = call.receiveParameters()
         val principle: String by params
-        call.respondText(authorizer.authorize(Json.parse(Principle.serializer(), principle)))
+        call.respondText(authorizer.authorize(Json.decodeFromString(Principle.serializer(), principle)))
     }.catch {
         emit(it.toFailure())
     }.collect {

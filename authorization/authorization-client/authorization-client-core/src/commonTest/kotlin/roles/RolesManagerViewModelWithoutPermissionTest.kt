@@ -3,7 +3,7 @@ package roles
 import tz.co.asoft.*
 import tz.co.asoft.RolesManagerViewModel.Intent
 import tz.co.asoft.RolesManagerViewModel.State
-import tz.co.asoft.repos.UserRolesTestRepo
+import tz.co.asoft.entities.UserRole
 import kotlin.test.Test
 
 class RolesManagerViewModelWithoutPermissionTest {

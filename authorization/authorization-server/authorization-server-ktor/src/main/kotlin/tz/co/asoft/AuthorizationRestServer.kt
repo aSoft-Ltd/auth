@@ -7,16 +7,16 @@ import io.ktor.routing.routing
 import io.ktor.server.cio.CIO
 import io.ktor.server.engine.embeddedServer
 
-class AuthorizationRestApi(
+class AuthorizationRestServer(
     port: Int = 8080,
     val keyFetcher: KeyFetcher,
     val logger: Logger,
     val authorizer: Authorizer,
-    modules: List<IRestModule<*>>
-) : RestApi(port, logger, modules) {
+    val moduleLocator: AuthorizationModuleLocator
+) : RestServer(port, logger, listOf(moduleLocator.claims, moduleLocator.roles)) {
     override fun start() = embeddedServer(CIO, port) {
         installCORS()
-        modules.forEach {
+        listOf(moduleLocator.claims, moduleLocator.roles).forEach {
             it.setRoutes(this, log)
             log.info("Endpoints at: ${it.path}")
         }

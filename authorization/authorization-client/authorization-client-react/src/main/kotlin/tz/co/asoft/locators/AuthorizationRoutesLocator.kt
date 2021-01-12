@@ -3,6 +3,7 @@
 package tz.co.asoft
 
 import react.RProps
+import tz.co.asoft.entities.UserRole
 
 class AuthorizationRoutesLocator(
     private val viewModel: AuthorizationViewModelLocator

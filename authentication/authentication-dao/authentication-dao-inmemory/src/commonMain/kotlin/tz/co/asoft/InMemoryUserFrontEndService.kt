@@ -1,5 +1,6 @@
 package tz.co.asoft
 
+import tz.co.asoft.entities.Claim
 import tz.co.asoft.utils.createToken
 
 class InMemoryUserFrontEndService(

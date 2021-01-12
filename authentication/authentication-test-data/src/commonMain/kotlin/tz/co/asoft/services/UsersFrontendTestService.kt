@@ -2,6 +2,8 @@
 
 package tz.co.asoft
 
+import tz.co.asoft.entities.Claim
+
 class UsersFrontendTestService(
     override val claimsDao: IDao<Claim> = ClaimsTestDao(),
     override val accountsDao: IDao<UserAccount> = UserAccountsTestDao(),
