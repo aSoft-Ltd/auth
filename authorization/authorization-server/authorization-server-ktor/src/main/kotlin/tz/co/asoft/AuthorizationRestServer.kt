@@ -18,7 +18,7 @@ class AuthorizationRestServer(
         installCORS()
         listOf(moduleLocator.claims, moduleLocator.roles).forEach {
             it.setRoutes(this, log)
-            log.info("Endpoints at: ${it.path}")
+            log.info("Endpoints at: :$port${it.path}")
         }
         routing {
             keyRoutes(keyFetcher, logger)

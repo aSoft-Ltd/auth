@@ -18,6 +18,7 @@ kotlin {
         val main by getting {
             dependencies {
                 implementation(asoft("applikation-runtime", vers.asoft.builders))
+                implementation(project(":sandbox-core"))
                 implementation(project(":authentication-test-data"))
                 implementation(project(":authorization-test-data"))
                 implementation(project(":authentication-client-react"))

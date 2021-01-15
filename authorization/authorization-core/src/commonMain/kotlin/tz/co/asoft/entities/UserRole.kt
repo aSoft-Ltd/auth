@@ -34,6 +34,11 @@ data class UserRole(
             title = "authorization.roles.delete",
             details = "Grants access to delete user roles from the system",
             needs = listOf(Read.title)
+        ),
+        Wipe(
+            title = "authorization.roles.wipe",
+            details = "Grants access to wipe user roles from the system",
+            needs = listOf(Read.title)
         )
     }
 }

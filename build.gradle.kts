@@ -5,6 +5,8 @@ plugins {
 }
 
 subprojects {
+    group = "tz.co.asoft"
+    version = vers.asoft.auth
     repositories {
         maven("https://maven.pkg.jetbrains.space/asofttz/p/libs/maven") {
             credentials {
