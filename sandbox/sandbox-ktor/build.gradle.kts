@@ -24,6 +24,7 @@ kotlin {
                 implementation(asoft("jwt-hs", vers.asoft.jwt))
                 implementation(asoft("applikation-runtime", vers.asoft.builders))
                 implementation(project(":authorization-server-ktor"))
+                implementation(project(":authentication-server-ktor"))
             }
         }
     }

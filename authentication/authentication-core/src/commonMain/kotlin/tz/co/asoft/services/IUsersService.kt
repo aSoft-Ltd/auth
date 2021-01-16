@@ -2,8 +2,6 @@
 
 package tz.co.asoft
 
-import tz.co.asoft.entities.Claim
-
 interface IUsersService : IDao<User>, IUserPhotoUploader {
     val accountsDao: IDao<UserAccount>
     val claimsDao: IDao<Claim>

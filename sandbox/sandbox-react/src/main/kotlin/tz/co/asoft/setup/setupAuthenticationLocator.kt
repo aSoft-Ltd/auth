@@ -3,6 +3,7 @@
 package tz.co.asoft
 
 import kotlinx.coroutines.flow.MutableStateFlow
+import tz.co.asoft.locators.AuthenticationServiceLocator
 
 fun setupAuthentication(
     namespace: String,

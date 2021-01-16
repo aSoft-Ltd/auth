@@ -57,6 +57,12 @@ project(":authorization-test-data").projectDir = File("authorization/authorizati
 include(":authentication-core")
 project(":authentication-core").projectDir = File("authentication/authentication-core")
 
+// authentication-server modules
+include(":authentication-server-core")
+project(":authentication-server-core").projectDir = File("authentication/authentication-server/authentication-server-core")
+include(":authentication-server-ktor")
+project(":authentication-server-ktor").projectDir = File("authentication/authentication-server/authentication-server-ktor")
+
 // authentication client modules
 include(":authentication-client-core")
 project(":authentication-client-core").projectDir = File("authentication/authentication-client/authentication-client-core")

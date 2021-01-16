@@ -2,8 +2,6 @@
 
 package tz.co.asoft
 
-import tz.co.asoft.entities.Claim
-
 fun IUsersService.load(loginId: String, password: String) = scope.later {
     if (loginId.contains("@")) {
         load(Email(loginId), password).await()

@@ -3,7 +3,6 @@
 package tz.co.asoft
 
 import kotlinx.coroutines.flow.MutableStateFlow
-import tz.co.asoft.locators.AuthorizationRepoLocator
 
 class AuthenticationViewModelLocator(
     private val accountTypes: List<UserAccount.Type>,
