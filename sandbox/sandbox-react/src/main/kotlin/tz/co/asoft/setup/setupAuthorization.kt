@@ -2,17 +2,40 @@
 
 package tz.co.asoft
 
-import tz.co.asoft.locators.AuthorizationRepoLocator
+import io.ktor.client.*
 
-fun setupAuthorization(accountTypes: List<UserAccount.Type>): AuthorizationLocator {
-    val dao = AuthorizationDaoLocator(
-        claims = ClaimsTestDao(),
-        roles = UserRolesTestDao()
+fun inMemoryAuthorizationDaoLocator() = AuthorizationDaoLocator(
+    claims = ClaimsTestDao(),
+    roles = UserRolesTestDao().apply { populate() }
+)
+
+fun restAuthorizationDaoLocator(client: HttpClient): AuthorizationDaoLocator {
+    val options = RestfulOptions(url = "http://192.168.43.218:9010", "v1")
+    return AuthorizationDaoLocator(
+        claims = RestfulDao(
+            options = options,
+            serializer = Claim.serializer(),
+            root = "authorization",
+            subRoot = "claims",
+            client = client,
+            token = null
+        ),
+        roles = RestfulDao(
+            options = options,
+            serializer = UserRole.serializer(),
+            root = "authorization",
+            subRoot = "user-roles",
+            client = client,
+            token = null
+        )
     )
+}
 
+
+fun setupAuthorization(accountTypes: List<UserAccount.Type>, dao: AuthorizationDaoLocator): AuthorizationLocator {
     val repo = AuthorizationRepoLocator(
         claims = Repo(dao.claims),
-        roles = UserRolesTestRepo(dao.roles).apply { populate() }
+        roles = Repo(dao.roles)
     )
 
     val viewModel = AuthorizationViewModelLocator(

@@ -2,8 +2,6 @@
 
 package tz.co.asoft
 
-import tz.co.asoft.locators.AuthenticationFrontendServiceLocator
-
 class AuthenticationRepoLocator(
     val users: IUsersRepo,
     val userAccounts: IRepo<UserAccount>,

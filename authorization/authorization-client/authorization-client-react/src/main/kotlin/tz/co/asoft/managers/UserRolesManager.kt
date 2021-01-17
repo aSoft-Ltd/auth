@@ -13,7 +13,6 @@ import react.functionalComponent
 import styled.*
 import tz.co.asoft.RolesManagerViewModel.Intent
 import tz.co.asoft.RolesManagerViewModel.State
-import tz.co.asoft.entities.UserRole
 
 private fun RBuilder.RoleCard(role: UserRole) = Accordion(role.name) {
     ul {
@@ -73,7 +72,7 @@ private val UserRolesManagerHook = functionalComponent<UserRolesManagerHookProps
             padding(0.5.em)
         }
         when (val ui = state) {
-            is State.Loading -> Loader(text = ui.msg)
+            is State.Loading -> LoadingBox(title = ui.msg)
             is State.RoleForm -> ShowRoleForm(
                 systemPermits = ui.permissionGroups,
                 onCancel = { vm.post(Intent.LoadRoles) },
@@ -84,7 +83,12 @@ private val UserRolesManagerHook = functionalComponent<UserRolesManagerHookProps
                 systemPermits = ui.permissionGroups,
                 onDelete = { vm.post(Intent.DeleteRole(it)) }
             )
-            is State.Error -> Error(ui.exception.message ?: "Unkown Error")
+            is State.Error -> ErrorBox(
+                exception = ui.exception,
+                actions = listOf(
+                    AButton.Contained("Retry", FaSync) { ui.onRetry() }
+                )
+            )
         }
     }
 }

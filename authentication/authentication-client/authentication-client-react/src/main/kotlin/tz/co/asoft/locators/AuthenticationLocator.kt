@@ -2,10 +2,8 @@
 
 package tz.co.asoft
 
-import tz.co.asoft.locators.AuthenticationServiceLocator
-
 class AuthenticationLocator(
-    val service: AuthenticationServiceLocator,
+    val service: AuthenticationFrontendServiceLocator,
     val repo: AuthenticationRepoLocator,
     val viewModel: AuthenticationViewModelLocator,
     val routes: AuthenticationRoutesLocator

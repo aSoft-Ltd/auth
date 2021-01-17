@@ -1,11 +1,6 @@
 @file:Suppress("PackageDirectoryMismatch")
 
-package tz.co.asoft.locators
-
-import tz.co.asoft.ClientApp
-import tz.co.asoft.IDao
-import tz.co.asoft.IUsersService
-import tz.co.asoft.UserAccount
+package tz.co.asoft
 
 open class AuthenticationServiceLocator(
     open val users: IUsersService,

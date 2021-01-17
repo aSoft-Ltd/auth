@@ -10,6 +10,7 @@ kotlin {
             dependencies {
                 api(project(":authorization-test-data"))
                 api(project(":authentication-test-data"))
+                api(project(":authentication-client-service-ktor"))
             }
         }
     }

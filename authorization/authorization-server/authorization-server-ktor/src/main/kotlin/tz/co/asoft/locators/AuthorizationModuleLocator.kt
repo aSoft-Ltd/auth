@@ -23,7 +23,7 @@ class AuthorizationModuleLocator(
         roles = RestModule(
             version = "v1",
             root = "authorization",
-            subRoot = "roles",
+            subRoot = "user-roles",
             keyFetcher = keyFetcher,
             serializer = UserRole.serializer(),
             controller = controller.roles,

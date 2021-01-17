@@ -1,8 +1,6 @@
 @file:Suppress("PackageDirectoryMismatch")
 
-package tz.co.asoft.locators
-
-import tz.co.asoft.*
+package tz.co.asoft
 
 open class AuthenticationFrontendServiceLocator(
     override val users: IUsersFrontendService,

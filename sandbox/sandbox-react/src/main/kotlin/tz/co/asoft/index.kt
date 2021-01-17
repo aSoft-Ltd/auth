@@ -1,5 +1,6 @@
 package tz.co.asoft
 
+import io.ktor.client.*
 import kotlinx.browser.document
 import kotlinx.coroutines.flow.MutableStateFlow
 import tz.co.asoft.locators.SandboxLocator
@@ -16,8 +17,11 @@ fun setupAuthSandbox(): SandboxLocator {
     setupLogging()
     val state = MutableStateFlow<SessionState>(SessionState.Unknown)
     val accountTypes = UserAccountType.all()
-    val authorization = setupAuthorization(accountTypes)
-    val authentication = setupAuthentication(namespace, state, accountTypes, authorization)
+    val client = HttpClient()
+    val authZDao = restAuthorizationDaoLocator(client)
+    val authorization = setupAuthorization(accountTypes, authZDao)
+    val authNService = ktorAuthenticationService(authorization, UsersLocalDao(namespace), client)
+    val authentication = setupAuthentication(state, accountTypes, authorization, authNService)
     return SandboxLocator(state, authorization, authentication)
 }
 

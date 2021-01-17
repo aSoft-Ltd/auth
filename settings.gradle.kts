@@ -68,6 +68,8 @@ include(":authentication-client-core")
 project(":authentication-client-core").projectDir = File("authentication/authentication-client/authentication-client-core")
 include(":authentication-client-react")
 project(":authentication-client-react").projectDir = File("authentication/authentication-client/authentication-client-react")
+include(":authentication-client-service-ktor")
+project(":authentication-client-service-ktor").projectDir = File("authentication/authentication-client/authentication-client-service/authentication-client-service-ktor")
 
 // authentication-test modules
 include(":authentication-test-data")

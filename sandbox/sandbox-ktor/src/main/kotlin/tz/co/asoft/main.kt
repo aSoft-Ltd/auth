@@ -14,9 +14,9 @@ fun main() = runBlocking {
         override suspend fun load(kid: String): SecurityKey = key
     }
     val authorizer: Authorizer = JWTAuthorizer(HS256Algorithm("secret"), listOf())
-    
-    val authZServer = authorizationRestServer(8080, fetcher, authorizer, logger, dao)
-    val authNServer = authenticationRestServer(8081, fetcher, authorizer, logger, dao)
+
+    val authZServer = authorizationRestServer(9010, fetcher, authorizer, logger, dao)
+    val authNServer = authenticationRestServer(9020, fetcher, authorizer, logger, dao)
 
     launch { authZServer.start() }
     launch { authNServer.start() }

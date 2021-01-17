@@ -2,8 +2,6 @@
 
 package tz.co.asoft
 
-import tz.co.asoft.locators.AuthenticationServiceLocator
-
 class AuthenticationControllerLocator(
     val users: IRestController<User>,
     val clientApps: IRestController<ClientApp>,

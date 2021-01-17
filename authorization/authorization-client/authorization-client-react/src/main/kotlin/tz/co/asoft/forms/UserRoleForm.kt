@@ -6,7 +6,6 @@ import kotlinx.css.*
 import react.RBuilder
 import styled.css
 import styled.styledH1
-import tz.co.asoft.entities.UserRole
 
 fun RBuilder.UserRoleForm(
     role: UserRole?,

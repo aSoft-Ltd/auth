@@ -18,6 +18,7 @@ kotlin {
         val main by getting {
             dependencies {
                 implementation(asoft("applikation-runtime", vers.asoft.builders))
+                implementation(asoft("rest-client-ktor", vers.asoft.rest))
                 implementation(project(":sandbox-core"))
                 implementation(project(":authentication-test-data"))
                 implementation(project(":authorization-test-data"))
