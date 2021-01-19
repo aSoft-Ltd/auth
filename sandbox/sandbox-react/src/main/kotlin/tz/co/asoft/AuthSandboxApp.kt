@@ -18,21 +18,22 @@ class AuthSandboxApp : VComponent<Props, Any, SessionState, AuthSandboxViewModel
     ) : RProps
 
     override fun RBuilder.render(ui: SessionState) = ThemeProvider {
+        val locator = viewModel.locator
         when (ui) {
             Unknown -> LoadingBox("Setting up workspace")
             LoggedOut -> AuthSandboxWebsite(
                 signInPageImageUrl = props.signInPageImageUrl,
-                viewModel = viewModel.locator.authentication.viewModel
+                viewModel = locator.authentication.viewModel
             )
             is LoggedIn -> PrincipleProvider(ui) {
                 AuthSandboxWebapp(
                     state = ui,
                     moduleGroups = mapOf(
-                        "Authorization" to viewModel.locator.authorization.routes.menus("admin"),
-                        "Authentication" to viewModel.locator.authentication.routes.menus("admin")
+                        "Authorization" to locator.authorization.routes.menus("admin"),
+                        "Authentication" to locator.authentication.routes.menus("admin")
                     ),
-                    modules = viewModel.locator.authorization.routes.modules("admin") +
-                            viewModel.locator.authentication.routes.modules("admin")
+                    modules = locator.authorization.routes.modules("admin") +
+                            locator.authentication.routes.modules("admin")
                 )
             }
         }

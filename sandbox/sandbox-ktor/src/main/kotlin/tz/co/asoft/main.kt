@@ -14,6 +14,7 @@ fun main() = runBlocking {
         override suspend fun all(): List<SecurityKey> = listOf(key)
         override suspend fun load(kid: String): SecurityKey = key
     }
+
     val authorizer: Authorizer = JWTAuthorizer(HS256Algorithm("secret"), listOf())
 
     val authZServer = authorizationRestServer(9010, fetcher, authorizer, logger, controller)

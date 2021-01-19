@@ -1,3 +1,5 @@
+@file:Suppress("PackageDirectoryMismatch")
+
 package tz.co.asoft
 
 open class JWTAuthorizer(
