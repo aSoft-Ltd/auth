@@ -11,6 +11,7 @@ kotlin {
             dependencies {
                 api(asoft("krypto-core", vers.asoft.krypto))
                 api(asoft("viewmodel-core", vers.asoft.viewmodel))
+                api(asoft("persist-client", vers.asoft.persist))
                 api(project(":auth-client-core"))
                 api(project(":authorization-core"))
             }

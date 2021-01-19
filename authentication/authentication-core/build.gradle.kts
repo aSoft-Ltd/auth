@@ -10,7 +10,7 @@ kotlin {
         val commonMain by getting {
             dependencies {
                 api(asoft("files", vers.asoft.files))
-                api(asoft("persist-local", vers.asoft.persist))
+                api(asoft("persist-core", vers.asoft.persist))
                 api(asoft("krypto-core", vers.asoft.krypto))
                 api(asoft("either-core", vers.asoft.duality))
                 api(asoft("jwt-core", vers.asoft.jwt))

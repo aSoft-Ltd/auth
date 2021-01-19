@@ -10,6 +10,11 @@ data class Claim(
     val permits: List<String>,
     override var deleted: Boolean = false
 ) : Entity {
+    companion object {
+        fun getUserClaimId(accountId: String, userId: String) = "$accountId-user-$userId"
+        fun getAppClaimId(accountId: String, userId: String) = "$accountId-app-$userId"
+    }
+
     enum class Permissions(
         override val title: String,
         override val details: String,

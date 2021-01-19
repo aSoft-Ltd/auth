@@ -15,7 +15,7 @@ fun IUsersFrontendService.authenticateLocallyOrLogout(state: MutableStateFlow<Se
 
 fun IUsersFrontendService.authenticateThenStoreToken(accountId: String, userId: String): Later<String> = scope.later {
     val token = authenticate(accountId, userId).await()
-    useToken(token)
+    localDao.save(token)
 }
 
 fun IUsersFrontendService.reAuthenticateIfNeedBe(user: User, state: MutableStateFlow<SessionState>): Later<String?> = scope.later {
@@ -63,16 +63,11 @@ fun IUsersFrontendService.editBasicInfoAndReauthenticateIfNeedBe(
 fun IUsersFrontendService.signInAndStoreToken(loginId: String, password: String): Later<Either<User, String>> = scope.later {
     val res = signIn(loginId, password).await() ?: throw Exception("User with those credentials not found")
     when (val value = res.value) {
-        is String -> useToken(value)
+        is String -> localDao.save(value)
         is User -> Unit
         else -> throw Exception("Failed to sign you in")
     }
     res
-}
-
-fun IUsersFrontendService.useToken(token: String): String {
-//    Authentication.state.value = SessionState.LoggedIn(token)
-    return localDao.save(token)
 }
 
 fun IUsersFrontendService.uploadPhotoThenReauthenticate(u: User, photo: File, state: MutableStateFlow<SessionState>) = scope.later {

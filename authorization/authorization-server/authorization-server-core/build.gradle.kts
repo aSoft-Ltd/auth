@@ -10,6 +10,7 @@ kotlin {
         val commonMain by getting {
             dependencies {
                 api(project(":authorization-core"))
+                api(asoft("jwt-core",vers.asoft.jwt))
                 api(asoft("rest-server-core", vers.asoft.rest))
             }
         }

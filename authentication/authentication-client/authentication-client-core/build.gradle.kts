@@ -5,11 +5,12 @@ plugins {
 }
 
 kotlin {
-    multiplatformLib()
+    multiplatformLib(forNodeJs = false)
     sourceSets {
         val commonMain by getting {
             dependencies {
-                api(asoft("viewmodel-core", vers.asoft.viewmodel))
+                api(asoft("persist-client", vers.asoft.persist))
+                api(asoft("persist-keyvalue-locally", vers.asoft.persist))
                 api(asoft("jwt-core", vers.asoft.jwt))
                 api(asoft("kotlinx-serialization-mapper", vers.asoft.mapper))
                 api(asoft("later-ktx", vers.asoft.later))

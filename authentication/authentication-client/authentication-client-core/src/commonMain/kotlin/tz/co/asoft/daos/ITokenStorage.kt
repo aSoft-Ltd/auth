@@ -2,7 +2,7 @@
 
 package tz.co.asoft
 
-interface IUsersLocalDao {
+interface ITokenStorage {
     fun save(token: String): String
     fun load(): String?
     fun delete()

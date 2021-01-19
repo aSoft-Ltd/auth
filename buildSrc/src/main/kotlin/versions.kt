@@ -3,6 +3,7 @@ object vers {
     val ktor = "1.4.3"
 
     object kotlinx {
+        val serialization = "1.0.1"
         val datetime = "0.1.1"
     }
 
@@ -10,7 +11,7 @@ object vers {
         val auth = "0.0.10"
         val contacts = "0.0.1"
         val viewmodel = "0.0.62"
-        val rest = "0.0.20"
+        val rest = "0.1.0"
         val mapper = "0.0.5"
         val jwt = "0.0.2"
         val form = "0.0.20"
@@ -21,10 +22,10 @@ object vers {
         val files = "0.0.1"
         val krypto = "0.0.4"
         val paging = "0.0.31"
-        val persist = "0.1.10"
+        val persist = "0.2.10"
         val builders = "1.3.0"
         val expect = "0.0.10"
         val test = "1.1.10"
-        val access = "0.0.12"
+        val access = "0.0.13"
     }
 }

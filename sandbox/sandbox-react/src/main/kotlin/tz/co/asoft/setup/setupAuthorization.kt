@@ -9,24 +9,24 @@ fun inMemoryAuthorizationDaoLocator() = AuthorizationDaoLocator(
     roles = UserRolesTestDao().apply { populate() }
 )
 
-fun restAuthorizationDaoLocator(client: HttpClient): AuthorizationDaoLocator {
-    val options = RestfulOptions(url = "http://192.168.43.218:9010", "v1")
+fun restAuthorizationDaoLocator(token: String?, client: HttpClient): AuthorizationDaoLocator {
+    val options = KtorDaoOptions(url = "http://192.168.43.218:9010", "v1")
     return AuthorizationDaoLocator(
-        claims = RestfulDao(
+        claims = KtorRestDao(
             options = options,
             serializer = Claim.serializer(),
             root = "authorization",
             subRoot = "claims",
             client = client,
-            token = null
+            token = token
         ),
-        roles = RestfulDao(
+        roles = KtorRestDao(
             options = options,
             serializer = UserRole.serializer(),
             root = "authorization",
             subRoot = "user-roles",
             client = client,
-            token = null
+            token = token
         )
     )
 }

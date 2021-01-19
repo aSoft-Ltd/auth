@@ -2,8 +2,8 @@
 
 package tz.co.asoft
 
-interface IUsersFrontendService : IUsersService {
-    val localDao: IUsersLocalDao
+interface IUsersFrontendService : IUsersService, IClientUserPhotoUploader {
+    val localDao: ITokenStorage
     override val accountsDao: IDao<UserAccount>
     override val claimsDao: IDao<Claim>
 }

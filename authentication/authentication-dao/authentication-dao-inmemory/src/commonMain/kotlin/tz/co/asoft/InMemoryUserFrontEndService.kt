@@ -3,7 +3,7 @@ package tz.co.asoft
 class InMemoryUserFrontEndService(
     override val claimsDao: IDao<Claim>,
     override val accountsDao: IDao<UserAccount>,
-    override val localDao: IUsersLocalDao,
+    override val localDao: ITokenStorage,
     private val alg: JWTAlgorithm = HS256Algorithm("secret")
 ) : IDao<User> by InMemoryDao("user"), IUsersFrontendService {
     override fun load(email: Email, pwd: String) = scope.later {
@@ -38,8 +38,8 @@ class InMemoryUserFrontEndService(
     override fun authenticate(accountId: String, userId: String): Later<String> = scope.later {
         val user = load(userId).await() ?: throw Exception("User with $userId not found")
         val account = user.accounts.find { it.uid == accountId } ?: throw Exception("User ${user.name} doesn't have an account with id $accountId")
-        val claim = claimsDao.load("$accountId-$userId").await() ?: throw Exception("Failed to get claims for User(name=${user.name})")
-        alg.createToken(account, user, claim)
+        val claim = claimsDao.load(Claim.getUserClaimId(accountId, userId)).await() ?: throw Exception("Failed to get claims for User(name=${user.name})")
+        alg.createToken(account, user, claim.permits)
     }
 
     override fun updateLastSeen(userId: String, status: User.Status): Later<User> {

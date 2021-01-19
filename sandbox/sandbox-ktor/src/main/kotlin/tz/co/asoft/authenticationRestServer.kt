@@ -5,16 +5,19 @@ fun authenticationRestServer(
     fetcher: KeyFetcher,
     authorizer: Authorizer,
     logger: Logger,
+    authZController: AuthorizationControllerLocator,
     dao: AuthorizationDaoLocator
 ): AuthenticationRestServer {
     val service = authenticationService(dao)
-    val controller = AuthenticationControllerLocator(service)
-    val module = AuthenticationModuleLocator(fetcher, controller)
+    val authNController = AuthenticationControllerLocator(service)
+    val module = AuthenticationModuleLocator(fetcher, authNController)
     return AuthenticationRestServer(
         port = port,
         keyFetcher = fetcher,
         authorizer = authorizer,
         logger = logger,
+        authZController = authZController,
+        authNController = authNController,
         moduleLocator = module
     )
 }

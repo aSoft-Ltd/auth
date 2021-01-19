@@ -7,7 +7,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 
 fun inMemoryAuthenticationService(
     authorization: AuthorizationLocator,
-    usersLocalDao: IUsersLocalDao
+    usersLocalDao: ITokenStorage
 ): AuthenticationFrontendServiceLocator {
     val accountsDao = UserAccountsTestDao()
     return AuthenticationFrontendServiceLocator(
@@ -19,15 +19,16 @@ fun inMemoryAuthenticationService(
 
 fun ktorAuthenticationService(
     authorization: AuthorizationLocator,
-    usersLocalDao: IUsersLocalDao,
+    usersLocalDao: ITokenStorage,
+    token: String?,
     client: HttpClient
 ): AuthenticationFrontendServiceLocator {
-    val options = RestfulOptions(url = "http://192.168.43.218:9020", "v1")
-    val accountsDao = RestfulDao(
+    val options = KtorDaoOptions(url = "http://192.168.43.218:9020", "v1")
+    val accountsDao = KtorRestDao(
         options = options,
         root = "authentication",
         subRoot = "user-accounts",
-        token = null,
+        token = token,
         client = client,
         serializer = UserAccount.serializer()
     )
@@ -39,10 +40,17 @@ fun ktorAuthenticationService(
             claimsDao = authorization.dao.claims,
             accountsDao = accountsDao,
             options = options,
-            token = null,
+            token = token,
             client = client
         ),
-        clientApps = InMemoryDao("client-app")
+        clientApps = KtorRestDao(
+            options = options,
+            root = "authentication",
+            subRoot = "client-apps",
+            token = token,
+            client = client,
+            serializer = ClientApp.serializer()
+        )
     )
 }
 

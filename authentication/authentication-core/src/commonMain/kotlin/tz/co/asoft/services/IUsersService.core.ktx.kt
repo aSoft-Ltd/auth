@@ -59,7 +59,7 @@ fun IUsersService.register(
     )
     val newUser = create(user).await()
     val claim = Claim(
-        uid = "${newAccount.uid}-${newUser.uid}",
+        uid = "${newAccount.uid}-user-${newUser.uid}",
         permits = accountType.permissionGroups.flatMap { it.permissions }.map { it.title }
     )
     claimsDao.create(claim).await()

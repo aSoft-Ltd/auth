@@ -18,8 +18,8 @@ class LoginFormViewModel(
         data class ShowForm(val email: String?) : State()
         data class AccountSelection(val user: User) : State()
         data class Error(val exception: Throwable, val origin: Intent) : State() {
-            val onTryAgain = { post(origin) }
-            val onGoBack = { post(Intent.ViewForm(origin.email)) }
+            val retry = { post(origin) }
+            val goBack = { post(Intent.ViewForm(origin.email)) }
         }
     }
 

@@ -8,18 +8,10 @@ class AuthenticationModuleLocator(
     val accounts: IRestModule<UserAccount>
 ) {
     constructor(keyFetcher: KeyFetcher, controller: AuthenticationControllerLocator) : this(
-        users = RestModule(
+        users = UsersModule(
             version = "v1",
-            root = "authentication",
-            subRoot = "users",
-            keyFetcher = keyFetcher,
-            serializer = User.serializer(),
             controller = controller.users,
-            readPermission = User.Permissions.Read,
-            createPermission = User.Permissions.Create,
-            updatePermission = User.Permissions.Update,
-            deletePermission = User.Permissions.Delete,
-            wipePermission = User.Permissions.Delete
+            fetcher = keyFetcher
         ),
         clientApps = RestModule(
             version = "v1",

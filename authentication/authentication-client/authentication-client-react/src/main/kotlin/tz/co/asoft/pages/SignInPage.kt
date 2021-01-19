@@ -172,7 +172,13 @@ class SignInPage private constructor() : VComponent<Props, Intent, State, LoginF
             is State.Loading -> LoadingBox(ui.msg)
             is State.ShowForm -> ShowForm(ui.email)
             is State.AccountSelection -> ShowAccountSelection(ui.user)
-            is State.Error -> ErrorBox(ui.exception)
+            is State.Error -> ErrorBox(
+                exception = ui.exception,
+                actions = listOf(
+                    AButton.Contained("Go Back", FaArrowLeft) { ui.goBack() },
+                    AButton.Contained("Retry", FaSync) { ui.retry() }
+                )
+            )
             is State.Success -> SuccessBox("Welcome ${ui.state.user.name}")
         }
     }

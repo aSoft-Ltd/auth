@@ -1,21 +1,20 @@
 package tz.co.asoft
 
+import kotlinx.coroutines.flow.MutableStateFlow
 import react.RBuilder
 import react.RProps
 import tz.co.asoft.AuthSandboxApp.Props
 import tz.co.asoft.SessionState.*
-import tz.co.asoft.locators.SandboxLocator
-import tz.co.asoft.viewmodel.AuthSandboxViewModel
 
 @JsExport
 class AuthSandboxApp : VComponent<Props, Any, SessionState, AuthSandboxViewModel>() {
+    private val sessionState: MutableStateFlow<SessionState> = MutableStateFlow(Unknown)
     override val viewModel by lazy {
-        AuthSandboxViewModel(props.locator.state, props.locator.authentication.service.users)
+        AuthSandboxViewModel(sessionState)
     }
 
     class Props(
-        val signInPageImageUrl: String,
-        val locator: SandboxLocator
+        val signInPageImageUrl: String
     ) : RProps
 
     override fun RBuilder.render(ui: SessionState) = ThemeProvider {
@@ -23,17 +22,17 @@ class AuthSandboxApp : VComponent<Props, Any, SessionState, AuthSandboxViewModel
             Unknown -> LoadingBox("Setting up workspace")
             LoggedOut -> AuthSandboxWebsite(
                 signInPageImageUrl = props.signInPageImageUrl,
-                viewModel = props.locator.authentication.viewModel
+                viewModel = viewModel.locator.authentication.viewModel
             )
             is LoggedIn -> PrincipleProvider(ui) {
                 AuthSandboxWebapp(
                     state = ui,
                     moduleGroups = mapOf(
-                        "Authorization" to props.locator.authorization.routes.menus("admin"),
-                        "Authentication" to props.locator.authentication.routes.menus("admin")
+                        "Authorization" to viewModel.locator.authorization.routes.menus("admin"),
+                        "Authentication" to viewModel.locator.authentication.routes.menus("admin")
                     ),
-                    modules = props.locator.authorization.routes.modules("admin") +
-                            props.locator.authentication.routes.modules("admin")
+                    modules = viewModel.locator.authorization.routes.modules("admin") +
+                            viewModel.locator.authentication.routes.modules("admin")
                 )
             }
         }
@@ -41,6 +40,5 @@ class AuthSandboxApp : VComponent<Props, Any, SessionState, AuthSandboxViewModel
 }
 
 fun RBuilder.AuthSandbox(
-    signInPageUrl: String,
-    locator: SandboxLocator
-) = child(AuthSandboxApp::class.js, Props(signInPageUrl, locator)) {}
+    signInPageUrl: String
+) = child(AuthSandboxApp::class.js, Props(signInPageUrl)) {}
