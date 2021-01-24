@@ -37,6 +37,6 @@ internal suspend fun PipelineContext<Unit, ApplicationCall>.authenticateUserAcco
         log.error("Failed to authenticate", it)
         emit(Either.Right(it.asFailure()))
     }.collect {
-        send(call, log, HttpStatusCode.OK, String.serializer(), it)
+        send(call, log, HttpStatusCode.OK.value, String.serializer(), it)
     }
 }

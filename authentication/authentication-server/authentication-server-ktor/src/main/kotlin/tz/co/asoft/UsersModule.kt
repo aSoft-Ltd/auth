@@ -22,9 +22,10 @@ import kotlinx.serialization.json.Json
 class UsersModule(
     version: String,
     override val controller: IUsersController,
-    fetcher: KeyFetcher
+    fetcher: KeyFetcher,
+    verifier: (SecurityKey) -> JWTVerifier
 ) : RestModule<User>(
-    version, "authentication", "users", fetcher, User.serializer(), controller,
+    version, "authentication", "users", fetcher, verifier, User.serializer(), controller,
     readPermission = User.Permissions.Read,
     createPermission = User.Permissions.Create,
     updatePermission = User.Permissions.Update,
@@ -43,7 +44,7 @@ class UsersModule(
                 log.error("Failed to login at $path/login", it)
                 emit(it.toFailure())
             }.collect {
-                send(call, log, HttpStatusCode.OK, serializer.nullable, it)
+                send(call, log, HttpStatusCode.OK.value, serializer.nullable, it)
             }
         }
 
@@ -56,7 +57,7 @@ class UsersModule(
                 log.error("Failed to check user existence at $path/exists", it)
                 emit(it.toFailure())
             }.collect {
-                send(call, log, HttpStatusCode.OK, ListSerializer(serializer), it)
+                send(call, log, HttpStatusCode.OK.value, ListSerializer(serializer), it)
             }
         }
 
@@ -75,7 +76,7 @@ class UsersModule(
                 log.error("Failed to upload user photo at $path/photo/{uid}")
                 emit(it.toFailure())
             }.collect {
-                send(call, log, HttpStatusCode.OK, String.serializer(), it)
+                send(call, log, HttpStatusCode.OK.value, String.serializer(), it)
             }
         }
 

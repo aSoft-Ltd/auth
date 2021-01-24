@@ -12,7 +12,8 @@ kotlin {
         val main by getting {
             dependencies {
                 api(project(":authorization-server-core"))
-                api(asoft("rest-server-ktor", vers.asoft.rest))
+//                api(asoft("rest-server-ktor", vers.asoft.rest))
+                api(project(":rest-server-ktor"))
             }
         }
     }

@@ -23,7 +23,7 @@ internal fun Route.keyRoutes(fetcher: KeyFetcher, logger: Logger) {
                 ).toResult()
             )
         }.collect {
-            send(call, logger, HttpStatusCode.OK, SecurityKey.serializer().nullable, it)
+            send(call, logger, HttpStatusCode.OK.value, SecurityKey.serializer().nullable, it)
         }
     }
 
@@ -39,7 +39,7 @@ internal fun Route.keyRoutes(fetcher: KeyFetcher, logger: Logger) {
                 )
             )
         }.collect {
-            send(call, logger, HttpStatusCode.OK, ListSerializer(SecurityKey.serializer()), it)
+            send(call, logger, HttpStatusCode.OK.value, ListSerializer(SecurityKey.serializer()), it)
         }
     }
 }

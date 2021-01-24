@@ -36,7 +36,7 @@ fun ktorAuthenticationService(
     return AuthenticationFrontendServiceLocator(
         accounts = accountsDao,
         users = KtorUsersFrontendService(
-            localDao = usersLocalDao,
+            tokenStorage = usersLocalDao,
             claimsDao = authorization.dao.claims,
             accountsDao = accountsDao,
             options = options,

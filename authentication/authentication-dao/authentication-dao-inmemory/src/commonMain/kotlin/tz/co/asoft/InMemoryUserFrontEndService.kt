@@ -3,7 +3,7 @@ package tz.co.asoft
 class InMemoryUserFrontEndService(
     override val claimsDao: IDao<Claim>,
     override val accountsDao: IDao<UserAccount>,
-    override val localDao: ITokenStorage,
+    override val tokenStorage: ITokenStorage,
     private val alg: JWTAlgorithm = HS256Algorithm("secret")
 ) : IDao<User> by InMemoryDao("user"), IUsersFrontendService {
     override fun load(email: Email, pwd: String) = scope.later {

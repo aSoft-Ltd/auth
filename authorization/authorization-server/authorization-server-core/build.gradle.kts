@@ -11,7 +11,8 @@ kotlin {
             dependencies {
                 api(project(":authorization-core"))
                 api(asoft("jwt-core",vers.asoft.jwt))
-                api(asoft("rest-server-core", vers.asoft.rest))
+                api(project(":rest-server-core"))
+//                api(asoft("rest-server-core", vers.asoft.rest))
             }
         }
 

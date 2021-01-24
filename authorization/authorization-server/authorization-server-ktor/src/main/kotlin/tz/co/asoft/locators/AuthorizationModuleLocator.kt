@@ -6,12 +6,13 @@ class AuthorizationModuleLocator(
     val claims: IRestModule<Claim>,
     val roles: IRestModule<UserRole>
 ) {
-    constructor(keyFetcher: KeyFetcher, controller: AuthorizationControllerLocator) : this(
+    constructor(keyFetcher: KeyFetcher, verifier: (SecurityKey) -> JWTVerifier, controller: AuthorizationControllerLocator) : this(
         claims = RestModule(
             version = "v1",
             root = "authorization",
             subRoot = "claims",
             keyFetcher = keyFetcher,
+            verifier = verifier,
             serializer = Claim.serializer(),
             controller = controller.claims,
             readPermission = Claim.Permissions.Read,
@@ -25,6 +26,7 @@ class AuthorizationModuleLocator(
             root = "authorization",
             subRoot = "user-roles",
             keyFetcher = keyFetcher,
+            verifier = verifier,
             serializer = UserRole.serializer(),
             controller = controller.roles,
             readPermission = UserRole.Permissions.Read,

@@ -7,17 +7,19 @@ class AuthenticationModuleLocator(
     val clientApps: IRestModule<ClientApp>,
     val accounts: IRestModule<UserAccount>
 ) {
-    constructor(keyFetcher: KeyFetcher, controller: AuthenticationControllerLocator) : this(
+    constructor(keyFetcher: KeyFetcher, verifier: (SecurityKey) -> JWTVerifier, controller: AuthenticationControllerLocator) : this(
         users = UsersModule(
             version = "v1",
             controller = controller.users,
-            fetcher = keyFetcher
+            fetcher = keyFetcher,
+            verifier=verifier
         ),
         clientApps = RestModule(
             version = "v1",
             root = "authentication",
             subRoot = "client-apps",
             keyFetcher = keyFetcher,
+            verifier = verifier,
             serializer = ClientApp.serializer(),
             controller = controller.clientApps,
             readPermission = User.Permissions.Read,
@@ -31,6 +33,7 @@ class AuthenticationModuleLocator(
             root = "authentication",
             subRoot = "accounts",
             keyFetcher = keyFetcher,
+            verifier = verifier,
             serializer = UserAccount.serializer(),
             controller = controller.accounts,
             readPermission = User.Permissions.Read,

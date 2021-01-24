@@ -1,6 +1,6 @@
 package tz.co.asoft
 
-class InMemoryUsersLocalDao : ITokenStorage {
+class InMemoryTokenStorage : ITokenStorage {
     var data: String? = null
     override fun save(token: String): String {
         data = token

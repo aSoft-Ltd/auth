@@ -8,7 +8,6 @@ import io.ktor.server.engine.embeddedServer
 
 class AuthenticationRestServer(
     port: Int = 8080,
-    val keyFetcher: KeyFetcher,
     val logger: Logger,
     val authorizer: Authorizer,
     val authZController: AuthorizationControllerLocator,
@@ -18,8 +17,8 @@ class AuthenticationRestServer(
     override fun start() = embeddedServer(CIO, port) {
         installCORS()
         listOf(moduleLocator.users, moduleLocator.clientApps, moduleLocator.accounts).forEach {
-            it.setRoutes(this, log)
-            log.info("Endpoints at: :$port${it.path}")
+            it.setRoutes(this, logger)
+            logger.info("Endpoints at: :$port${it.path}")
         }
         routing {
             authorizeRoute(authorizer, logger)

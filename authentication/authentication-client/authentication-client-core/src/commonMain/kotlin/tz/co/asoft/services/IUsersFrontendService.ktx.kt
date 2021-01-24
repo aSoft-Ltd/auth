@@ -5,7 +5,7 @@ package tz.co.asoft
 import kotlinx.coroutines.flow.MutableStateFlow
 
 fun IUsersFrontendService.authenticateLocallyOrLogout(state: MutableStateFlow<SessionState>) {
-    val token = localDao.load()
+    val token = tokenStorage.load()
     state.value = if (token == null) {
         SessionState.LoggedOut
     } else {
@@ -15,7 +15,7 @@ fun IUsersFrontendService.authenticateLocallyOrLogout(state: MutableStateFlow<Se
 
 fun IUsersFrontendService.authenticateThenStoreToken(accountId: String, userId: String): Later<String> = scope.later {
     val token = authenticate(accountId, userId).await()
-    localDao.save(token)
+    tokenStorage.save(token)
 }
 
 fun IUsersFrontendService.reAuthenticateIfNeedBe(user: User, state: MutableStateFlow<SessionState>): Later<String?> = scope.later {
@@ -41,7 +41,7 @@ fun IUsersFrontendService.changePasswordThenStoreToken(
 
 fun IUsersFrontendService.signOut(state: MutableStateFlow<SessionState>) {
     state.value = SessionState.LoggedOut
-    localDao.delete()
+    tokenStorage.delete()
 }
 
 fun IUsersFrontendService.editBasicInfoAndReauthenticateIfNeedBe(
@@ -63,7 +63,7 @@ fun IUsersFrontendService.editBasicInfoAndReauthenticateIfNeedBe(
 fun IUsersFrontendService.signInAndStoreToken(loginId: String, password: String): Later<Either<User, String>> = scope.later {
     val res = signIn(loginId, password).await() ?: throw Exception("User with those credentials not found")
     when (val value = res.value) {
-        is String -> localDao.save(value)
+        is String -> tokenStorage.save(value)
         is User -> Unit
         else -> throw Exception("Failed to sign you in")
     }

@@ -18,14 +18,14 @@ fun IUsersService.signIn(loginId: String, password: String): Later<Either<User, 
     val user = load(
         loginId = loginId,
         password = password
-    ).await() ?: throw RuntimeException("User(loginId=$loginId) and provided password not found")
+    ).await() ?: return@later null
     if (user.accounts.size == 1) {
         val userId = user.uid ?: return@later null
         val account = user.accounts.firstOrNull()
         val accountId = account?.uid ?: return@later null
         return@later authenticate(accountId, userId).await().asEither()
     }
-    user.asEither()
+    return@later user.asEither()
 }
 
 fun IUsersService.register(

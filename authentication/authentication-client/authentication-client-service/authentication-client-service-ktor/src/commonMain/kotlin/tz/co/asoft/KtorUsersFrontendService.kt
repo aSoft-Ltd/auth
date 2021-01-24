@@ -8,7 +8,7 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.serialization.builtins.serializer
 
 class KtorUsersFrontendService(
-    override val localDao: ITokenStorage,
+    override val tokenStorage: ITokenStorage,
     override val claimsDao: IDao<Claim>,
     override val accountsDao: IDao<UserAccount>,
     override val options: KtorDaoOptions,

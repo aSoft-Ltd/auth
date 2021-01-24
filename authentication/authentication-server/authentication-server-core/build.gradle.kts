@@ -11,7 +11,8 @@ kotlin {
             dependencies {
                 api(project(":authentication-core"))
                 api(project(":authorization-server-core"))
-                api(asoft("rest-server-core", vers.asoft.rest))
+                api(project(":rest-server-core"))
+//                api(asoft("rest-server-core", vers.asoft.rest))
             }
         }
 

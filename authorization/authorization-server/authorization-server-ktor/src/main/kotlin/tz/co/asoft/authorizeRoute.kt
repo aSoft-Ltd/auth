@@ -26,6 +26,6 @@ internal fun Route.authorizeRoute(authorizer: Authorizer, log: Logger) = post("/
     }.catch {
         emit(it.toFailure())
     }.collect {
-        send(call, log, HttpStatusCode.OK, String.serializer(), it)
+        send(call, log, HttpStatusCode.OK.value, String.serializer(), it)
     }
 }

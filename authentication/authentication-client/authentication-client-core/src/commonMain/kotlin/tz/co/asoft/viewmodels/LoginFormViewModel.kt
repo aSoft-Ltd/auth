@@ -29,6 +29,10 @@ class LoginFormViewModel(
         data class AuthenticateAccount(val account: UserAccount, val user: User) : Intent(user.emails.firstOrNull())
     }
 
+    init {
+        observeIntentBus()
+    }
+
     override fun CoroutineScope.execute(i: Intent): Any = when (i) {
         is Intent.SignIn -> signIn(i)
         is Intent.AuthenticateAccount -> authenticateAccount(i)
