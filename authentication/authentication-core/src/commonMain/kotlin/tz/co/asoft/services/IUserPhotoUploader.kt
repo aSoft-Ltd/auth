@@ -2,6 +2,4 @@
 
 package tz.co.asoft
 
-interface IUserPhotoUploader {
-    suspend fun uploadPhoto(user: User, photo: File): FileRef
-}
+interface IUserPhotoUploader
