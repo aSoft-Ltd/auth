@@ -38,7 +38,7 @@ class UsersManagerViewModelTest {
         populateLater.await()
         val email = "userx@test.com"
         vm.test(Intent.CreateUser("Test User", email, "255799999999", UserAccountType.TESTER))
-        expect(vm).toBeIn<State.Users>()
+        expect(vm).toBeIn<State.Success>()
         val user = service.load(email, SHA256.digest("123456".toByteArray()).hex).await()
         expect(user).toBeNonNull()
     }

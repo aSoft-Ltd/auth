@@ -3,14 +3,15 @@ package roles
 import tz.co.asoft.*
 import tz.co.asoft.RolesManagerViewModel.Intent
 import tz.co.asoft.RolesManagerViewModel.State
-import tz.co.asoft.entities.UserRole
+import tz.co.asoft.UserRole
 import kotlin.test.Test
 
 class RolesManagerViewModelWithoutPermissionTest {
-    private val repo = UserRolesTestRepo()
+    private val dao = UserRolesTestDao()
+    private val repo = Repo(dao)
     private val principle = UserPrinciple()
     private val vm = RolesManagerViewModel(repo, principle, UserAccountType.permissionGroups)
-    private val populateLater = repo.populate()
+    private val populateLater = dao.populate()
 
     @Test
     fun should_display_error_showing_role_form_to_an_unpermitted_user() = asyncTest {
