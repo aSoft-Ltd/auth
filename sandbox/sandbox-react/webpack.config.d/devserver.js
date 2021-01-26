@@ -1,0 +1,2 @@
+config.devServer = { ...config.devServer, historyApiFallback: true, host: "0.0.0.0" }
+config.resolve.modules.push("/media/andylamax/63C23C360914D355/aSoft/CSS Libs/auth/code/sandbox/sandbox-react/build/processedResources/js/main")

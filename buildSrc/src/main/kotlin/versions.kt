@@ -1,18 +1,32 @@
 object vers {
-    val kotlin = "1.4.20"
+    val kotlin = "1.4.21"
     val nexus_staging = "0.22.0"
+    val ktor = "1.4.3"
 
     object kotlinx {
+        val serialization = "1.0.1"
         val datetime = "0.1.1"
     }
 
     object asoft {
+        val auth = "0.0.10"
         val contacts = "0.0.1"
-        val viewmodel = "0.0.1"
+        val viewmodel = "0.0.62"
+        val rest = "0.1.10"
+        val mapper = "0.0.5"
+        val jwt = "0.0.30"
+        val form = "0.0.20"
         val logging = "0.0.1"
-        val reakt = "0.0.7"
-        val persist = "0.0.1"
-        val builders = "1.1.1"
-        val test = "1.0.1"
+        val later = "0.0.42"
+        val duality = "0.0.21"
+        val reakt = "0.0.90"
+        val files = "0.0.1"
+        val krypto = "0.0.4"
+        val paging = "0.0.31"
+        val persist = "0.2.10"
+        val builders = "1.3.0"
+        val expect = "0.0.10"
+        val test = "1.1.10"
+        val access = "0.0.14"
     }
 }
