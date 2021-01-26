@@ -2,6 +2,8 @@ plugins {
     kotlin("multiplatform")
     kotlin("plugin.serialization")
     id("tz.co.asoft.library")
+    id("io.codearte.nexus-staging")
+    signing
 }
 
 kotlin {
@@ -22,3 +24,8 @@ kotlin {
         }
     }
 }
+
+aSoftOSSLibrary(
+    version = vers.asoft.auth,
+    description = "A Kotlin Multiplatform library to handle authentication-services on the client with ktor client"
+)

@@ -1,6 +1,8 @@
 plugins {
     kotlin("js")
     id("tz.co.asoft.library")
+    id("io.codearte.nexus-staging")
+    signing
 }
 
 kotlin {
@@ -30,3 +32,8 @@ kotlin {
         }
     }
 }
+
+aSoftOSSLibrary(
+    version = vers.asoft.auth,
+    description = "A Kotlin Multiplatform library to handle authentication on the client with kotlin/react"
+)

@@ -23,3 +23,8 @@ kotlin {
         }
     }
 }
+
+aSoftOSSLibrary(
+    version = vers.asoft.auth,
+    description = "A Kotlin Multiplatform library to handle authorization persistence on a restfull api"
+)
