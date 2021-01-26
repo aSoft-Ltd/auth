@@ -16,10 +16,6 @@ pluginManagement {
 }
 
 rootProject.name = "auth"
-// pure auth modules
-//include(":auth-core")
-
-// auth-client modules
 include(":auth-client-core")
 project(":auth-client-core").projectDir = File("auth-client/auth-client-core")
 include(":auth-client-react")
@@ -88,10 +84,10 @@ include(":sandbox-ktor")
 project(":sandbox-ktor").projectDir = File("sandbox/sandbox-ktor")
 include(":sandbox-react")
 project(":sandbox-react").projectDir = File("sandbox/sandbox-react")
-
-include(":rest-client-ktor")
-project(":rest-client-ktor").projectDir = File("../../rest/code/rest-client/rest-client-ktor")
-include(":rest-server-core")
-project(":rest-server-core").projectDir = File("../../rest/code/rest-server/rest-server-core")
-include(":rest-server-ktor")
-project(":rest-server-ktor").projectDir = File("../../rest/code/rest-server/rest-server-ktor")
+//
+//include(":rest-client-ktor")
+//project(":rest-client-ktor").projectDir = File("../../rest/code/rest-client/rest-client-ktor")
+//include(":rest-server-core")
+//project(":rest-server-core").projectDir = File("../../rest/code/rest-server/rest-server-core")
+//include(":rest-server-ktor")
+//project(":rest-server-ktor").projectDir = File("../../rest/code/rest-server/rest-server-ktor")
