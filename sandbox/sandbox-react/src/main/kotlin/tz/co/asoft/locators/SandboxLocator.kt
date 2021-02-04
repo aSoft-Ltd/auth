@@ -17,7 +17,7 @@ fun SandboxLocator(state: MutableStateFlow<SessionState>, token: String?): Sandb
     val namespace: String by kfg
     setupTheme()
     setupLogging()
-    val accountTypes = UserAccountType.all()
+    val accountTypes = UserAccountType.values().toList()
     val client = HttpClient()
     val authZDao = restAuthorizationDaoLocator(token, client)
     val authorization = setupAuthorization(accountTypes, authZDao)

@@ -31,6 +31,7 @@ class AuthorizationRestServer(
             it.setRoutes(this, logger)
             logger.info("Endpoints at: :$port${it.path}")
         }
+
         routing {
             keyRoutes(keyFetcher, logger)
             authorizeRoute(authorizer, logger)

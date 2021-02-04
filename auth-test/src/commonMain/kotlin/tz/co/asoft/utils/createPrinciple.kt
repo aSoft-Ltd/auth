@@ -15,5 +15,5 @@ fun UserPrinciple(vararg perms: ISystemPermission) = object : IUserPrinciple {
         accounts = listOf(account),
         password = "01"
     )
-    override val claims = perms.flatMap { it.needs + it.title }.distinct()
+    override val claims = perms.map { it.title to listOf("global") }.toMap()
 }

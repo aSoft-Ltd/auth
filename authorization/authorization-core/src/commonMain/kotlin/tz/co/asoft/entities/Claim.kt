@@ -7,7 +7,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class Claim(
     override var uid: String? = null,
-    val permits: List<String>,
+    val permits: Map<String, List<String>>,
     override var deleted: Boolean = false
 ) : Entity {
     companion object {

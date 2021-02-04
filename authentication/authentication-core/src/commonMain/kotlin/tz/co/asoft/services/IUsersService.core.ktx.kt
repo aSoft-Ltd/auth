@@ -2,6 +2,8 @@
 
 package tz.co.asoft
 
+import tz.co.asoft.ISystemPermission.Companion.global
+
 fun IUsersService.load(loginId: String, password: String) = scope.later {
     if (loginId.contains("@")) {
         load(Email(loginId), password).await()
@@ -59,8 +61,15 @@ fun IUsersService.register(
     )
     val newUser = create(user).await()
     val claim = Claim(
-        uid = "${newAccount.uid}-user-${newUser.uid}",
-        permits = accountType.permissionGroups.flatMap { it.permissions }.map { it.title }
+        uid = Claim.getUserClaimId(
+            accountId = newAccount.uid ?: throw Exception("Account Id is null"),
+            userId = newUser.uid ?: throw Exception("User Id is null")
+        ),
+        permits = accountType.permissionGroups.flatMap {
+            it.permissions
+        }.map {
+            it.title to listOf(global)
+        }.toMap()
     )
     claimsDao.create(claim).await()
     newAccount to newUser

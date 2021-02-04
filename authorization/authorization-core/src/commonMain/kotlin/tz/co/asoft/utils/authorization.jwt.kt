@@ -10,7 +10,7 @@ suspend fun JWTAlgorithm.createToken(principle: IPrinciple) = when (principle) {
     else -> throw Exception("Invalid principle")
 }
 
-suspend fun JWTAlgorithm.createToken(account: UserAccount, user: User, permits: List<String>) = createJWT {
+suspend fun JWTAlgorithm.createToken(account: UserAccount, user: User, permits: Map<String, List<String>>) = createJWT {
     uid = user.uid ?: throw IllegalStateException("To create a token successfully, User(name=${user.name}) must have a non null id")
     userName = user.username ?: user.name
     accountName = account.name
@@ -20,7 +20,7 @@ suspend fun JWTAlgorithm.createToken(account: UserAccount, user: User, permits: 
     put("account", Mapper.decodeFromString(Json.encodeToString(UserAccount.serializer(), account)))
 }.token()
 
-suspend fun JWTAlgorithm.createToken(account: UserAccount, app: ClientApp, permits: List<String>) = createJWT {
+suspend fun JWTAlgorithm.createToken(account: UserAccount, app: ClientApp, permits: Map<String, List<String>>) = createJWT {
     uid = app.uid ?: throw IllegalStateException("To create a token successfully, ClientApp(name=${app.name}) must have a non null id")
     accountName = account.name
     userName = app.name

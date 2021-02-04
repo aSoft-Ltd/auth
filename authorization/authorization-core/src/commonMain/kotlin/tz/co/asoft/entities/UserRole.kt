@@ -8,7 +8,7 @@ import kotlinx.serialization.Serializable
 data class UserRole(
     override var uid: String? = null,
     override val name: String,
-    val permits: List<String>,
+    val permits: Map<String, List<String>>,
     override var deleted: Boolean = false
 ) : NamedEntity {
     enum class Permissions(

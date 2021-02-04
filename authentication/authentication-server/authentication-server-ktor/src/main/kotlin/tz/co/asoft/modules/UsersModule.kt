@@ -1,3 +1,5 @@
+@file:Suppress("PackageDirectoryMismatch")
+
 package tz.co.asoft
 
 import io.ktor.application.Application
@@ -9,30 +11,27 @@ import io.ktor.request.receiveParameters
 import io.ktor.request.receiveText
 import io.ktor.response.respondFile
 import io.ktor.response.respondText
-import io.ktor.routing.get
-import io.ktor.routing.post
+import io.ktor.routing.*
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flow
+import kotlinx.serialization.KSerializer
 import kotlinx.serialization.builtins.ListSerializer
 import kotlinx.serialization.builtins.nullable
 import kotlinx.serialization.builtins.serializer
 import kotlinx.serialization.json.Json
 
 class UsersModule(
-    version: String,
+    override val version: String,
     override val controller: IUsersController,
-    fetcher: KeyFetcher,
-    verifier: (SecurityKey) -> JWTVerifier
-) : RestModule<User>(
-    version, "authentication", "users", fetcher, verifier, User.serializer(), controller,
-    readPermission = User.Permissions.Read,
-    createPermission = User.Permissions.Create,
-    updatePermission = User.Permissions.Update,
-    deletePermission = User.Permissions.Delete,
-    wipePermission = User.Permissions.Delete
-) {
-    override fun setRoutes(app: Application, log: Logger) = super.setRoutes(app, log).apply {
+    override val keyFetcher: KeyFetcher,
+    override val verifier: (SecurityKey) -> JWTVerifier
+) : IRestModule<User> {
+    override val root: String = "authentication"
+    override val subRoot: String = "users"
+    override val serializer: KSerializer<User> = User.serializer()
+
+    override fun setRoutes(app: Application, log: Logger) = app.routing {
         post("$path/login") {
             log.info("Login at $path/login")
             flow<Result<User?>> {

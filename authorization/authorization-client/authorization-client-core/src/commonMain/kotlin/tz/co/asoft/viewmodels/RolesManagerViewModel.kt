@@ -7,6 +7,7 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
+import tz.co.asoft.ISystemPermission.Companion.global
 import tz.co.asoft.RolesManagerViewModel.Intent
 import tz.co.asoft.RolesManagerViewModel.State
 
@@ -35,10 +36,6 @@ class RolesManagerViewModel(
         class ViewRoleForm(val role: UserRole?) : Intent()
     }
 
-    val defaultIntents = object {
-        val onCreateRole get() = { post(Intent.ViewRoleForm(null)) }.takeIf { principle.has(UserRole.Permissions.Create) }
-    }
-
     init {
         observeIntentBus()
         post(Intent.LoadRoles)
@@ -54,7 +51,7 @@ class RolesManagerViewModel(
 
     private fun CoroutineScope.updateRole(intent: Intent.UpdateRole) = launch {
         flow {
-            require(principle.has(UserRole.Permissions.Update)) { "You are not permitted to update a user role" }
+            require(principle.has(UserRole.Permissions.Update, global)) { "You are not permitted to update a user role" }
             emit(State.Loading("Updating ${intent.role.name}'s role"))
             val role = repo.edit(intent.role).await()
             emit(State.ShowRole(role, permissionGroups))
@@ -65,7 +62,7 @@ class RolesManagerViewModel(
 
     private fun CoroutineScope.viewRoleForm(intent: Intent.ViewRoleForm) = launch {
         flow {
-            require(principle.has(UserRole.Permissions.Create)) { "You are not authorized to create a user role" }
+            require(principle.has(UserRole.Permissions.Create, global)) { "You are not authorized to create a user role" }
             emit(State.Loading("Preparing form"))
             emit(State.RoleForm(intent.role, permissionGroups))
         }.catch {
@@ -77,7 +74,7 @@ class RolesManagerViewModel(
 
     private fun CoroutineScope.deleteRole(intent: Intent.DeleteRole) = launch {
         flow {
-            require(principle.has(UserRole.Permissions.Delete)) { "You are not authorized to delete a user role" }
+            require(principle.has(UserRole.Permissions.Delete, global)) { "You are not authorized to delete a user role" }
             emit(State.Loading("Deleting ${intent.role.name} role"))
             repo.delete(intent.role).await()
             emit(State.Loading("Role deleted. Loading all roles . . ."))
@@ -89,7 +86,7 @@ class RolesManagerViewModel(
 
     private fun CoroutineScope.createRole(intent: Intent.CreateRole) = launch {
         flow {
-            require(principle.has(UserRole.Permissions.Create)) { "You are not authorized to create a user role" }
+            require(principle.has(UserRole.Permissions.Create, global)) { "You are not authorized to create a user role" }
             emit(State.Loading("Creating role ${intent.role.name}"))
             repo.create(intent.role).await()
             emit(State.Loading("Role created. Loading all roles . . ."))
@@ -103,7 +100,7 @@ class RolesManagerViewModel(
 
     private fun CoroutineScope.loadRoles(intent: Intent.LoadRoles) = launch {
         flow {
-            require(principle.has(UserRole.Permissions.Read)) { "You are not authorized to read user roles" }
+            require(principle.has(UserRole.Permissions.Read, global)) { "You are not authorized to read user roles" }
             emit(State.Loading("Loading all roles"))
             emit(State.Roles(repo.all().await(), permissionGroups))
         }.catch {

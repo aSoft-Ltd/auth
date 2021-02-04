@@ -8,6 +8,7 @@ import kotlinx.css.width
 import react.RBuilder
 import styled.css
 import styled.styledDiv
+import tz.co.asoft.ISystemPermission.Companion.global
 import tz.co.asoft.RolesManagerViewModel.Intent
 
 /**
@@ -35,7 +36,7 @@ private fun RBuilder.RolesContainerAppBar(
         drawerController = drawerController ?: mainDrawerController,
         left = { +"Roles" },
         right = {
-            if (principle.has(permission = "roles:create")) {
+            if (principle.has("roles:create",global)) {
                 TextButton("New Role", FaPlus) { RolesManagerViewModel.post(Intent.ViewRoleForm(null)) }
             }
         }

@@ -6,7 +6,7 @@ class UserRolesTestDao : IDao<UserRole> by UniqueNameInMemoryDao("role") {
     fun populate() = scope.later {
         for (i in 1..10) UserRole(
             name = "User Role - $i",
-            permits = UserAccountType.permits.randoms()
+            permits = mapOf()
         ).also { create(it).await() }
     }
 

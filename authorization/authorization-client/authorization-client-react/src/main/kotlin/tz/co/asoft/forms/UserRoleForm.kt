@@ -5,6 +5,7 @@ package tz.co.asoft
 import kotlinx.css.*
 import react.RBuilder
 import styled.css
+import tz.co.asoft.ISystemPermission.Companion.global
 import styled.styledH1
 
 fun RBuilder.UserRoleForm(
@@ -54,7 +55,7 @@ fun RBuilder.UserRoleForm(
         UserRole(
             uid = role?.uid,
             name = name,
-            permits = permits,
+            permits = permits.map { it to listOf(global) }.toMap(),
             deleted = role?.deleted ?: false
         )
     )

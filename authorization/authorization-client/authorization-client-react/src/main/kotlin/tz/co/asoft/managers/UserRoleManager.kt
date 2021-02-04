@@ -26,9 +26,9 @@ private val RoleManagerHook = functionalComponent<RoleManagerProps> { props ->
     }
     val state by vm
     when (val ui: State = state) {
-        is State.Loading -> Loader(ui.msg)
+        is State.Loading -> LoadingBox(ui.msg)
         is State.RolePermits -> RolePermits(
-            userPermits = ui.role.permits,
+            userPermits = ui.role.permits.keys,
             systemPermits = props.permissionGroups,
             onEdit = ui.onEdit,
             onDelete = ui.onDelete
@@ -39,7 +39,7 @@ private val RoleManagerHook = functionalComponent<RoleManagerProps> { props ->
             onCancel = ui.onCancel,
             onSubmit = ui.onSubmit
         )
-        is State.Error -> Error(ui.msg)
+        is State.Error -> ErrorBox(Throwable(ui.msg))
     }
 }
 

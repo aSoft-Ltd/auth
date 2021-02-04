@@ -1,6 +1,7 @@
 package roles
 
 import tz.co.asoft.*
+import tz.co.asoft.ISystemPermission.Companion.global
 import tz.co.asoft.RolesManagerViewModel.Intent
 import tz.co.asoft.RolesManagerViewModel.State
 import tz.co.asoft.UserRole
@@ -10,7 +11,7 @@ class RolesManagerViewModelWithoutPermissionTest {
     private val dao = UserRolesTestDao()
     private val repo = Repo(dao)
     private val principle = UserPrinciple()
-    private val vm = RolesManagerViewModel(repo, principle, UserAccountType.permissionGroups)
+    private val vm = RolesManagerViewModel(repo, principle, permissionGroups)
     private val populateLater = dao.populate()
 
     @Test
@@ -22,13 +23,13 @@ class RolesManagerViewModelWithoutPermissionTest {
 
     @Test
     fun principle_without_access_should_not_have_permission_to_create_a_new_role() {
-        expect(principle.has(UserRole.Permissions.Create)).toBe(false)
+        expect(principle.has(UserRole.Permissions.Create, global)).toBe(false)
     }
 
     @Test
     fun should_fail_to_create_role_fon_an_unpermitted_user() = asyncTest {
         populateLater.await()
-        val role = UserRole(name = "Test Role", permits = listOf())
+        val role = UserRole(name = "Test Role", permits = mapOf())
         vm.test(Intent.CreateRole(role))
         expect(vm).toBeIn<State.Error>()
     }

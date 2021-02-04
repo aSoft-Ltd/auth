@@ -11,7 +11,7 @@ class UsersManagerViewModelTest {
     private val principle = UserPrinciple(
         User.Permissions.Create
     )
-    private val vm: UsersManagerViewModel = UsersManagerViewModel(repo, principle, UserAccountType.all())
+    private val vm: UsersManagerViewModel = UsersManagerViewModel(repo, principle, UserAccountType.values().toList())
     private val populateLater = service.populate()
 
     @Test

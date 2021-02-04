@@ -50,11 +50,12 @@ class UserPermissionsManagerViewModel(
         val roles = rolesRepo.all().await()
         var userRole: UserRole? = null
         var userPermits = ""//i.u.permits.sorted().joinToString()
+        TODO("Unimplemented")
         for (role in roles) {
-            if (role.permits.joinToString() == userPermits) {
-                userRole = role
-                break
-            }
+//            if (role.permits.joinToString() == userPermits) {
+//                userRole = role
+//                break
+//            }
         }
         ui.value = State.UserRoleForm(i.u, userRole, roles)
     }

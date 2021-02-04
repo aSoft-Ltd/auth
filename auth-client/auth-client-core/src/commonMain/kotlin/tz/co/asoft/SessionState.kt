@@ -11,6 +11,6 @@ sealed class SessionState {
         val jwt = JWT.parse(token)
         override val user = Json.decodeFromString(User.serializer(), Mapper.encodeToString(jwt.payload["user"] as Map<String, Any?>))
         override val account = Json.decodeFromString(UserAccount.serializer(), Mapper.encodeToString(jwt.payload["account"] as Map<String, Any?>))
-        override val claims = jwt.payload.claimsOrNull ?: listOf()
+        override val claims = jwt.payload.claimsOrNull ?: mapOf()
     }
 }

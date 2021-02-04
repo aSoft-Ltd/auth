@@ -1,5 +1,5 @@
 object vers {
-    val kotlin = "1.4.21"
+    val kotlin = "1.4.30"
     val nexus_staging = "0.22.0"
     val ktor = "1.4.3"
 
@@ -9,12 +9,12 @@ object vers {
     }
 
     object asoft {
-        val auth = "0.0.10"
+        val auth = "0.0.20"
         val contacts = "0.0.1"
         val viewmodel = "0.0.62"
-        val rest = "0.1.10"
+        val rest = "0.1.20"
         val mapper = "0.0.5"
-        val jwt = "0.0.30"
+        val jwt = "0.0.40"
         val form = "0.0.20"
         val logging = "0.0.1"
         val later = "0.0.42"
@@ -27,6 +27,6 @@ object vers {
         val builders = "1.3.0"
         val expect = "0.0.10"
         val test = "1.1.10"
-        val access = "0.0.14"
+        val access = "0.0.20"
     }
 }

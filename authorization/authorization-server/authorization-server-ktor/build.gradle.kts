@@ -12,10 +12,10 @@ kotlin {
 
     sourceSets {
         val main by getting {
+            this.kotlin.srcDir("../../authorization/authorization-core/src/commonMain/kotlin")
             dependencies {
                 api(project(":authorization-server-core"))
                 api(asoft("rest-server-ktor", vers.asoft.rest))
-//                api(project(":rest-server-ktor"))
             }
         }
     }

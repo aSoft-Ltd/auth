@@ -6,6 +6,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import tz.co.asoft.ISystemPermission.Companion.global
 import tz.co.asoft.UsersManagerViewModel.Intent
 import tz.co.asoft.UsersManagerViewModel.State
 
@@ -58,7 +59,7 @@ class UsersManagerViewModel(
 
     private fun CoroutineScope.viewUsers(intent: Intent.ViewUsers) = launch {
         flow<State> {
-            require(principle.has(User.Permissions.Read)) { "You are not authorized to view all users" }
+            require(principle.has(User.Permissions.Read, global)) { "You are not authorized to view all users" }
             emit(State.Users(pager))
         }.catch {
             emit(State.Error(Exception("Failed to display all users for you", it), intent))
@@ -67,7 +68,7 @@ class UsersManagerViewModel(
 
     private fun CoroutineScope.viewForm(intent: Intent.ViewForm) = launch {
         flow {
-            require(principle.has(User.Permissions.Create)) { "You are not authorized to create new users" }
+            require(principle.has(User.Permissions.Create, global)) { "You are not authorized to create new users" }
             emit(State.Loading("Loading form please wait"))
             emit(State.Form(accounts))
         }.catch {
@@ -79,7 +80,7 @@ class UsersManagerViewModel(
 
     private fun CoroutineScope.createUser(intent: Intent.CreateUser) = launch {
         flow {
-            require(principle.has(User.Permissions.Create)) { "You are not authorized to create a new user" }
+            require(principle.has(User.Permissions.Create, global)) { "You are not authorized to create a new user" }
             emit(State.Loading("Creating user"))
             val (_, user) = usersRepo.register(
                 accountType = intent.type,
